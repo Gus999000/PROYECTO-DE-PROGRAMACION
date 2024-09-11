@@ -8,11 +8,11 @@ class Square(pg.sprite.Sprite):
         #Hereda pg.sprite.Sprite
         super().__init__()
         # {pos_x, pox_y, width, height}
-        self.__rec = [pos_x+150,pos_y+135,scale,scale]
+        self.__rec = [pos_x+160,pos_y+160,scale,scale]
         if not self.Filled:
-            self.image = pg.image.load("Square.png")
+            self.image = pg.image.load("resources/Square.png")
         else:
-            self.image = pg.image.load("SquareFill.png")
+            self.image = pg.image.load("resources/SquareFill.png")
 
         self.image = pg.transform.scale(self.image,(scale,scale))
 
@@ -25,12 +25,12 @@ class Square(pg.sprite.Sprite):
 
     def changeImage(self):
         if self.Filled:
-            self.image = pg.image.load("Square.png")
+            self.image = pg.image.load("resources/Square.png")
             self.image = pg.transform.scale(self.image, (self.__rec[2], self.__rec[2]))
             self.Filled = False
             pass
         else:
-            self.image = pg.image.load("SquareFill.png")
+            self.image = pg.image.load("resources/SquareFill.png")
             self.image = pg.transform.scale(self.image, (self.__rec[2], self.__rec[2]))
             self.Filled = True
             pass
@@ -51,7 +51,7 @@ def main():
     Surface.fill((0,0,255))
 
     # Ingresar tamaño del puzzle y el cuadrado
-    puzzle_size = 30
+    puzzle_size = 20
 
     square_size = 480/puzzle_size
     obj_square = [[Square(i * square_size, j * square_size, square_size) for i in range(puzzle_size)] for j in range(puzzle_size)]
