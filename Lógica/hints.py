@@ -1,3 +1,5 @@
+import numpy as np
+
 def generate_hints(lines):
     hints = []
     for line in lines:
@@ -18,17 +20,17 @@ def get_row_hints(solution):
     return generate_hints(solution)
 
 def get_col_hints(solution):
-    transposed_solution = list(zip(*solution))  # list(zip(*solution)) funciona como la matriz transpuesta de solution, 
-    return generate_hints(transposed_solution)  # asi permite usar el mismo método para ambas (filas y columnas)
+    transposed_solution = solution.T  # Transponer usando numpy
+    return generate_hints(transposed_solution)
 
 # Ejemplos 
-solution = [
+solution = np.array([
     [1, 0, 1, 1, 0],
     [0, 1, 1, 0, 0],
     [1, 1, 1, 0, 0],
     [0, 1, 0, 1, 1],
     [1, 1, 0, 0, 0],
-]
+])
 
 row_hints = get_row_hints(solution)
 col_hints = get_col_hints(solution)
@@ -37,13 +39,13 @@ print("Pistas de filas:", row_hints)
 print("Pistas de columnas:", col_hints)
 print("\n")
 
-solution = [
+solution = np.array([
     [1, 0, 1, 1, 0],
     [0, 1, 1, 0, 0],
     [1, 0, 1, 0, 0],
     [0, 1, 0, 1, 0],
     [1, 1, 1, 0, 0],
-]
+])
 
 row_hints = get_row_hints(solution)
 col_hints = get_col_hints(solution)
@@ -53,11 +55,11 @@ print("Pistas de filas:", row_hints)
 print("Pistas de columnas:", col_hints)
 print("\n")
 
-solution = [
+solution = np.array([
     [1, 1, 1],
     [1, 1, 1],
     [1, 1, 1],
-    ]
+    ])
 
 row_hints = get_row_hints(solution)
 col_hints = get_col_hints(solution)
@@ -67,10 +69,10 @@ print("Pistas de filas:", row_hints)
 print("Pistas de columnas:", col_hints)
 print("\n")
 
-solution = [
+solution = np.array([
     [0, 0],
     [0, 0],
-    ]
+    ])
 
 row_hints = get_row_hints(solution)
 col_hints = get_col_hints(solution)
