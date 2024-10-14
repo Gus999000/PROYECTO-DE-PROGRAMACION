@@ -12,7 +12,7 @@ class Square(pg.sprite.Sprite):
         #Hereda pg.sprite.Sprite
         super().__init__()
         # {pos_x, pox_y, width, height}
-        self.__rec = [pos_x+48*WINDOW_SCALE,pos_y+80*WINDOW_SCALE,scale,scale]
+        self.__rec = [pos_x+56*WINDOW_SCALE,pos_y+64*WINDOW_SCALE,scale,scale]
         if not self.Filled:
             self.image = pg.image.load("resources/Square.png")
         else:
@@ -77,32 +77,26 @@ def main():
 
     ########## Crear interfaz ##########
     # Grilla de numeros
-    Surface_number_up = pg.surface.Surface((160*WINDOW_SCALE,80*WINDOW_SCALE))
-    Surface_number_up.fill((0,255,0))
+    Surface_number_up = pg.surface.Surface((160*WINDOW_SCALE,48*WINDOW_SCALE))
+    Surface_number_up.fill((18,100,114))
 
     Surface_number_left = pg.surface.Surface((48*WINDOW_SCALE,160 * WINDOW_SCALE))
-    Surface_number_left.fill((0, 255, 0))
-
-    # Boton de deshacer
-    Button_Undo = Button(213*WINDOW_SCALE, 34*WINDOW_SCALE, 16*WINDOW_SCALE, "resources/Undo.png")
+    Surface_number_left.fill((18, 100, 114))
 
     # Botón de zoom
-    Button_Zoom = Button(235*WINDOW_SCALE, 34*WINDOW_SCALE, 16*WINDOW_SCALE, "resources/Zoom.png")
+    Button_Zoom = Button(225*WINDOW_SCALE, 49*WINDOW_SCALE, 5*WINDOW_SCALE, "resources/Zoom.png")
+
+    # Botón de antizoom
+    Button_AntiZoom = Button(242*WINDOW_SCALE,49*WINDOW_SCALE,5*WINDOW_SCALE, "resources/Zoom.png")
 
     # Boton de menú
-    Button_Menu = Button(213*WINDOW_SCALE, 5*WINDOW_SCALE,16*WINDOW_SCALE, "resources/Menu.png")
+    Button_Menu = Button(228*WINDOW_SCALE, 204*WINDOW_SCALE, 24*WINDOW_SCALE, "resources/Menu.png")
 
     # Boton de pistas
-    Button_Tips = Button(235*WINDOW_SCALE, 5*WINDOW_SCALE, 16*WINDOW_SCALE, "resources/Tips.png")
-
-    # Boton de lapiz
-    Button_Draw = Button(213*WINDOW_SCALE, 64*WINDOW_SCALE, 16*WINDOW_SCALE, "resources/Pencil.png")
-
-    # Boton de cruz
-    Button_Cross = Button(235 * WINDOW_SCALE, 64 * WINDOW_SCALE, 16 * WINDOW_SCALE, "resources/Cross.png")
+    Button_Tips = Button(228*WINDOW_SCALE, 60*WINDOW_SCALE, 24*WINDOW_SCALE, "resources/Tips.png")
 
     # Colores
-    Button_Colours = [Button(225*WINDOW_SCALE,((i*16)+96)*WINDOW_SCALE,16*WINDOW_SCALE,"resources/Square.png") for i in range(8)]
+    Button_Colours = [[Button(((j*8)+232)*WINDOW_SCALE,((i*8)+88)*WINDOW_SCALE,8*WINDOW_SCALE,"resources/Square.png") for i in range(14)] for j in range(2)]
 
     ########## Crear interfaz ##########
 
@@ -127,38 +121,46 @@ def main():
         ################# DRAW ################
         # Cuadrados grilla
         screen.blit(Surface_bg, (0,0))
+        # Dibujar tamaño del cuadro de la grilla
+        pg.draw.rect(Surface_bg, (177,226,231), (52*WINDOW_SCALE, 60*WINDOW_SCALE, 168*WINDOW_SCALE, 168*WINDOW_SCALE))
+
         for i in range(puzzle_size):
             for j in range(puzzle_size):
                 Surface_bg.blit(obj_square[i][j].image, (obj_square[i][j].getPos()[0], obj_square[i][j].getPos()[1]))
 
         ## Interfaz
         # Añadir cuadro para timer
-        pg.draw.rect(Surface_bg, (0,0,0), (0,40*WINDOW_SCALE,48*WINDOW_SCALE,40*WINDOW_SCALE))
-        draw_text("timer", "Arial", (255,255,255), 10*WINDOW_SCALE, 15*WINDOW_SCALE, 55*WINDOW_SCALE,Surface_bg)
+        pg.draw.rect(Surface_bg, (0,0,0), (4*WINDOW_SCALE,12*WINDOW_SCALE,48*WINDOW_SCALE,48*WINDOW_SCALE))
+        draw_text("timer", "Arial", (255,255,255), 10*WINDOW_SCALE, 20*WINDOW_SCALE, 26*WINDOW_SCALE,Surface_bg)
+
+        # Añadir cuadro para minimapa
+        pg.draw.rect(Surface_bg, (84,181,190), (220*WINDOW_SCALE, 12*WINDOW_SCALE, 32*WINDOW_SCALE, 32*WINDOW_SCALE))
+
+        # Añadir cuadro para colores
+        pg.draw.rect(Surface_bg, (16,92,106), (228*WINDOW_SCALE,84*WINDOW_SCALE,24*WINDOW_SCALE,120*WINDOW_SCALE))
 
         # Cuadro derecha, Colores, Botones
-        pg.draw.rect(Surface_bg, (235,235,35), (208*WINDOW_SCALE, 0*WINDOW_SCALE,48*WINDOW_SCALE,240*WINDOW_SCALE))
+        #pg.draw.rect(Surface_bg, (235,235,35), (208*WINDOW_SCALE, 0*WINDOW_SCALE,48*WINDOW_SCALE,240*WINDOW_SCALE))
 
         # Añadir Números Arriba
-        Surface_bg.blit(Surface_number_up, (48*WINDOW_SCALE,0))
+        Surface_bg.blit(Surface_number_up, (56*WINDOW_SCALE,8*WINDOW_SCALE))
         # Añadir Números Izquierda
-        Surface_bg.blit(Surface_number_left, (0, 80 * WINDOW_SCALE))
-        # Añadir boton de undo
-        Surface_bg.blit(Button_Undo.image, (Button_Undo.getPos()))
-        #Añadir botón de zoom
-        Surface_bg.blit(Button_Zoom.image, (Button_Zoom.getPos()))
+        Surface_bg.blit(Surface_number_left, (0, 64 * WINDOW_SCALE))
         # Añadir botón de menu
         Surface_bg.blit(Button_Menu.image, (Button_Menu.getPos()))
         # Añadir botón de pistas
         Surface_bg.blit(Button_Tips.image, (Button_Tips.getPos()))
-        # Añadir botón de lapiz
-        Surface_bg.blit(Button_Draw.image, (Button_Draw.getPos()))
-        # Añadir botón de cruz
-        Surface_bg.blit(Button_Cross.image, (Button_Cross.getPos()))
 
+        #Añadir botón de zoom
+        Surface_bg.blit(Button_Zoom.image, (Button_Zoom.getPos()))
+        # Añadir botón de antizoom
+        Surface_bg.blit(Button_AntiZoom.image, (Button_AntiZoom.getPos()))
+        # Añadir logo de zoom
+        pg.draw.rect(Surface_bg, (47,110,117), (232*WINDOW_SCALE,48*WINDOW_SCALE,8*WINDOW_SCALE,8*WINDOW_SCALE))
         # Añadir botones de colores
-        for i in range(8):
-            Surface_bg.blit(Button_Colours[i].image, (Button_Colours[i].getPos()))
+        for i in range(14):
+            for j in range(2):
+                Surface_bg.blit(Button_Colours[j][i].image, (Button_Colours[j][i].getPos()))
 
         pg.display.flip()
         ################# DRAW ################
