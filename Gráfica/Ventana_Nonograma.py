@@ -1,6 +1,6 @@
 import pygame as pg
-from Button import Button
-from draw_text import draw_text
+from Gráfica.Button import Button
+from Gráfica.draw_text import draw_text
 
 WINDOW_SCALE = 3
 
@@ -14,9 +14,9 @@ class Square(pg.sprite.Sprite):
         # {pos_x, pox_y, width, height}
         self.__rec = [pos_x+56*WINDOW_SCALE,pos_y+64*WINDOW_SCALE,scale,scale]
         if not self.Filled:
-            self.image = pg.image.load("resources/Square.png")
+            self.image = pg.image.load("Gráfica/resources/Square.png")
         else:
-            self.image = pg.image.load("resources/SquareFill.png")
+            self.image = pg.image.load("Gráfica/resources/SquareFill.png")
 
         self.image = pg.transform.scale(self.image,(scale,scale))
 
@@ -29,22 +29,27 @@ class Square(pg.sprite.Sprite):
 
     def changeImage(self):
         if self.Filled:
-            self.image = pg.image.load("resources/Square.png")
+            self.image = pg.image.load("Gráfica/resources/Square.png")
             self.image = pg.transform.scale(self.image, (self.__rec[2], self.__rec[2]))
             self.Filled = False
             pass
         else:
-            self.image = pg.image.load("resources/SquareFill.png")
+            self.image = pg.image.load("Gráfica/resources/SquareFill.png")
             self.image = pg.transform.scale(self.image, (self.__rec[2], self.__rec[2]))
             self.Filled = True
             pass
+
+    def isFilled(self):
+        if self.Filled:
+            return 1
+        else:
+            return 0
 
     def getPos(self):
         return self.__rec
 
 
-def main():
-
+def mainloop():
     # Crear Ventana
     # 256 x 240
     screen_size = (256*WINDOW_SCALE,240*WINDOW_SCALE)
@@ -84,19 +89,19 @@ def main():
     Surface_number_left.fill((18, 100, 114))
 
     # Botón de zoom
-    Button_Zoom = Button(225*WINDOW_SCALE, 49*WINDOW_SCALE, 5*WINDOW_SCALE, "resources/Zoom.png")
+    Button_Zoom = Button(225*WINDOW_SCALE, 49*WINDOW_SCALE, 5*WINDOW_SCALE, "Gráfica/resources/Zoom.png")
 
     # Botón de antizoom
-    Button_AntiZoom = Button(242*WINDOW_SCALE,49*WINDOW_SCALE,5*WINDOW_SCALE, "resources/Zoom.png")
+    Button_AntiZoom = Button(242*WINDOW_SCALE,49*WINDOW_SCALE,5*WINDOW_SCALE, "Gráfica/resources/Zoom.png")
 
     # Boton de menú
-    Button_Menu = Button(228*WINDOW_SCALE, 204*WINDOW_SCALE, 24*WINDOW_SCALE, "resources/Menu.png")
+    Button_Menu = Button(228*WINDOW_SCALE, 204*WINDOW_SCALE, 24*WINDOW_SCALE, "Gráfica/resources/Menu.png")
 
     # Boton de pistas
-    Button_Tips = Button(228*WINDOW_SCALE, 60*WINDOW_SCALE, 24*WINDOW_SCALE, "resources/Tips.png")
+    Button_Tips = Button(228*WINDOW_SCALE, 60*WINDOW_SCALE, 24*WINDOW_SCALE, "Gráfica/resources/Tips.png")
 
     # Colores
-    Button_Colours = [[Button(((j*8)+232)*WINDOW_SCALE,((i*8)+88)*WINDOW_SCALE,8*WINDOW_SCALE,"resources/Square.png") for i in range(14)] for j in range(2)]
+    Button_Colours = [[Button(((j*8)+232)*WINDOW_SCALE,((i*8)+88)*WINDOW_SCALE,8*WINDOW_SCALE,"Gráfica/resources/Square.png") for i in range(14)] for j in range(2)]
 
     ########## Crear interfaz ##########
 
@@ -117,6 +122,7 @@ def main():
                     for j in range(puzzle_size):
                         if obj_square[i][j].isColliding():
                             obj_square[i][j].changeImage()
+                            #Lógica.matriz[i][j] = isFilled()
 
         ################# DRAW ################
         # Cuadrados grilla
@@ -164,5 +170,4 @@ def main():
 
         pg.display.flip()
         ################# DRAW ################
-
-main()
+mainloop()
