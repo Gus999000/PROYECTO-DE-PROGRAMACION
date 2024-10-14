@@ -1,6 +1,8 @@
 import pygame as pg
 from Gráfica.Button import Button
 from Gráfica.draw_text import draw_text
+from Lógica.comparar_matriz import matriz_usuario
+from Lógica.comparar_matriz import is_solved
 
 WINDOW_SCALE = 3
 
@@ -122,7 +124,9 @@ def mainloop():
                     for j in range(puzzle_size):
                         if obj_square[i][j].isColliding():
                             obj_square[i][j].changeImage()
-                            #Lógica.matriz[i][j] = isFilled()
+                            matriz_usuario[i][j] = obj_square[i][j].isFilled()
+                            if is_solved(matriz_usuario):
+                                print('Has resuelto el nonograma!!!!')
 
         ################# DRAW ################
         # Cuadrados grilla
