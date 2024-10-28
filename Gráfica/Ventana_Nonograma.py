@@ -3,6 +3,8 @@ from Gráfica.Button import Button
 from Gráfica.draw_text import draw_text
 from Lógica.comparar_matriz import matriz_usuario
 from Lógica.comparar_matriz import is_solved
+from Lógica.archivos_npz import guardarNPZ
+from Lógica.archivos_npz import cargarNPZ
 
 WINDOW_SCALE = 3
 
@@ -79,7 +81,6 @@ def mainloop():
     Puzzle 10x10 --> 48x48px    (10x?  = 480) --> 480/10 = 48
     Puzzle 5x5   -->            (5x?   ? 480) --> 480/5 = 96
     Por lo tanto, el tamaño de cada cuadrado será igual a nuestra constante 480 dividido el tamaño del puzzle
-    
     """
 
     ########## Crear interfaz ##########
@@ -107,7 +108,6 @@ def mainloop():
 
     ########## Crear interfaz ##########
 
-
     # Creación de la cámara para Zoom
     camera_group = pg.sprite.Group()
 
@@ -127,6 +127,12 @@ def mainloop():
                             matriz_usuario[i][j] = obj_square[i][j].isFilled()
                             if is_solved(matriz_usuario):
                                 print('Has resuelto el nonograma!!!!')
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if Button_Menu.isColliding():
+                    guardarNPZ("matriz", matriz_usuario)
+            #if event.type == pg.MOUSEBUTTONDOWN:
+                #if Button_Tips.isColliding():
+                    #matriz_usuario = cargarNPZ("matriz")
 
         ################# DRAW ################
         # Cuadrados grilla

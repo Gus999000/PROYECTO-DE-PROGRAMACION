@@ -1,6 +1,5 @@
 import numpy as np
 
-
 with np.load('Lógica/solutions.npz') as data:
     # Acceder al nonograma por su id
     matriz_solucion = data['Matriz_Amongus']
