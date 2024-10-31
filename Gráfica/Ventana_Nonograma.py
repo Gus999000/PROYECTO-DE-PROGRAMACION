@@ -3,6 +3,7 @@ from Gráfica.Button import Button
 from Gráfica.draw_text import draw_text
 from Lógica.comparar_matriz import matriz_usuario
 from Lógica.comparar_matriz import is_solved
+from Gráfica.Matriz_numeros import matriz_numeros
 
 WINDOW_SCALE = 3
 
@@ -90,6 +91,13 @@ def mainloop():
     Surface_number_left = pg.surface.Surface((48*WINDOW_SCALE,160 * WINDOW_SCALE))
     Surface_number_left.fill((18, 100, 114))
 
+    number_hints = matriz_numeros(puzzle_size)
+    ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
+    matriz_ejemplo = [[1,2],[2],[3],[1,2],[2],[1,2,3],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]]
+    number_hints.set_matriz_filas(matriz_ejemplo)
+    number_hints.set_matriz_columnas(matriz_ejemplo)
+    ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
+
     # Botón de zoom
     Button_Zoom = Button(225*WINDOW_SCALE, 49*WINDOW_SCALE, 5*WINDOW_SCALE, "Gráfica/resources/Zoom.png")
 
@@ -138,6 +146,7 @@ def mainloop():
             for j in range(puzzle_size):
                 Surface_bg.blit(obj_square[i][j].image, (obj_square[i][j].getPos()[0], obj_square[i][j].getPos()[1]))
 
+
         ## Interfaz
         # Añadir cuadro para timer
         pg.draw.rect(Surface_bg, (0,0,0), (4*WINDOW_SCALE,12*WINDOW_SCALE,48*WINDOW_SCALE,48*WINDOW_SCALE))
@@ -156,6 +165,23 @@ def mainloop():
         Surface_bg.blit(Surface_number_up, (56*WINDOW_SCALE,8*WINDOW_SCALE))
         # Añadir Números Izquierda
         Surface_bg.blit(Surface_number_left, (0, 64 * WINDOW_SCALE))
+
+        # Dibujar Numeros pista
+        # Columnas
+        for i in range(number_hints.get_puzzle_size()):
+            for j in range(number_hints.get_max_numbers()):
+                if j < 6:
+                    #Surface_bg.blit(obj_square[i][j].image, ((56+(i*8)) * WINDOW_SCALE, (48 -(j*8)) * WINDOW_SCALE))
+                    draw_text(f"{number_hints.get_matriz_columna_value(i,j)}", "Arial", (255,255,255), 8*WINDOW_SCALE, (58+(i*8))*WINDOW_SCALE, (47 -(j*8))*WINDOW_SCALE,Surface_bg)
+
+        # Filas
+        for i in range(number_hints.get_puzzle_size()):
+            for j in range(number_hints.get_max_numbers()):
+                if j < 6:
+                    #Surface_bg.blit(obj_square[i][j].image, ((40-(j*8)) * WINDOW_SCALE, (64 +(i*8)) * WINDOW_SCALE))
+                    draw_text(f"{number_hints.get_matriz_fila_value(i,j)}", "Arial", (255,255,255), 8*WINDOW_SCALE, (42-(j*8))*WINDOW_SCALE, (63 +(i*8))*WINDOW_SCALE,Surface_bg)
+
+
         # Añadir botón de menu
         Surface_bg.blit(Button_Menu.image, (Button_Menu.getPos()))
         # Añadir botón de pistas
