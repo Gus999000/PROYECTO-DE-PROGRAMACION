@@ -10,12 +10,17 @@ WINDOW_SCALE = 3
 class Square(pg.sprite.Sprite):
 
     Filled = False
-
+    x = 0
+    y = 0
+    size = 0
     def __init__(self, pos_x, pos_y, scale):
         #Hereda pg.sprite.Sprite
         super().__init__()
+        self.x = pos_x
+        self.y = pos_y
+        self.size = scale
         # {pos_x, pox_y, width, height}
-        self.__rec = [pos_x+56*WINDOW_SCALE,pos_y+64*WINDOW_SCALE,scale,scale]
+        self.rec = pg.Rect(pos_x+56*WINDOW_SCALE,pos_y+64*WINDOW_SCALE,scale,scale)
         if not self.Filled:
             self.image = pg.image.load("Gráfica/resources/Square.png")
         else:
@@ -24,23 +29,22 @@ class Square(pg.sprite.Sprite):
         self.image = pg.transform.scale(self.image,(scale,scale))
 
     def isColliding(self):
-        CollideBox = pg.Rect(self.__rec[0], self.__rec[1], self.__rec[2], self.__rec[3])
-        if CollideBox.collidepoint(pg.mouse.get_pos()):
-            return True
-        else:
-            return False
+        return self.rec.collidepoint(pg.mouse.get_pos())
 
     def changeImage(self):
         if self.Filled:
             self.image = pg.image.load("Gráfica/resources/Square.png")
-            self.image = pg.transform.scale(self.image, (self.__rec[2], self.__rec[2]))
             self.Filled = False
-            pass
         else:
             self.image = pg.image.load("Gráfica/resources/SquareFill.png")
-            self.image = pg.transform.scale(self.image, (self.__rec[2], self.__rec[2]))
             self.Filled = True
-            pass
+        self.image = pg.transform.scale(self.image, (self.rec[2], self.rec[2]))
+
+    def setAlpha(self, alpha):
+        self.image.set_alpha(alpha)
+
+    def updatePos(self,new_x, new_y):
+        self.rec.topleft = (new_x,new_y)
 
     def isFilled(self):
         if self.Filled:
@@ -49,7 +53,7 @@ class Square(pg.sprite.Sprite):
             return 0
 
     def getPos(self):
-        return self.__rec
+        return self.rec
 
 
 def mainloop():
@@ -93,9 +97,10 @@ def mainloop():
 
     number_hints = matriz_numeros(puzzle_size)
     ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
-    matriz_ejemplo = [[1,2],[2],[3],[1,2],[2],[1,2,3],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1],[1]]
-    number_hints.set_matriz_filas(matriz_ejemplo)
-    number_hints.set_matriz_columnas(matriz_ejemplo)
+    matriz_ejemplo1 =  [[0], [0], [3], [7], [9], [10], [1, 2, 5], [1, 3, 6], [1, 4, 1], [1, 5, 1], [11, 1], [11, 1], [11, 1], [11, 1], [13], [11], [4, 4], [2, 2], [0], [0]]
+    matriz_ejemplo2 = [[0], [0], [2], [2, 8], [2, 1, 8], [5, 8], [5, 7], [4, 6], [4, 6], [5, 7], [14], [15], [14], [11], [1, 1], [1, 1], [6], [0], [0], [0]]
+    number_hints.set_matriz_filas(matriz_ejemplo1)
+    number_hints.set_matriz_columnas(matriz_ejemplo2)
     ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
 
     # Botón de zoom
@@ -125,8 +130,10 @@ def mainloop():
 
         # Eventos
         for event in pg.event.get():
+            # SALIR
             if event.type == pg.QUIT:
                 running = False
+            # PRESIONAR CUADRADOS
             if event.type == pg.MOUSEBUTTONDOWN:
                 for i in range(puzzle_size):
                     for j in range(puzzle_size):
@@ -135,6 +142,20 @@ def mainloop():
                             matriz_usuario[i][j] = obj_square[i][j].isFilled()
                             if is_solved(matriz_usuario):
                                 print('Has resuelto el nonograma!!!!')
+            # MOVER CÁMARA DE PUZZLE
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_UP:
+                    for square in group_squares:
+                        square.updatePos(square.rec.x, square.rec.y - (8 * WINDOW_SCALE))
+                if event.key == pg.K_DOWN:
+                    for square in group_squares:
+                        square.updatePos(square.rec.x, square.rec.y + (8*WINDOW_SCALE))
+                if event.key == pg.K_RIGHT:
+                    for square in group_squares:
+                        square.updatePos(square.rec.x + (8*WINDOW_SCALE), square.rec.y)
+                if event.key == pg.K_LEFT:
+                    for square in group_squares:
+                        square.updatePos(square.rec.x - (8 * WINDOW_SCALE), square.rec.y)
 
         ################# DRAW ################
         # Cuadrados grilla
@@ -144,6 +165,13 @@ def mainloop():
 
         for i in range(puzzle_size):
             for j in range(puzzle_size):
+                # Esconder si está fuera de pantalla
+                if obj_square[i][j].rec.y < (62 * WINDOW_SCALE) or obj_square[i][j].rec.y > (220 * WINDOW_SCALE) or obj_square[i][j].rec.x < (54 * WINDOW_SCALE) or obj_square[i][j].rec.x > (210 * WINDOW_SCALE):
+                    obj_square[i][j].setAlpha(0)
+                else:
+                    obj_square[i][j].setAlpha(255)
+
+                # Añadir a pantalla
                 Surface_bg.blit(obj_square[i][j].image, (obj_square[i][j].getPos()[0], obj_square[i][j].getPos()[1]))
 
 
@@ -171,15 +199,19 @@ def mainloop():
         for i in range(number_hints.get_puzzle_size()):
             for j in range(number_hints.get_max_numbers()):
                 if j < 6:
-                    #Surface_bg.blit(obj_square[i][j].image, ((56+(i*8)) * WINDOW_SCALE, (48 -(j*8)) * WINDOW_SCALE))
-                    draw_text(f"{number_hints.get_matriz_columna_value(i,j)}", "Arial", (255,255,255), 8*WINDOW_SCALE, (58+(i*8))*WINDOW_SCALE, (47 -(j*8))*WINDOW_SCALE,Surface_bg)
+                    #Surface_bg.blit(obj_square[i][j].image,
+                    #                ((56 + (i * 8)) * WINDOW_SCALE, (48 - (j * 8)) * WINDOW_SCALE))
+                    if number_hints.get_matriz_columna_value(i,j) != 0:
+                        draw_text(f"{number_hints.get_matriz_columna_value(i,j)}", "Arial", (255,255,255), 8*WINDOW_SCALE, (58+(i*8))*WINDOW_SCALE, (47 -(j*8))*WINDOW_SCALE,Surface_bg)
 
         # Filas
         for i in range(number_hints.get_puzzle_size()):
             for j in range(number_hints.get_max_numbers()):
                 if j < 6:
-                    #Surface_bg.blit(obj_square[i][j].image, ((40-(j*8)) * WINDOW_SCALE, (64 +(i*8)) * WINDOW_SCALE))
-                    draw_text(f"{number_hints.get_matriz_fila_value(i,j)}", "Arial", (255,255,255), 8*WINDOW_SCALE, (42-(j*8))*WINDOW_SCALE, (63 +(i*8))*WINDOW_SCALE,Surface_bg)
+                    #Surface_bg.blit(obj_square[i][j].image,
+                    #                ((40 - (j * 8)) * WINDOW_SCALE, (64 + (i * 8)) * WINDOW_SCALE))
+                    if number_hints.get_matriz_fila_value(i, j) != 0:
+                        draw_text(f"{number_hints.get_matriz_fila_value(i,j)}", "Arial", (255,255,255), 8*WINDOW_SCALE, (42-(j*8))*WINDOW_SCALE, (63 +(i*8))*WINDOW_SCALE,Surface_bg)
 
 
         # Añadir botón de menu
