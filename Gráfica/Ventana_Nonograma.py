@@ -127,12 +127,6 @@ def mainloop():
                             matriz_usuario[i][j] = obj_square[i][j].isFilled()
                             if is_solved(matriz_usuario):
                                 print('Has resuelto el nonograma!!!!')
-            if event.type == pg.MOUSEBUTTONDOWN:
-                if Button_Menu.isColliding():
-                    guardarNPZ("matriz", matriz_usuario)
-            #if event.type == pg.MOUSEBUTTONDOWN:
-                #if Button_Tips.isColliding():
-                    #matriz_usuario = cargarNPZ("matriz")
 
         ################# DRAW ################
         # Cuadrados grilla

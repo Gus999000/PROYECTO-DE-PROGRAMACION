@@ -1,10 +1,10 @@
 import numpy as np
 
-def cargarNPZ(nombre: str):
-    """"cargarNPZ recibe el nombre del archivo y devuelve la matriz contenida en este"""
+def cargarNPZ(nombre: str, id: str):
+    """"cargarNPZ recibe el nombre del archivo, el id de la matriz y devuelve la matriz correspondiente"""
     matriz = np.load(nombre + ".npz")
-    return matriz["arr_0"]
+    return matriz[id]
 
-def guardarNPZ(nombre: str, matriz: np.ndarray):
-    """guardarNPZ recibe el nombre de la matriz junto con la matriz en cuestión y crea un archivo .npz con el nombre de la matriz, si el archivo ya existe, lo sobrescribe"""
-    np.savez(nombre + ".npz", matriz)
+def guardarNPZ(nombre: str, id: str, matriz: np.ndarray):
+    """guardarNPZ recibe el nombre e id de la matriz junto con la matriz en cuestión y crea un archivo .npz, si el archivo ya existe, lo sobrescribe"""
+    np.savez(nombre + ".npz", matriz=id)
