@@ -15,7 +15,7 @@ class Button():
 
     def setImage(self, img_path):
         self.image = pg.image.load(img_path)
-        self.image = pg.transform.scale(self.image, (scale, scale))
+        self.image = pg.transform.scale(self.image, (scale,scale))
 
     def getPos(self):
         return self.__rec

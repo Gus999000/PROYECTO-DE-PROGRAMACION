@@ -9,6 +9,8 @@ from Lógica.hints import get_col_hints
 from Lógica.hints import get_row_hints
 from Lógica.nonograma_info import matriz_solucion
 from Lógica.nonograma_info import metadata_nonograma
+from Lógica.archivos_npz import guardarNPZ
+from Lógica.archivos_npz import cargarNPZ
 
 WINDOW_SCALE = 3
 puzzle_size = metadata_nonograma['size'][0]
