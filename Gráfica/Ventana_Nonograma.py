@@ -1,16 +1,17 @@
 import pygame as pg
 from Gráfica.Button import Button
 from Gráfica.draw_text import draw_text
-from Lógica.comparar_matriz import matriz_usuario
-from Lógica.comparar_matriz import is_solved
+from Lógica.nonograma_info import matriz_usuario
+from Lógica.nonograma_info import is_solved
 from Gráfica.Matriz_numeros import matriz_numeros
 from Gráfica.Square import Square
 from Lógica.hints import get_col_hints
 from Lógica.hints import get_row_hints
-from Lógica.comparar_matriz import matriz_solucion
+from Lógica.nonograma_info import matriz_solucion
+from Lógica.nonograma_info import metadata_nonograma
 
 WINDOW_SCALE = 3
-puzzle_size = 5
+puzzle_size = metadata_nonograma['size'][0]
 
 def mainloop():
     # Crear Ventana

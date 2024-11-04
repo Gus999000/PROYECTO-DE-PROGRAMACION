@@ -1,4 +1,4 @@
-from Lógica.comparar_matriz import matriz_solucion
+from Lógica.nonograma_info import matriz_solucion
 def generate_hints(lines):
     hints = []
     for line in lines:
@@ -27,7 +27,3 @@ solution = matriz_solucion
 
 row_hints = get_row_hints(solution)
 col_hints = get_col_hints(solution)
-print("Ejemplo 1")
-print("Pistas de filas:", row_hints)
-print("Pistas de columnas:", col_hints)
-print("\n")
