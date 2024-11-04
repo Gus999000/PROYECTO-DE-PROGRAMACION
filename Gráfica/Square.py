@@ -5,6 +5,7 @@ WINDOW_SCALE = 3
 class Square(pg.sprite.Sprite):
 
     Filled = False
+    Crossed = False
     x = 0
     y = 0
     size = 0
@@ -33,13 +34,18 @@ class Square(pg.sprite.Sprite):
         else:
             self.image = pg.image.load("Gráfica/resources/SquareFill.png")
             self.Filled = True
+            self.Crossed = False
         self.image = pg.transform.scale(self.image, (self.rec[2], self.rec[2]))
 
-    def setAlpha(self, alpha):
-        self.image.set_alpha(alpha)
-
-    def updatePos(self,new_x, new_y):
-        self.rec.topleft = (new_x,new_y)
+    def changeImageX(self):
+        if self.Crossed:
+            self.image = pg.image.load("Gráfica/resources/Square.png")
+            self.Crossed = False
+        else:
+            self.image = pg.image.load("Gráfica/resources/SquareCross.png")
+            self.Filled = False
+            self.Crossed = True
+        self.image = pg.transform.scale(self.image, (self.rec[2], self.rec[2]))
 
     def isFilled(self):
         if self.Filled:
@@ -49,3 +55,9 @@ class Square(pg.sprite.Sprite):
 
     def getPos(self):
         return self.rec
+
+    def setAlpha(self, alpha):
+        self.image.set_alpha(alpha)
+
+    def updatePos(self,new_x, new_y):
+        self.rec.topleft = (new_x,new_y)

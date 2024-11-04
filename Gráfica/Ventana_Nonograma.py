@@ -101,14 +101,20 @@ def mainloop():
                 running = False
             # PRESIONAR CUADRADOS
             if event.type == pg.MOUSEBUTTONDOWN:
-                for i in range(puzzle_size):
-                    for j in range(puzzle_size):
-                        if obj_square[i][j].isColliding():
-                            obj_square[i][j].changeImage()
-                            matriz_usuario[i][j] = obj_square[i][j].isFilled()
-                            if is_solved(matriz_usuario):
-                                solved = True
-                                print('Has resuelto el nonograma!!!!')
+                if event.button == 1:
+                    for i in range(puzzle_size):
+                        for j in range(puzzle_size):
+                            if obj_square[i][j].isColliding():
+                                obj_square[i][j].changeImage()
+                                matriz_usuario[i][j] = obj_square[i][j].isFilled()
+                                if is_solved(matriz_usuario):
+                                    solved = True
+                elif event.button == 3:
+                    for i in range(puzzle_size):
+                        for j in range(puzzle_size):
+                            if obj_square[i][j].isColliding():
+                                obj_square[i][j].changeImageX()
+                                matriz_usuario[i][j] = obj_square[i][j].isFilled()
             # MOVER CÁMARA DE PUZZLE
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_UP:
