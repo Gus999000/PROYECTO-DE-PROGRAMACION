@@ -1,57 +1,19 @@
 import pygame as pg
 from Gráfica.Button import Button
 from Gráfica.draw_text import draw_text
-from Lógica.comparar_matriz import matriz_usuario
-from Lógica.comparar_matriz import is_solved
+from Lógica.nonograma_info import matriz_usuario
+from Lógica.nonograma_info import is_solved
+from Gráfica.Matriz_numeros import matriz_numeros
+from Gráfica.Square import Square
+from Lógica.hints import get_col_hints
+from Lógica.hints import get_row_hints
+from Lógica.nonograma_info import matriz_solucion
+from Lógica.nonograma_info import metadata_nonograma
 from Lógica.archivos_npz import guardarNPZ
 from Lógica.archivos_npz import cargarNPZ
 
 WINDOW_SCALE = 3
-
-class Square(pg.sprite.Sprite):
-
-    Filled = False
-
-    def __init__(self, pos_x, pos_y, scale):
-        #Hereda pg.sprite.Sprite
-        super().__init__()
-        # {pos_x, pox_y, width, height}
-        self.__rec = [pos_x+56*WINDOW_SCALE,pos_y+64*WINDOW_SCALE,scale,scale]
-        if not self.Filled:
-            self.image = pg.image.load("Gráfica/resources/Square.png")
-        else:
-            self.image = pg.image.load("Gráfica/resources/SquareFill.png")
-
-        self.image = pg.transform.scale(self.image,(scale,scale))
-
-    def isColliding(self):
-        CollideBox = pg.Rect(self.__rec[0], self.__rec[1], self.__rec[2], self.__rec[3])
-        if CollideBox.collidepoint(pg.mouse.get_pos()):
-            return True
-        else:
-            return False
-
-    def changeImage(self):
-        if self.Filled:
-            self.image = pg.image.load("Gráfica/resources/Square.png")
-            self.image = pg.transform.scale(self.image, (self.__rec[2], self.__rec[2]))
-            self.Filled = False
-            pass
-        else:
-            self.image = pg.image.load("Gráfica/resources/SquareFill.png")
-            self.image = pg.transform.scale(self.image, (self.__rec[2], self.__rec[2]))
-            self.Filled = True
-            pass
-
-    def isFilled(self):
-        if self.Filled:
-            return 1
-        else:
-            return 0
-
-    def getPos(self):
-        return self.__rec
-
+puzzle_size = metadata_nonograma['size'][0]
 
 def mainloop():
     # Crear Ventana
@@ -66,9 +28,9 @@ def mainloop():
     Surface_bg.fill((0,0,255))
 
     # Ingresar tamaño del puzzle y el cuadrado
-    puzzle_size = 20
-    square_size = (160*WINDOW_SCALE)/puzzle_size
-    obj_square = [[Square(i * square_size, j * square_size, square_size) for i in range(puzzle_size)] for j in range(puzzle_size)]
+    #square_size = (160*WINDOW_SCALE)/puzzle_size
+    square_size = 8*WINDOW_SCALE
+    obj_square = [[Square((i * square_size) + (56*WINDOW_SCALE), (j * square_size) + 64*WINDOW_SCALE, 8*WINDOW_SCALE) for i in range(puzzle_size)] for j in range(puzzle_size)]
     # Añadir cuadrados al grupo de sprites, para así poder trabajar con ellos de forma conjunta
     group_squares = pg.sprite.Group()
     for i in range(puzzle_size):
@@ -81,6 +43,7 @@ def mainloop():
     Puzzle 10x10 --> 48x48px    (10x?  = 480) --> 480/10 = 48
     Puzzle 5x5   -->            (5x?   ? 480) --> 480/5 = 96
     Por lo tanto, el tamaño de cada cuadrado será igual a nuestra constante 480 dividido el tamaño del puzzle
+    
     """
 
     ########## Crear interfaz ##########
@@ -90,6 +53,22 @@ def mainloop():
 
     Surface_number_left = pg.surface.Surface((48*WINDOW_SCALE,160 * WINDOW_SCALE))
     Surface_number_left.fill((18, 100, 114))
+
+    number_hints = matriz_numeros(puzzle_size)
+
+    # Añadir cuadrados al grupo de sprites, para así poder trabajar con ellos de forma conjunta
+    group_number_hints_up = pg.sprite.Group()
+    group_number_hints_left = pg.sprite.Group()
+    for i in range(number_hints.get_puzzle_size()):
+        for j in range(number_hints.get_max_numbers()):
+            group_number_hints_up.add(Square((56 + (i * 8)) * WINDOW_SCALE,  (48 - (j * 8)) * WINDOW_SCALE, square_size))
+            group_number_hints_left.add(Square((40 - (j * 8)) * WINDOW_SCALE, (64 + (i * 8)) * WINDOW_SCALE, square_size))
+    ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
+    matriz_ejemplo1 =  [[0], [0], [1,2,1,1,3,1,2], [7], [9], [10], [1, 2, 5], [1, 3, 6], [1, 4, 1], [1, 5, 1], [11, 1], [11, 1], [11, 1], [11, 1], [13], [11], [4, 4], [2, 2], [0], [0],[0]]
+    matriz_ejemplo2 = [[0], [0], [1,1,2,3,4,5,6,7,8,9], [2, 8], [2, 1, 8], [5, 8], [5, 7], [4, 6], [4, 6], [5, 7], [14], [15], [14], [11], [1, 1], [1, 1], [6], [0], [0], [0],[0]]
+    number_hints.set_matriz_filas(get_row_hints(matriz_solucion))
+    number_hints.set_matriz_columnas(get_col_hints(matriz_solucion))
+    ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
 
     # Botón de zoom
     Button_Zoom = Button(225*WINDOW_SCALE, 49*WINDOW_SCALE, 5*WINDOW_SCALE, "Gráfica/resources/Zoom.png")
@@ -108,35 +87,99 @@ def mainloop():
 
     ########## Crear interfaz ##########
 
+
     # Creación de la cámara para Zoom
     camera_group = pg.sprite.Group()
 
     # Main Loop
+    solved = False
     running = True
     while running:
 
         # Eventos
         for event in pg.event.get():
+            # SALIR
             if event.type == pg.QUIT:
                 running = False
+            # PRESIONAR CUADRADOS
             if event.type == pg.MOUSEBUTTONDOWN:
-                for i in range(puzzle_size):
-                    for j in range(puzzle_size):
-                        if obj_square[i][j].isColliding():
-                            obj_square[i][j].changeImage()
-                            matriz_usuario[i][j] = obj_square[i][j].isFilled()
-                            if is_solved(matriz_usuario):
-                                print('Has resuelto el nonograma!!!!')
+                if event.button == 1:
+                    for i in range(puzzle_size):
+                        for j in range(puzzle_size):
+                            if obj_square[i][j].isColliding():
+                                obj_square[i][j].changeImage()
+                                matriz_usuario[i][j] = obj_square[i][j].isFilled()
+                                if is_solved(matriz_usuario):
+                                    solved = True
+                elif event.button == 3:
+                    for i in range(puzzle_size):
+                        for j in range(puzzle_size):
+                            if obj_square[i][j].isColliding():
+                                obj_square[i][j].changeImageX()
+                                matriz_usuario[i][j] = obj_square[i][j].isFilled()
+            # MOVER CÁMARA DE PUZZLE
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_UP:
+                    # PUZZLE
+                    if (56*WINDOW_SCALE <= pg.mouse.get_pos()[0] <= 210*WINDOW_SCALE) and (60*WINDOW_SCALE <= pg.mouse.get_pos()[1] <= 220*WINDOW_SCALE):
+                        for square in group_squares:
+                            square.updatePos(square.rec.x, square.rec.y - ((160*WINDOW_SCALE)/puzzle_size))
+                    # GRILLA DE NUMEROS
+                    if (56 * WINDOW_SCALE <= pg.mouse.get_pos()[0] <= 215 * WINDOW_SCALE) and (8 * WINDOW_SCALE <= pg.mouse.get_pos()[1] <= 55 * WINDOW_SCALE):
+                        if 48*WINDOW_SCALE > group_number_hints_up.sprites()[0].getPos()[1] or group_number_hints_up.sprites()[0].getPos()[1] > 55*WINDOW_SCALE:
+                            for square in group_number_hints_up:
+                                square.updatePos(square.rec.x, square.rec.y - ((160 * WINDOW_SCALE) / puzzle_size))
+
+
+                if event.key == pg.K_DOWN:
+                    if (56 * WINDOW_SCALE <= pg.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (60 * WINDOW_SCALE <= pg.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
+                        for square in group_squares:
+                            square.updatePos(square.rec.x, square.rec.y + ((160*WINDOW_SCALE)/puzzle_size))
+                    # GRILLA DE NUMEROS
+                    if (56 * WINDOW_SCALE <= pg.mouse.get_pos()[0] <= 215 * WINDOW_SCALE) and (8 * WINDOW_SCALE <= pg.mouse.get_pos()[1] <= 55 * WINDOW_SCALE):
+                        if 7 * WINDOW_SCALE > group_number_hints_up.sprites()[number_hints.get_max_numbers()-1].getPos()[1] or group_number_hints_up.sprites()[number_hints.get_max_numbers()-1].getPos()[1] > 16 * WINDOW_SCALE:
+                            for square in group_number_hints_up:
+                                square.updatePos(square.rec.x, square.rec.y + ((160*WINDOW_SCALE)/puzzle_size))
+
+
+                if event.key == pg.K_RIGHT:
+                    if (56 * WINDOW_SCALE <= pg.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (60 * WINDOW_SCALE <= pg.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
+                        for square in group_squares:
+                            square.updatePos(square.rec.x + ((160*WINDOW_SCALE)/puzzle_size), square.rec.y)
+                    # GRILLA DE NUMEROS
+                    if (0 <= pg.mouse.get_pos()[0] <= 47 * WINDOW_SCALE) and (64 * WINDOW_SCALE <= pg.mouse.get_pos()[1] <= 224 * WINDOW_SCALE):
+                        if 0 * WINDOW_SCALE > group_number_hints_left.sprites()[number_hints.get_max_numbers() - 1].getPos()[0] or group_number_hints_left.sprites()[number_hints.get_max_numbers() - 1].getPos()[0] > 9 * WINDOW_SCALE:
+                            for square in group_number_hints_left:
+                                square.updatePos(square.rec.x + ((160*WINDOW_SCALE)/puzzle_size), square.rec.y)
+
+                if event.key == pg.K_LEFT:
+                    if (56 * WINDOW_SCALE <= pg.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (60 * WINDOW_SCALE <= pg.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
+                        for square in group_squares:
+                            square.updatePos(square.rec.x - ((160*WINDOW_SCALE)/puzzle_size), square.rec.y)
+                    # GRILLA DE NUMEROS
+                    if (0 <= pg.mouse.get_pos()[0] <= 47 * WINDOW_SCALE) and (64 * WINDOW_SCALE <= pg.mouse.get_pos()[1] <= 224 * WINDOW_SCALE):
+                        if 39 * WINDOW_SCALE > group_number_hints_left.sprites()[0].getPos()[0] or group_number_hints_left.sprites()[0].getPos()[0] > 46 * WINDOW_SCALE:
+                            for square in group_number_hints_left:
+                                square.updatePos(square.rec.x - ((160*WINDOW_SCALE)/puzzle_size), square.rec.y)
+
 
         ################# DRAW ################
-        # Cuadrados grilla
+        # Cuadrados puzzle
         screen.blit(Surface_bg, (0,0))
         # Dibujar tamaño del cuadro de la grilla
         pg.draw.rect(Surface_bg, (177,226,231), (52*WINDOW_SCALE, 60*WINDOW_SCALE, 168*WINDOW_SCALE, 168*WINDOW_SCALE))
 
         for i in range(puzzle_size):
             for j in range(puzzle_size):
+                # Esconder si está fuera de pantalla
+                if obj_square[i][j].rec.y < (62 * WINDOW_SCALE) or obj_square[i][j].rec.y > (220 * WINDOW_SCALE) or obj_square[i][j].rec.x < (54 * WINDOW_SCALE) or obj_square[i][j].rec.x > (210 * WINDOW_SCALE):
+                    obj_square[i][j].setAlpha(0)
+                else:
+                    obj_square[i][j].setAlpha(255)
+
+                # Añadir a pantalla
                 Surface_bg.blit(obj_square[i][j].image, (obj_square[i][j].getPos()[0], obj_square[i][j].getPos()[1]))
+
 
         ## Interfaz
         # Añadir cuadro para timer
@@ -156,6 +199,45 @@ def mainloop():
         Surface_bg.blit(Surface_number_up, (56*WINDOW_SCALE,8*WINDOW_SCALE))
         # Añadir Números Izquierda
         Surface_bg.blit(Surface_number_left, (0, 64 * WINDOW_SCALE))
+
+        # Dibujar Numeros pista
+        # Columnas
+        for square in group_number_hints_up:
+            if square.rec.y < (8*WINDOW_SCALE) or square.rec.y > (55*WINDOW_SCALE):
+                square.setAlpha(0)
+            else:
+                square.setAlpha(255)
+            Surface_bg.blit(square.image, square.getPos())
+
+        for i in range(number_hints.get_puzzle_size()):
+            for j in range(number_hints.get_max_numbers()):
+                if number_hints.get_matriz_columna_value(i,j) != 0:
+                    pos_x = (group_number_hints_up.sprites()[(i*number_hints.get_max_numbers()) + j].getPos()[0] + (2*WINDOW_SCALE))
+                    pos_y = (group_number_hints_up.sprites()[(i*number_hints.get_max_numbers()) + j].getPos()[1] - (1*WINDOW_SCALE))
+
+                    if 4*WINDOW_SCALE<= pos_y <= 54*WINDOW_SCALE:
+                        draw_text(f"{number_hints.get_matriz_columna_value(i,j)}", "Arial", (255,255,255), 8*WINDOW_SCALE, pos_x, pos_y,Surface_bg)
+
+
+
+
+        # Filas
+        for square in group_number_hints_left:
+            if square.rec.x < 0 or square.rec.x > (47*WINDOW_SCALE):
+                square.setAlpha(0)
+            else:
+                square.setAlpha(255)
+            Surface_bg.blit(square.image, square.getPos())
+
+        for i in range(number_hints.get_puzzle_size()):
+            for j in range(number_hints.get_max_numbers()):
+                if number_hints.get_matriz_fila_value(i, j) != 0:
+                    pos_x = group_number_hints_left.sprites()[(i*number_hints.get_max_numbers()) + j].getPos()[0] + (2*WINDOW_SCALE)
+                    pos_y = group_number_hints_left.sprites()[(i * number_hints.get_max_numbers()) + j].getPos()[1] - (1 * WINDOW_SCALE)
+
+                    if 0 <= pos_x <= 49*WINDOW_SCALE:
+                        draw_text(f"{number_hints.get_matriz_fila_value(i,j)}", "Arial", (255,255,255), 8*WINDOW_SCALE, pos_x, pos_y,Surface_bg)
+
         # Añadir botón de menu
         Surface_bg.blit(Button_Menu.image, (Button_Menu.getPos()))
         # Añadir botón de pistas
@@ -171,7 +253,10 @@ def mainloop():
         for i in range(14):
             for j in range(2):
                 Surface_bg.blit(Button_Colours[j][i].image, (Button_Colours[j][i].getPos()))
-
+        # Mostrar texto "resuelto"
+        if solved:
+            var_image = pg.transform.scale(pg.image.load("Gráfica/resources/Resuelto.png"),(200*WINDOW_SCALE, 100*WINDOW_SCALE))
+            Surface_bg.blit(var_image, (50 * WINDOW_SCALE, 100 * WINDOW_SCALE))
         pg.display.flip()
         ################# DRAW ################
 mainloop()
