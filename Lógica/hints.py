@@ -1,4 +1,4 @@
-from comparar_matriz import matriz_solucion
+from Lógica.comparar_matriz import matriz_solucion
 def generate_hints(lines):
     hints = []
     for line in lines:

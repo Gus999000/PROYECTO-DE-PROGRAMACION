@@ -5,9 +5,12 @@ from Lógica.comparar_matriz import matriz_usuario
 from Lógica.comparar_matriz import is_solved
 from Gráfica.Matriz_numeros import matriz_numeros
 from Gráfica.Square import Square
+from Lógica.hints import get_col_hints
+from Lógica.hints import get_row_hints
+from Lógica.comparar_matriz import matriz_solucion
 
 WINDOW_SCALE = 3
-puzzle_size = 20
+puzzle_size = 5
 
 def mainloop():
     # Crear Ventana
@@ -22,8 +25,9 @@ def mainloop():
     Surface_bg.fill((0,0,255))
 
     # Ingresar tamaño del puzzle y el cuadrado
-    square_size = (160*WINDOW_SCALE)/puzzle_size
-    obj_square = [[Square((i * square_size) + (56*WINDOW_SCALE), (j * square_size) + 64*WINDOW_SCALE, square_size) for i in range(puzzle_size)] for j in range(puzzle_size)]
+    #square_size = (160*WINDOW_SCALE)/puzzle_size
+    square_size = 8*WINDOW_SCALE
+    obj_square = [[Square((i * square_size) + (56*WINDOW_SCALE), (j * square_size) + 64*WINDOW_SCALE, 8*WINDOW_SCALE) for i in range(puzzle_size)] for j in range(puzzle_size)]
     # Añadir cuadrados al grupo de sprites, para así poder trabajar con ellos de forma conjunta
     group_squares = pg.sprite.Group()
     for i in range(puzzle_size):
@@ -59,8 +63,8 @@ def mainloop():
     ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
     matriz_ejemplo1 =  [[0], [0], [1,2,1,1,3,1,2], [7], [9], [10], [1, 2, 5], [1, 3, 6], [1, 4, 1], [1, 5, 1], [11, 1], [11, 1], [11, 1], [11, 1], [13], [11], [4, 4], [2, 2], [0], [0],[0]]
     matriz_ejemplo2 = [[0], [0], [1,1,2,3,4,5,6,7,8,9], [2, 8], [2, 1, 8], [5, 8], [5, 7], [4, 6], [4, 6], [5, 7], [14], [15], [14], [11], [1, 1], [1, 1], [6], [0], [0], [0],[0]]
-    number_hints.set_matriz_filas(matriz_ejemplo1)
-    number_hints.set_matriz_columnas(matriz_ejemplo2)
+    number_hints.set_matriz_filas(get_row_hints(matriz_solucion))
+    number_hints.set_matriz_columnas(get_col_hints(matriz_solucion))
     ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
 
     # Botón de zoom
@@ -85,6 +89,7 @@ def mainloop():
     camera_group = pg.sprite.Group()
 
     # Main Loop
+    solved = False
     running = True
     while running:
 
@@ -101,6 +106,7 @@ def mainloop():
                             obj_square[i][j].changeImage()
                             matriz_usuario[i][j] = obj_square[i][j].isFilled()
                             if is_solved(matriz_usuario):
+                                solved = True
                                 print('Has resuelto el nonograma!!!!')
             # MOVER CÁMARA DE PUZZLE
             if event.type == pg.KEYDOWN:
@@ -149,7 +155,7 @@ def mainloop():
 
 
         ################# DRAW ################
-        # Cuadrados grilla
+        # Cuadrados puzzle
         screen.blit(Surface_bg, (0,0))
         # Dibujar tamaño del cuadro de la grilla
         pg.draw.rect(Surface_bg, (177,226,231), (52*WINDOW_SCALE, 60*WINDOW_SCALE, 168*WINDOW_SCALE, 168*WINDOW_SCALE))
@@ -238,7 +244,10 @@ def mainloop():
         for i in range(14):
             for j in range(2):
                 Surface_bg.blit(Button_Colours[j][i].image, (Button_Colours[j][i].getPos()))
-
+        # Mostrar texto "resuelto"
+        if solved:
+            var_image = pg.transform.scale(pg.image.load("Gráfica/resources/Resuelto.png"),(200*WINDOW_SCALE, 100*WINDOW_SCALE))
+            Surface_bg.blit(var_image, (50 * WINDOW_SCALE, 100 * WINDOW_SCALE))
         pg.display.flip()
         ################# DRAW ################
 mainloop()

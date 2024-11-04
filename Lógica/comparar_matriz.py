@@ -7,7 +7,7 @@ npz_path = os.path.join(current_dir, 'solutions.npz')
 
 # Cargar la matriz desde el archivo .npz
 with np.load(npz_path) as data:
-    matriz_solucion = data['Matriz_Amongus']
+    matriz_solucion = data['nonogram_1']
 
 matriz_usuario = np.zeros_like(matriz_solucion)
 
