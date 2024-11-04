@@ -9,7 +9,7 @@ class matriz_numeros():
         if size%2 == 0:
             self.max_numbers = size//2
         else:
-            self.max_numbers = (size - 1)//2
+            self.max_numbers = (size + 1)//2
         self.matriz_filas = [[0 for i in range(self.max_numbers)] for j in range(size)]
         self.matriz_columnas = [[0 for i in range(self.max_numbers)] for j in range(size)]
 
