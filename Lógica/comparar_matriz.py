@@ -1,8 +1,12 @@
 import numpy as np
+import os
 
+# Crear una ruta relativa basada en la ubicación de este archivo
+current_dir = os.path.dirname(__file__)
+npz_path = os.path.join(current_dir, 'solutions.npz')
 
-with np.load('Lógica/solutions.npz') as data:
-    # Acceder al nonograma por su id
+# Cargar la matriz desde el archivo .npz
+with np.load(npz_path) as data:
     matriz_solucion = data['Matriz_Amongus']
 
 matriz_usuario = np.zeros_like(matriz_solucion)

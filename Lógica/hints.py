@@ -1,5 +1,4 @@
-import numpy as np
-
+from comparar_matriz import matriz_solucion
 def generate_hints(lines):
     hints = []
     for line in lines:
@@ -24,60 +23,11 @@ def get_col_hints(solution):
     return generate_hints(transposed_solution)
 
 # Ejemplos 
-solution = np.array([
-    [1, 0, 1, 1, 0],
-    [0, 1, 1, 0, 0],
-    [1, 1, 1, 0, 0],
-    [0, 1, 0, 1, 1],
-    [1, 1, 0, 0, 0],
-])
+solution = matriz_solucion
 
 row_hints = get_row_hints(solution)
 col_hints = get_col_hints(solution)
 print("Ejemplo 1")
-print("Pistas de filas:", row_hints)
-print("Pistas de columnas:", col_hints)
-print("\n")
-
-solution = np.array([
-    [1, 0, 1, 1, 0],
-    [0, 1, 1, 0, 0],
-    [1, 0, 1, 0, 0],
-    [0, 1, 0, 1, 0],
-    [1, 1, 1, 0, 0],
-])
-
-row_hints = get_row_hints(solution)
-col_hints = get_col_hints(solution)
-
-print("Ejemplo 2")
-print("Pistas de filas:", row_hints)
-print("Pistas de columnas:", col_hints)
-print("\n")
-
-solution = np.array([
-    [1, 1, 1],
-    [1, 1, 1],
-    [1, 1, 1],
-    ])
-
-row_hints = get_row_hints(solution)
-col_hints = get_col_hints(solution)
-
-print("Ejemplo 3")
-print("Pistas de filas:", row_hints)
-print("Pistas de columnas:", col_hints)
-print("\n")
-
-solution = np.array([
-    [0, 0],
-    [0, 0],
-    ])
-
-row_hints = get_row_hints(solution)
-col_hints = get_col_hints(solution)
-
-print("Ejemplo 4")
 print("Pistas de filas:", row_hints)
 print("Pistas de columnas:", col_hints)
 print("\n")
