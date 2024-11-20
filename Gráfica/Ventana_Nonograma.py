@@ -115,25 +115,9 @@ class nonogramWindow:
                     # Asumiendo que el botón es de 24*WINDOW_SCALE x 24*WINDOW_SCALE
                     if (tips_pos[0] <= mouse_pos[0] <= tips_pos[0] + 24 * WINDOW_SCALE and
                             tips_pos[1] <= mouse_pos[1] <= tips_pos[1] + 24 * WINDOW_SCALE):
-                        ################# RESOLUCIÓN AUTOMÁTICA #######################
-                        while not is_solved(matriz_usuario):
-                            matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
-                            posiciones = np.where(matriz_pistas == 1)
-
-                            indice_random = np.random.randint(len(posiciones[0]))
-                            fila_random = posiciones[0][indice_random]
-                            columna_random = posiciones[1][indice_random]
-
-                            matriz_usuario[fila_random, columna_random] = 1
-                            self.obj_square[fila_random][columna_random].changeImage()
-                            matriz_usuario[fila_random, columna_random] = self.obj_square[fila_random][
-                                columna_random].isFilled()
-
-                        ################# RESOLUCIÓN AUTOMÁTICA ########################
-
 
                         ################### PISTAS #####################################
-                        '''if not is_solved(matriz_usuario):
+                        if not is_solved(matriz_usuario):
                             matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
 
                             # Obtener las posiciones donde hay 1's
@@ -148,8 +132,9 @@ class nonogramWindow:
                             matriz_usuario[fila_random, columna_random] = 1
                             self.obj_square[fila_random][columna_random].changeImage()
                             matriz_usuario[fila_random][columna_random] = self.obj_square[fila_random][
-                                columna_random].isFilled()'''
+                                columna_random].isFilled()
                         ################### PISTAS #####################################
+
                         if is_solved(matriz_usuario):
                             self.solved = True
 
@@ -225,6 +210,15 @@ class nonogramWindow:
                             for square in group_number_hints_left:
                                 square.updatePos(square.rec.x - ((160 * WINDOW_SCALE) / puzzle_size), square.rec.y)
 
+                if event.key == pygame.K_o:
+                    ################# RESOLUCIÓN AUTOMÁTICA #######################
+                    # Solo iniciar si no está ya en proceso de resolución
+                    if not hasattr(self, 'auto_solving') or not self.auto_solving:
+                        self.auto_solving = True
+                        self.last_solve_time = time.time()
+                        self.solve_delay = 0.001 # Como se usan 60 FPS el minimo delay es 0.0167
+                    ################# RESOLUCIÓN AUTOMÁTICA ########################
+
         ################# DRAW ################
 
         # Cuadrados puzzle
@@ -246,6 +240,29 @@ class nonogramWindow:
                 # Añadir a pantalla
                 self.Surface_bg.blit(self.obj_square[i][j].image,
                                      (self.obj_square[i][j].getPos()[0], self.obj_square[i][j].getPos()[1]))
+
+        if hasattr(self, 'auto_solving') and self.auto_solving:
+            current_time = time.time()
+            if current_time - self.last_solve_time >= self.solve_delay:
+                matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
+                posiciones = np.where(matriz_pistas == 1)
+
+                if len(posiciones[0]) > 0:
+                    # Elegir la siguiente posición a rellenar
+                    indice_random = np.random.randint(len(posiciones[0]))
+                    fila_random = posiciones[0][indice_random]
+                    columna_random = posiciones[1][indice_random]
+
+                    matriz_usuario[fila_random, columna_random] = 1
+                    self.obj_square[fila_random][columna_random].changeImage()
+                    matriz_usuario[fila_random][columna_random] = self.obj_square[fila_random][
+                        columna_random].isFilled()
+
+                    self.last_solve_time = current_time
+                else:
+                    self.auto_solving = False
+                    if is_solved(matriz_usuario):
+                        self.solved = True
 
         ## Interfaz
         # Añadir cuadro para timer
