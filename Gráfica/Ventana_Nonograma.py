@@ -13,6 +13,7 @@ from Lógica.nonograma_info import matriz_solucion
 from Lógica.nonograma_info import metadata_nonograma
 from Lógica.archivos_npz import guardarNPZ
 from Lógica.archivos_npz import cargarNPZ
+import time
 
 WINDOW_SCALE = 3
 puzzle_size = metadata_nonograma['size'][0]
@@ -114,7 +115,25 @@ class nonogramWindow:
                     # Asumiendo que el botón es de 24*WINDOW_SCALE x 24*WINDOW_SCALE
                     if (tips_pos[0] <= mouse_pos[0] <= tips_pos[0] + 24 * WINDOW_SCALE and
                             tips_pos[1] <= mouse_pos[1] <= tips_pos[1] + 24 * WINDOW_SCALE):
-                        if not is_solved(matriz_usuario):
+                        ################# RESOLUCIÓN AUTOMÁTICA #######################
+                        while not is_solved(matriz_usuario):
+                            matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
+                            posiciones = np.where(matriz_pistas == 1)
+
+                            indice_random = np.random.randint(len(posiciones[0]))
+                            fila_random = posiciones[0][indice_random]
+                            columna_random = posiciones[1][indice_random]
+
+                            matriz_usuario[fila_random, columna_random] = 1
+                            self.obj_square[fila_random][columna_random].changeImage()
+                            matriz_usuario[fila_random, columna_random] = self.obj_square[fila_random][
+                                columna_random].isFilled()
+
+                        ################# RESOLUCIÓN AUTOMÁTICA ########################
+
+
+                        ################### PISTAS #####################################
+                        '''if not is_solved(matriz_usuario):
                             matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
 
                             # Obtener las posiciones donde hay 1's
@@ -129,7 +148,8 @@ class nonogramWindow:
                             matriz_usuario[fila_random, columna_random] = 1
                             self.obj_square[fila_random][columna_random].changeImage()
                             matriz_usuario[fila_random][columna_random] = self.obj_square[fila_random][
-                                columna_random].isFilled()
+                                columna_random].isFilled()'''
+                        ################### PISTAS #####################################
                         if is_solved(matriz_usuario):
                             self.solved = True
 
