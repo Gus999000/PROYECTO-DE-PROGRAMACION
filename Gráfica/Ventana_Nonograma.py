@@ -1,6 +1,7 @@
 import numpy as np
 import pygame
 from Gráfica.Button import Button
+from Gráfica.Historial_Nonograma import NonogramHistory
 from Gráfica.draw_text import draw_text
 from Lógica.nonograma_info import matriz_usuario
 from Lógica.nonograma_info import is_solved
@@ -103,6 +104,7 @@ class nonogramWindow:
         # Creación de la cámara para Zoom
         camera_group = pygame.sprite.Group()
 
+        self.history = NonogramHistory(matriz_usuario.copy())
         self.solved = False
 
     def run(self, events):
@@ -143,6 +145,7 @@ class nonogramWindow:
                             if self.obj_square[i][j].isColliding():
                                 self.obj_square[i][j].changeImage()
                                 matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
+                                self.history.push_state(matriz_usuario.copy())
                                 if is_solved(matriz_usuario):
                                     self.solved = True
                 elif event.button == 3:
@@ -151,6 +154,7 @@ class nonogramWindow:
                             if self.obj_square[i][j].isColliding():
                                 self.obj_square[i][j].changeImageX()
                                 matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
+                                self.history.push_state(matriz_usuario.copy())
             # MOVER CÁMARA DE PUZZLE
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
@@ -219,6 +223,30 @@ class nonogramWindow:
                         self.solve_delay = 0.001 # Como se usan 60 FPS el minimo delay es 0.0167
                     ################# RESOLUCIÓN AUTOMÁTICA ########################
 
+                if event.key == pygame.K_z:  # Deshacer
+                    new_state = self.history.undo()
+                    # Actualizar la visualización
+                    for i in range(puzzle_size):
+                        for j in range(puzzle_size):
+                            if new_state[i][j] != matriz_usuario[i][j]:
+                                if new_state[i][j]:
+                                    self.obj_square[i][j].changeImage()
+                                else:
+                                    self.obj_square[i][j].changeImage()
+                    matriz_usuario[:] = new_state
+
+                if event.key == pygame.K_x:  # Rehacer
+                    new_state = self.history.redo()
+                    # Actualizar la visualización
+                    for i in range(puzzle_size):
+                        for j in range(puzzle_size):
+                            if new_state[i][j] != matriz_usuario[i][j]:
+                                if new_state[i][j]:
+                                    self.obj_square[i][j].changeImage()
+                                else:
+                                    self.obj_square[i][j].changeImage()
+                    matriz_usuario[:] = new_state
+
         ################# DRAW ################
 
         # Cuadrados puzzle
@@ -257,6 +285,7 @@ class nonogramWindow:
                     self.obj_square[fila_random][columna_random].changeImage()
                     matriz_usuario[fila_random][columna_random] = self.obj_square[fila_random][
                         columna_random].isFilled()
+                    self.history.push_state(matriz_usuario.copy())
 
                     self.last_solve_time = current_time
                 else:
