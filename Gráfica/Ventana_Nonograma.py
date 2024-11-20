@@ -1,19 +1,20 @@
 import numpy as np
 import pygame
+import sys
 from Gráfica.Button import Button
 from Gráfica.Historial_Nonograma import NonogramHistory
 from Gráfica.draw_text import draw_text
-from Lógica.nonograma_info import matriz_usuario
-from Lógica.nonograma_info import is_solved
 from Gráfica.Matriz_numeros import matriz_numeros
 from Gráfica.Square import Square
+from Lógica.nonograma_info import matriz_usuario
+from Lógica.nonograma_info import is_solved
 from Lógica.hints import get_col_hints
 from Lógica.hints import get_row_hints
-import sys
 from Lógica.nonograma_info import matriz_solucion
 from Lógica.nonograma_info import metadata_nonograma
 from Lógica.archivos_npz import guardarNPZ
 from Lógica.archivos_npz import cargarNPZ
+from Lógica.time_to_minutes import time_to_minutes
 import time
 
 WINDOW_SCALE = 3
@@ -28,6 +29,14 @@ class nonogramWindow:
         # Crear color de fondo
         self.Surface_bg = pygame.surface.Surface((300 * WINDOW_SCALE, 300 * WINDOW_SCALE))
         self.Surface_bg.fill((0, 0, 255))
+
+        # Timer
+        self.timer_event = pygame.event.custom_type()
+        pygame.time.set_timer(self.timer_event, 1000)
+        self.timer = 0
+
+        # Clicks
+        self.clicks = 0
 
         # Ingresar tamaño del puzzle y el cuadrado
         # square_size = (160*WINDOW_SCALE)/puzzle_size
@@ -69,16 +78,11 @@ class nonogramWindow:
                     Square((56 + (i * 8)) * WINDOW_SCALE, (48 - (j * 8)) * WINDOW_SCALE, square_size))
                 self.group_number_hints_left.add(
                     Square((40 - (j * 8)) * WINDOW_SCALE, (64 + (i * 8)) * WINDOW_SCALE, square_size))
-        ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
-        self.matriz_ejemplo1 = [[0], [0], [1, 2, 1, 1, 3, 1, 2], [7], [9], [10], [1, 2, 5], [1, 3, 6], [1, 4, 1],
-                                [1, 5, 1],
-                                [11, 1], [11, 1], [11, 1], [11, 1], [13], [11], [4, 4], [2, 2], [0], [0], [0]]
-        self.matriz_ejemplo2 = [[0], [0], [1, 1, 2, 3, 4, 5, 6, 7, 8, 9], [2, 8], [2, 1, 8], [5, 8], [5, 7], [4, 6],
-                                [4, 6],
-                                [5, 7], [14], [15], [14], [11], [1, 1], [1, 1], [6], [0], [0], [0], [0]]
+
+        ############### RELLENAR MATRIZ ###############
         self.number_hints.set_matriz_filas(get_row_hints(matriz_solucion))
         self.number_hints.set_matriz_columnas(get_col_hints(matriz_solucion))
-        ############### RELLENAR CON MATRIZ DE EJEMPLO ###############
+        ############### RELLENAR MATRIZ ###############
 
         # Botón de zoom
         self.Button_Zoom = Button(225 * WINDOW_SCALE, 49 * WINDOW_SCALE, 5 * WINDOW_SCALE, "Gráfica/resources/Zoom.png")
@@ -109,16 +113,17 @@ class nonogramWindow:
 
     def run(self, events):
         for event in events:
+
+            if event.type == self.timer_event:
+                self.timer += 1
+
             # PRESIONAR CUADRADOS
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    mouse_pos = pygame.mouse.get_pos()
-                    tips_pos = self.Button_Tips.getPos()
-                    # Asumiendo que el botón es de 24*WINDOW_SCALE x 24*WINDOW_SCALE
-                    if (tips_pos[0] <= mouse_pos[0] <= tips_pos[0] + 24 * WINDOW_SCALE and
-                            tips_pos[1] <= mouse_pos[1] <= tips_pos[1] + 24 * WINDOW_SCALE):
-
-                        ################### PISTAS #####################################
+                    # Incrementar variable clicks
+                    self.clicks += 1
+                    ################### PISTAS #####################################
+                    if self.Button_Tips.isColliding():
                         if not is_solved(matriz_usuario):
                             matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
 
@@ -269,6 +274,7 @@ class nonogramWindow:
                 self.Surface_bg.blit(self.obj_square[i][j].image,
                                      (self.obj_square[i][j].getPos()[0], self.obj_square[i][j].getPos()[1]))
 
+        # Resolución automática del puzzle
         if hasattr(self, 'auto_solving') and self.auto_solving:
             current_time = time.time()
             if current_time - self.last_solve_time >= self.solve_delay:
@@ -297,8 +303,15 @@ class nonogramWindow:
         # Añadir cuadro para timer
         pygame.draw.rect(self.Surface_bg, (0, 0, 0),
                          (4 * WINDOW_SCALE, 12 * WINDOW_SCALE, 48 * WINDOW_SCALE, 48 * WINDOW_SCALE))
-        draw_text("timer", "Arial", (255, 255, 255), 10 * WINDOW_SCALE, 20 * WINDOW_SCALE, 26 * WINDOW_SCALE,
+        draw_text("Tiempo", "Arial", (255, 255, 255), 8 * WINDOW_SCALE, 10 * WINDOW_SCALE, 18 * WINDOW_SCALE,
                   self.Surface_bg)
+        # Añadir timer
+        draw_text(f"{time_to_minutes(self.timer)}", "Arial", (255, 255, 255), 8 * WINDOW_SCALE, 10 * WINDOW_SCALE, 25 * WINDOW_SCALE,
+                  self.Surface_bg)
+
+        # Añadir clicks
+        draw_text(f"clicks:{self.clicks}", "Arial", (255, 255, 255), 8 * WINDOW_SCALE, 10 * WINDOW_SCALE,42 * WINDOW_SCALE,self.Surface_bg)
+
 
         # Añadir cuadro para minimapa
         pygame.draw.rect(self.Surface_bg, (84, 181, 190),
