@@ -140,6 +140,7 @@ class nonogramWindow:
                             self.obj_square[fila_random][columna_random].changeImage()
                             matriz_usuario[fila_random][columna_random] = self.obj_square[fila_random][
                                 columna_random].isFilled()
+                            self.history.push_state(matriz_usuario.copy())
                         ################### PISTAS #####################################
 
                         if is_solved(matriz_usuario):
