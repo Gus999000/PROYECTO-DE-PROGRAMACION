@@ -1,4 +1,5 @@
 import pygame as pg
+import numpy as np
 
 WINDOW_SCALE = 3
 
@@ -23,6 +24,9 @@ class Square(pg.sprite.Sprite):
             self.image = pg.image.load("Gráfica/resources/SquareFill.png")
 
         self.image = pg.transform.scale(self.image,(scale,scale))
+
+        # Surface para glow
+        self.glow_surface = pg.Surface((400, 400), pg.SRCALPHA)
 
     def isColliding(self):
         return self.rec.collidepoint(pg.mouse.get_pos())

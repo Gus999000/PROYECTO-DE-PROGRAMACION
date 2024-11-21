@@ -30,6 +30,10 @@ class nonogramWindow:
         self.Surface_bg = pygame.surface.Surface((300 * WINDOW_SCALE, 300 * WINDOW_SCALE))
         self.Surface_bg.fill((0, 0, 255))
 
+        # Crear surface para el glow
+        self.glow_surface = pygame.Surface((400, 400), pygame.SRCALPHA)
+        self.glow_surface.fill((0,0,0))
+
         # Timer
         self.timer_event = pygame.event.custom_type()
         pygame.time.set_timer(self.timer_event, 1000)
@@ -117,7 +121,18 @@ class nonogramWindow:
         matriz_usuario[x][y] = self.obj_square[x][y].isFilled()
         self.history.push_state(matriz_usuario.copy())
 
-    def drawLineH(self,x0, y0, x1, y1):
+    def highlightPixel(self, i, j):
+        # Varying opacity based on some dynamic factor (e.g., sine wave)
+        time = pygame.time.get_ticks()
+        opacity = int(128 + 127 * np.sin(time * 0.01))  # Soft pulsing
+
+        glow_square = pygame.Surface((5 * WINDOW_SCALE, 5 * WINDOW_SCALE), pygame.SRCALPHA)
+        glow_square.fill((255, 255, 255, opacity))
+
+        self.glow_surface.blit(glow_square, ((self.obj_square[i][j].getPos()[0] + 4), (self.obj_square[i][j].getPos()[1] + 4)))
+        self.screen.blit(self.glow_surface, (0, 0))
+
+    def drawLineH(self,x0, y0, x1, y1, isFilling):
         if x0 > x1:
             x0, x1 = x1, x0
             y0, y1 = y1, y0
@@ -133,14 +148,17 @@ class nonogramWindow:
             y = y0
             p = 2 * dy - dx
             for i in range(dx + 1):
-                self.putPixel(x0 + i, y)
+                if isFilling:
+                    self.putPixel(x0 + i, y)
+                else:
+                    self.highlightPixel(x0 + i, y)
 
                 if p >= 0:
                     y += dir
                     p = p - 2 * dx
                 p = p + 2 * dy
 
-    def drawLineV(self,x0, y0, x1, y1):
+    def drawLineV(self,x0, y0, x1, y1, isFilling):
         if y0 > y1:
             x0, x1 = x1, x0
             y0, y1 = y1, y0
@@ -156,21 +174,25 @@ class nonogramWindow:
             x = x0
             p = 2 * dx - dy
             for i in range(dy + 1):
-                self.putPixel(x, y0 + i)
+                if isFilling:
+                    self.putPixel(x, y0 + i)
+                else:
+                    self.highlightPixel(x, y0 + i)
 
                 if p >= 0:
                     x += dir
                     p = p - 2 * dy
                 p = p + 2 * dx
 
-    def drawLine(self,x0, y0, x1, y1):
+    def drawLine(self,x0, y0, x1, y1, isFilling):
         if abs(x1 - x0) > abs(y1 - y0):
-            self.drawLineH(x0, y0, x1, y1)
+            self.drawLineH(x0, y0, x1, y1, isFilling)
         else:
-            self.drawLineV(x0, y0, x1, y1)
+            self.drawLineV(x0, y0, x1, y1, isFilling)
 
 
     def run(self, events):
+        mouse = pygame.mouse.get_pressed()
 
         for event in events:
             if event.type == self.timer_event:
@@ -186,6 +208,7 @@ class nonogramWindow:
                             if self.obj_square[i][j].isColliding():
                                 self.initial_square = [i,j]
                                 break
+
 
                 elif event.button == 3:
                     # Esta función será para marcar el cuadro donde tienes el mouse
@@ -222,12 +245,16 @@ class nonogramWindow:
                         for j in range(puzzle_size):
 
                             if self.obj_square[i][j].isColliding():
-                                self.drawLine(self.initial_square[0], self.initial_square[1], i, j)
+                                if self.initial_square[0] == i and self.initial_square[1] == j:
+                                    self.obj_square[i][j].changeImage()
+                                    matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
+                                    self.history.push_state(matriz_usuario.copy())
+                                else:
+                                    self.drawLine(self.initial_square[0], self.initial_square[1], i, j, True)
+
                                 # Incrementar variable clicks
                                 self.clicks += 1
-                                #self.obj_square[i][j].changeImage()
-                                #matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
-                                #self.history.push_state(matriz_usuario.copy())
+
                                 if is_solved(matriz_usuario):
                                     self.solved = True
 
@@ -358,6 +385,23 @@ class nonogramWindow:
                 # Añadir a pantalla
                 self.Surface_bg.blit(self.obj_square[i][j].image,
                                      (self.obj_square[i][j].getPos()[0], self.obj_square[i][j].getPos()[1]))
+
+        ################ HIGHLIGHT SQUARES ################
+        self.glow_surface.fill((0, 0, 0, 0))
+
+        if mouse[0]:
+            # Resaltar casillas
+            for i in range(puzzle_size):
+                for j in range(puzzle_size):
+                    if self.obj_square[i][j].isColliding():
+                        if self.initial_square[0] == i and self.initial_square[1] == j:
+                            self.highlightPixel(i,j)
+                        else:
+                            self.drawLine(self.initial_square[0], self.initial_square[1], i, j, False)
+
+
+
+        ################ HIGHLIGHT SQUARES ################
 
         # Resolución automática del puzzle
         if hasattr(self, 'auto_solving') and self.auto_solving:

@@ -1,7 +1,18 @@
 import numpy as np
 import os
 
-id_nonograma = 'n301'
+"""
+Casa: n001
+
+Pikachu: n100
+
+Game Boy: n200
+
+Micro: n301
+
+"""
+
+id_nonograma = 'n001'
 
 # Crear una ruta relativa basada en la ubicación de este archivo
 current_dir = os.path.dirname(__file__)
