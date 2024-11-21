@@ -31,7 +31,7 @@ class nonogramWindow:
         self.Surface_bg.fill((0, 0, 255))
 
         # Crear surface para el glow
-        self.glow_surface = pygame.Surface((400, 400), pygame.SRCALPHA)
+        self.glow_surface = pygame.Surface((256*WINDOW_SCALE, 240*WINDOW_SCALE), pygame.SRCALPHA)
         self.glow_surface.fill((0,0,0))
 
         # Timer

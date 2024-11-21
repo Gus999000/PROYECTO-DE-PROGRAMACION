@@ -12,7 +12,7 @@ Micro: n301
 
 """
 
-id_nonograma = 'n001'
+id_nonograma = 'n301'
 
 # Crear una ruta relativa basada en la ubicación de este archivo
 current_dir = os.path.dirname(__file__)
