@@ -119,7 +119,6 @@ class nonogramWindow:
     def putPixel(self,x, y):
         self.obj_square[x][y].changeImage()
         matriz_usuario[x][y] = self.obj_square[x][y].isFilled()
-        self.history.push_state(matriz_usuario.copy())
 
     def highlightPixel(self, i, j):
         # Varying opacity based on some dynamic factor (e.g., sine wave)
@@ -189,6 +188,8 @@ class nonogramWindow:
             self.drawLineH(x0, y0, x1, y1, isFilling)
         else:
             self.drawLineV(x0, y0, x1, y1, isFilling)
+        if isFilling:
+            self.history.push_state(matriz_usuario.copy())
 
 
     def run(self, events):
@@ -338,12 +339,12 @@ class nonogramWindow:
 
                 if event.key == pygame.K_z:  # Deshacer
                     new_state = self.history.undo()
+                    self.clicks += 1
                     # Actualizar la visualización
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
                                 # Incrementar variable clicks
-                                self.clicks += 1
                                 if new_state[i][j]:
                                     self.obj_square[i][j].changeImage()
                                 else:
@@ -352,12 +353,12 @@ class nonogramWindow:
 
                 if event.key == pygame.K_x:  # Rehacer
                     new_state = self.history.redo()
+                    self.clicks += 1
                     # Actualizar la visualización
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
                                 # Incrementar variable clicks
-                                self.clicks += 1
                                 if new_state[i][j]:
                                     self.obj_square[i][j].changeImage()
                                 else:
@@ -526,5 +527,3 @@ class nonogramWindow:
             self.Surface_bg.blit(var_image, (50 * WINDOW_SCALE, 100 * WINDOW_SCALE))
         pygame.display.flip()
         ################# DRAW ################
-
-
