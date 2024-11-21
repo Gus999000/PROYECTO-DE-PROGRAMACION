@@ -115,13 +115,12 @@ class nonogramWindow:
         for event in events:
 
             if event.type == self.timer_event:
-                self.timer += 1
+                if not self.solved:
+                    self.timer += 1
 
             # PRESIONAR CUADRADOS
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    # Incrementar variable clicks
-                    self.clicks += 1
                     ################### PISTAS #####################################
                     if self.Button_Tips.isColliding():
                         if not is_solved(matriz_usuario):
@@ -149,6 +148,8 @@ class nonogramWindow:
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if self.obj_square[i][j].isColliding():
+                                # Incrementar variable clicks
+                                self.clicks += 1
                                 self.obj_square[i][j].changeImage()
                                 matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
                                 self.history.push_state(matriz_usuario.copy())
@@ -235,6 +236,8 @@ class nonogramWindow:
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
+                                # Incrementar variable clicks
+                                self.clicks += 1
                                 if new_state[i][j]:
                                     self.obj_square[i][j].changeImage()
                                 else:
@@ -247,6 +250,8 @@ class nonogramWindow:
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
+                                # Incrementar variable clicks
+                                self.clicks += 1
                                 if new_state[i][j]:
                                     self.obj_square[i][j].changeImage()
                                 else:
@@ -281,6 +286,8 @@ class nonogramWindow:
             if current_time - self.last_solve_time >= self.solve_delay:
                 matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
                 posiciones = np.where(matriz_pistas == 1)
+                # Incrementar variable clicks
+                self.clicks += 1
 
                 if len(posiciones[0]) > 0:
                     # Elegir la siguiente posición a rellenar
