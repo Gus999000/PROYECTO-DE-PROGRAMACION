@@ -220,7 +220,9 @@ class nonogramWindow:
                     ################### PISTAS #####################################
                     if self.Button_Tips.isColliding():
                         if not is_solved(matriz_usuario):
-                            matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
+                            matriz_aux = matriz_usuario
+                            matriz_aux[matriz_aux != 1] = 0
+                            matriz_pistas = np.logical_xor(matriz_solucion, matriz_aux)
 
                             # Obtener las posiciones donde hay 1's
                             posiciones = np.where(matriz_pistas == 1)
@@ -236,6 +238,9 @@ class nonogramWindow:
                             matriz_usuario[fila_random][columna_random] = self.obj_square[fila_random][
                                 columna_random].isFilled()
                             self.history.push_state(matriz_usuario.copy())
+
+                            # Incrementar variable clicks
+                            self.clicks += 1
                         ################### PISTAS #####################################
 
                         if is_solved(matriz_usuario):
@@ -339,14 +344,14 @@ class nonogramWindow:
 
                 if event.key == pygame.K_z:     #deshacer
                     new_state = self.history.undo()
-                    # Incrementar variable clicks
-                    self.clicks += 1
                     # Actualizar la visualización
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
                                 if new_state[i][j] == 1:
                                     self.obj_square[i][j].changeImage()
+                                    # Incrementar variable clicks
+                                    self.clicks += 1
                                 elif new_state[i][j] == 2:
                                     self.obj_square[i][j].changeImageX()
                                 else:
@@ -354,17 +359,20 @@ class nonogramWindow:
                                         self.obj_square[i][j].changeImageX()
                                     else:
                                         self.obj_square[i][j].changeImage()
+                                        # Incrementar variable clicks
+                                        self.clicks += 1
                     matriz_usuario[:] = new_state
 
                 if event.key == pygame.K_x:  # Rehacer
                     new_state = self.history.redo()
-                    self.clicks += 1
                     # Actualizar la visualización
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
                                 if new_state[i][j] == 1:
                                     self.obj_square[i][j].changeImage()
+                                    # Incrementar variable clicks
+                                    self.clicks += 1
                                 elif new_state[i][j] == 2:
                                     self.obj_square[i][j].changeImageX()
                                 else:
@@ -372,6 +380,8 @@ class nonogramWindow:
                                         self.obj_square[i][j].changeImageX()
                                     else:
                                         self.obj_square[i][j].changeImage()
+                                        # Incrementar variable clicks
+                                        self.clicks += 1
                     matriz_usuario[:] = new_state
 
         ################# DRAW ################
