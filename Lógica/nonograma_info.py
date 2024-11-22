@@ -12,7 +12,7 @@ Micro: n301
 
 """
 
-id_nonograma = 'n301'
+id_nonograma = 'n001'
 
 # Crear una ruta relativa basada en la ubicación de este archivo
 current_dir = os.path.dirname(__file__)
@@ -30,7 +30,9 @@ with np.load(metadata_path, allow_pickle=True) as metadata:
 matriz_usuario = np.zeros_like(matriz_solucion)
 
 def is_solved(self):
-    return np.array_equal(matriz_solucion, self)
+    matriz_limpia = self.copy()
+    matriz_limpia[matriz_limpia != 1] = 0
+    return np.array_equal(matriz_solucion, matriz_limpia)
 
 # Imprimir metadatos del nonograma
 print("Información del Nonograma")

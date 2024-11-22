@@ -337,18 +337,23 @@ class nonogramWindow:
                         self.solve_delay = 0.001 # Como se usan 60 FPS el minimo delay es 0.0167
                     ################# RESOLUCIÓN AUTOMÁTICA ########################
 
-                if event.key == pygame.K_z:  # Deshacer
+                if event.key == pygame.K_z:     #deshacer
                     new_state = self.history.undo()
+                    # Incrementar variable clicks
                     self.clicks += 1
                     # Actualizar la visualización
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
-                                # Incrementar variable clicks
-                                if new_state[i][j]:
+                                if new_state[i][j] == 1:
                                     self.obj_square[i][j].changeImage()
+                                elif new_state[i][j] == 2:
+                                    self.obj_square[i][j].changeImageX()
                                 else:
-                                    self.obj_square[i][j].changeImage()
+                                    if matriz_usuario[i][j] == 2:
+                                        self.obj_square[i][j].changeImageX()
+                                    else:
+                                        self.obj_square[i][j].changeImage()
                     matriz_usuario[:] = new_state
 
                 if event.key == pygame.K_x:  # Rehacer
@@ -358,11 +363,15 @@ class nonogramWindow:
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
-                                # Incrementar variable clicks
-                                if new_state[i][j]:
+                                if new_state[i][j] == 1:
                                     self.obj_square[i][j].changeImage()
+                                elif new_state[i][j] == 2:
+                                    self.obj_square[i][j].changeImageX()
                                 else:
-                                    self.obj_square[i][j].changeImage()
+                                    if matriz_usuario[i][j] == 2:
+                                        self.obj_square[i][j].changeImageX()
+                                    else:
+                                        self.obj_square[i][j].changeImage()
                     matriz_usuario[:] = new_state
 
         ################# DRAW ################
@@ -408,6 +417,8 @@ class nonogramWindow:
         if hasattr(self, 'auto_solving') and self.auto_solving:
             current_time = time.time()
             if current_time - self.last_solve_time >= self.solve_delay:
+                matriz_limpia = matriz_usuario
+                matriz_limpia[matriz_limpia != 1] = 0
                 matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
                 posiciones = np.where(matriz_pistas == 1)
                 # Incrementar variable clicks

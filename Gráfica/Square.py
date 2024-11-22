@@ -54,6 +54,8 @@ class Square(pg.sprite.Sprite):
     def isFilled(self):
         if self.Filled:
             return 1
+        elif self.Crossed:
+            return 2
         else:
             return 0
 
