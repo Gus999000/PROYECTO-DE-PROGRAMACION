@@ -185,7 +185,7 @@ def options_menu():
     running = True
     while running:
         virtual_screen.fill((0, 0, 0))
-        draw_text("Options", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 30)
+        draw_text("Opciones", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 30)
 
         button_texts = ["Controles", "Video", "Audio"]
         button_rects = []
@@ -223,7 +223,7 @@ def options_menu():
 
 def level_type_screen():
     running = True
-    options = ["Clásico", "Color", "Personalizados"]
+    options = ["Clásico", "Color", "Custom"]
     while running:
         virtual_screen.fill((0, 0, 0))
         draw_text("Selecciona el tipo de nivel", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 30)
@@ -336,7 +336,7 @@ def placeholder_level_screen():
     running = True
     while running:
         virtual_screen.fill((0, 0, 0))
-        draw_text("Placeholder Nivel", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 2)
+        draw_text("Pantalla de nivel", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 2)
 
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -402,10 +402,10 @@ def main_menu():
             pygame.draw.line(virtual_screen, color, (0, y), (ORIGINAL_WIDTH, y))
 
         # Dibuja texto
-        draw_text('PLACEHOLDER', title_font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 4)
+        draw_text('Gridlock', title_font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 4)
 
         # Display de botones y funcionalidad
-        button_texts = ["Play", "Options", "Create", "Achievements"]
+        button_texts = ["Jugar", "Opciones", "Crear", "Logros"]
         button_rects = []
         for i, text in enumerate(button_texts):
             button_rect = draw_button(virtual_screen, text, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 2 - 20 + i * 20)
@@ -445,13 +445,13 @@ def main_menu():
         if confirm_exit:
             pygame.draw.rect(virtual_screen, (0, 0, 0), (50, 80, 156, 80))
             pygame.draw.rect(virtual_screen, (255, 255, 255), (50, 80, 156, 80), 2)
-            draw_text("Are you sure you", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 100)
-            draw_text("want to exit?", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 120)
+            draw_text("Seguro que ", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 100)
+            draw_text("quieres salir?", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 120)
 
-            yes_rect = draw_button(virtual_screen, "Yes", 90, 150, 40, 20)
+            yes_rect = draw_button(virtual_screen, "Si", 90, 150, 40, 20)
             no_rect = draw_button(virtual_screen, "No", 165, 150, 40, 20)
 
-            draw_text("Yes", font, (255, 255, 255), virtual_screen, 90, 150)
+            draw_text("Si", font, (255, 255, 255), virtual_screen, 90, 150)
             draw_text("No", font, (255, 255, 255), virtual_screen, 165, 150)
 
             if click:
