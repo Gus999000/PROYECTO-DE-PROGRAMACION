@@ -1,4 +1,3 @@
-from Gráfica.Square import WINDOW_SCALE
 from Gráfica.Ventana_Nonograma import nonogramWindow
 import pygame
 import sys

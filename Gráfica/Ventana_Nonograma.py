@@ -5,7 +5,7 @@ from Gráfica.Button import Button
 from Gráfica.Historial_Nonograma import NonogramHistory
 from Gráfica.draw_text import draw_text
 from Gráfica.Matriz_numeros import matriz_numeros
-from Gráfica.Square import Square
+from Gráfica.Square import Square, WINDOW_SCALE
 from Lógica.nonograma_info import matriz_usuario
 from Lógica.nonograma_info import is_solved
 from Lógica.hints import get_col_hints
@@ -17,8 +17,14 @@ from Lógica.archivos_npz import cargarNPZ
 from Lógica.time_to_minutes import time_to_minutes
 import time
 
-WINDOW_SCALE = 3
 puzzle_size = metadata_nonograma['size'][0]
+WINDOW_SCALE = 3
+
+pygame.font.init()
+Font_smolmatrix_smallsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/3x5-smolmatrix.ttf", 5*WINDOW_SCALE)
+Font_CutebitmapismA_smallsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/7x-D3CutebitmapismA.ttf", 5*WINDOW_SCALE)
+Font_CutebitmapismA_mediumsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/7x-D3CutebitmapismA.ttf", 7*WINDOW_SCALE)
+Font_CutebitmapismA_bigsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/7x-D3CutebitmapismA.ttf", 8*WINDOW_SCALE)
 
 
 class nonogramWindow:
@@ -26,9 +32,9 @@ class nonogramWindow:
         self.screen = display
         self.gameStateManager = gameStateManager
 
-        # Crear color de fondo
+        # Crear surface para el fondo
         self.Surface_bg = pygame.surface.Surface((300 * WINDOW_SCALE, 300 * WINDOW_SCALE))
-        self.Surface_bg.fill((0, 0, 255))
+        self.Surface_bg.fill((0, 0, 0))
 
         # Crear surface para el glow
         self.glow_surface = pygame.Surface((256*WINDOW_SCALE, 240*WINDOW_SCALE), pygame.SRCALPHA)
@@ -97,12 +103,10 @@ class nonogramWindow:
                                       "Gráfica/resources/Zoom.png")
 
         # Boton de menú
-        self.Button_Menu = Button(228 * WINDOW_SCALE, 204 * WINDOW_SCALE, 24 * WINDOW_SCALE,
-                                  "Gráfica/resources/Menu.png")
+        self.Button_Menu = Button(228 * WINDOW_SCALE, 204 * WINDOW_SCALE, 24 * WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Jugar/boton_pausa.png")
 
         # Boton de pistas
-        self.Button_Tips = Button(228 * WINDOW_SCALE, 60 * WINDOW_SCALE, 24 * WINDOW_SCALE,
-                                  "Gráfica/resources/Tips.png")
+        self.Button_Tips = Button(228 * WINDOW_SCALE, 60 * WINDOW_SCALE, 24 * WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_pista.png")
 
         # Colores
         self.Button_Colours = [[Button(((j * 8) + 232) * WINDOW_SCALE, ((i * 8) + 88) * WINDOW_SCALE, 8 * WINDOW_SCALE,
@@ -280,57 +284,57 @@ class nonogramWindow:
                     # PUZZLE
                     if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (
                             60 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
-                        for square in group_squares:
+                        for square in self.group_squares:
                             square.updatePos(square.rec.x, square.rec.y - ((160 * WINDOW_SCALE) / puzzle_size))
                     # GRILLA DE NUMEROS
                     if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 215 * WINDOW_SCALE) and (
                             8 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 55 * WINDOW_SCALE):
-                        if 48 * WINDOW_SCALE > group_number_hints_up.sprites()[0].getPos()[1] or \
-                                group_number_hints_up.sprites()[0].getPos()[1] > 55 * WINDOW_SCALE:
-                            for square in group_number_hints_up:
+                        if 48 * WINDOW_SCALE > self.group_number_hints_up.sprites()[0].getPos()[1] or \
+                                self.group_number_hints_up.sprites()[0].getPos()[1] > 55 * WINDOW_SCALE:
+                            for square in self.group_number_hints_up:
                                 square.updatePos(square.rec.x, square.rec.y - ((160 * WINDOW_SCALE) / puzzle_size))
 
                 if event.key == pygame.K_DOWN:
                     if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (
                             60 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
-                        for square in group_squares:
+                        for square in self.group_squares:
                             square.updatePos(square.rec.x, square.rec.y + ((160 * WINDOW_SCALE) / puzzle_size))
                     # GRILLA DE NUMEROS
                     if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 215 * WINDOW_SCALE) and (
                             8 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 55 * WINDOW_SCALE):
                         if 7 * WINDOW_SCALE > \
-                                group_number_hints_up.sprites()[number_hints.get_max_numbers() - 1].getPos()[1] or \
-                                group_number_hints_up.sprites()[number_hints.get_max_numbers() - 1].getPos()[
+                                self.group_number_hints_up.sprites()[self.number_hints.get_max_numbers() - 1].getPos()[1] or \
+                                self.group_number_hints_up.sprites()[self.number_hints.get_max_numbers() - 1].getPos()[
                                     1] > 16 * WINDOW_SCALE:
-                            for square in group_number_hints_up:
+                            for square in self.group_number_hints_up:
                                 square.updatePos(square.rec.x, square.rec.y + ((160 * WINDOW_SCALE) / puzzle_size))
 
                 if event.key == pygame.K_RIGHT:
                     if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (
                             60 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
-                        for square in group_squares:
+                        for square in self.group_squares:
                             square.updatePos(square.rec.x + ((160 * WINDOW_SCALE) / puzzle_size), square.rec.y)
                     # GRILLA DE NUMEROS
                     if (0 <= pygame.mouse.get_pos()[0] <= 47 * WINDOW_SCALE) and (
                             64 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 224 * WINDOW_SCALE):
                         if 0 * WINDOW_SCALE > \
-                                group_number_hints_left.sprites()[number_hints.get_max_numbers() - 1].getPos()[0] or \
-                                group_number_hints_left.sprites()[number_hints.get_max_numbers() - 1].getPos()[
+                                self.group_number_hints_left.sprites()[self.number_hints.get_max_numbers() - 1].getPos()[0] or \
+                                self.group_number_hints_left.sprites()[self.number_hints.get_max_numbers() - 1].getPos()[
                                     0] > 9 * WINDOW_SCALE:
-                            for square in group_number_hints_left:
+                            for square in self.group_number_hints_left:
                                 square.updatePos(square.rec.x + ((160 * WINDOW_SCALE) / puzzle_size), square.rec.y)
 
                 if event.key == pygame.K_LEFT:
                     if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (
                             60 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
-                        for square in group_squares:
+                        for square in self.group_squares:
                             square.updatePos(square.rec.x - ((160 * WINDOW_SCALE) / puzzle_size), square.rec.y)
                     # GRILLA DE NUMEROS
                     if (0 <= pygame.mouse.get_pos()[0] <= 47 * WINDOW_SCALE) and (
                             64 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 224 * WINDOW_SCALE):
-                        if 39 * WINDOW_SCALE > group_number_hints_left.sprites()[0].getPos()[0] or \
-                                group_number_hints_left.sprites()[0].getPos()[0] > 46 * WINDOW_SCALE:
-                            for square in group_number_hints_left:
+                        if 39 * WINDOW_SCALE > self.group_number_hints_left.sprites()[0].getPos()[0] or \
+                                self.group_number_hints_left.sprites()[0].getPos()[0] > 46 * WINDOW_SCALE:
+                            for square in self.group_number_hints_left:
                                 square.updatePos(square.rec.x - ((160 * WINDOW_SCALE) / puzzle_size), square.rec.y)
 
                 if event.key == pygame.K_o:
@@ -344,53 +348,64 @@ class nonogramWindow:
 
                 if event.key == pygame.K_z:     #deshacer
                     new_state = self.history.undo()
+                    #var_aux = False
+                    # Incrementar variable clicks
+                    self.clicks += 1
                     # Actualizar la visualización
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
                                 if new_state[i][j] == 1:
                                     self.obj_square[i][j].changeImage()
-                                    # Incrementar variable clicks
-                                    self.clicks += 1
                                 elif new_state[i][j] == 2:
                                     self.obj_square[i][j].changeImageX()
                                 else:
                                     if matriz_usuario[i][j] == 2:
                                         self.obj_square[i][j].changeImageX()
+                                        # Decrementar variable clicks
+                                        self.clicks -= 1
                                     else:
                                         self.obj_square[i][j].changeImage()
-                                        # Incrementar variable clicks
-                                        self.clicks += 1
+                    if np.array_equal(new_state, matriz_usuario):
+                        # Decrementar variable clicks
+                        self.clicks -= 1
                     matriz_usuario[:] = new_state
 
                 if event.key == pygame.K_x:  # Rehacer
                     new_state = self.history.redo()
                     # Actualizar la visualización
+                    # Incrementar variable clicks
+                    self.clicks += 1
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if new_state[i][j] != matriz_usuario[i][j]:
                                 if new_state[i][j] == 1:
                                     self.obj_square[i][j].changeImage()
-                                    # Incrementar variable clicks
-                                    self.clicks += 1
                                 elif new_state[i][j] == 2:
                                     self.obj_square[i][j].changeImageX()
+                                    # Decrementar variable clicks
+                                    self.clicks -= 1
                                 else:
                                     if matriz_usuario[i][j] == 2:
                                         self.obj_square[i][j].changeImageX()
+                                        # Decrementar variable clicks
+                                        self.clicks -= 1
                                     else:
                                         self.obj_square[i][j].changeImage()
-                                        # Incrementar variable clicks
-                                        self.clicks += 1
+                    if np.array_equal(new_state, matriz_usuario):
+                        # Decrementar variable clicks
+                        self.clicks -= 1
+
                     matriz_usuario[:] = new_state
 
         ################# DRAW ################
 
+
         # Cuadrados puzzle
         self.screen.blit(self.Surface_bg, (0, 0))
-        # Dibujar tamaño del cuadro de la grilla
-        pygame.draw.rect(self.Surface_bg, (177, 226, 231),
-                         (52 * WINDOW_SCALE, 60 * WINDOW_SCALE, 168 * WINDOW_SCALE, 168 * WINDOW_SCALE))
+        surface_bg_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_overlay_nivel-max.png")
+        surface_bg_image = pygame.transform.scale(surface_bg_image, (256*WINDOW_SCALE, 240*WINDOW_SCALE))
+        self.Surface_bg.blit(surface_bg_image, (0,0))
 
         for i in range(puzzle_size):
             for j in range(puzzle_size):
@@ -405,6 +420,35 @@ class nonogramWindow:
                 # Añadir a pantalla
                 self.Surface_bg.blit(self.obj_square[i][j].image,
                                      (self.obj_square[i][j].getPos()[0], self.obj_square[i][j].getPos()[1]))
+        # Añadir bordes a la grilla
+        for i in range(puzzle_size):
+            # Bordes Horizontales
+            pos_x = self.obj_square[0][i].getPos()[0]
+            height = (8*puzzle_size + 62)*WINDOW_SCALE
+            borde = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_bordes_grilla.png")
+            borde = pygame.transform.scale(borde, (8 * WINDOW_SCALE, 8 * WINDOW_SCALE))
+            self.Surface_bg.blit(borde, (pos_x, 57 * WINDOW_SCALE))
+            self.Surface_bg.blit(borde, (pos_x, height))
+
+            #Bordes Verticales
+            pos_y = self.obj_square[i][0].getPos()[1]
+            width = (8*metadata_nonograma['size'][0] + 54)*WINDOW_SCALE
+            bordeV = pygame.transform.rotate(borde, 90)
+            self.Surface_bg.blit(bordeV, (49*WINDOW_SCALE, pos_y))
+            self.Surface_bg.blit(bordeV, (width, pos_y))
+        # Añadir esquinas a la grilla
+        esquina = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_esquinas_grilla.png")
+        esquina = pygame.transform.scale(esquina, (8*WINDOW_SCALE, 8*WINDOW_SCALE))
+        esquinaUR = pygame.transform.rotate(esquina, -90)
+        esquinaDR = pygame.transform.rotate(esquina, 180)
+        esquinaDL = pygame.transform.rotate(esquina, 90)
+        self.Surface_bg.blit(esquina, (51*WINDOW_SCALE, 59*WINDOW_SCALE))
+        self.Surface_bg.blit(esquinaUR, (self.obj_square[0][puzzle_size - 1].getPos()[0]+5*WINDOW_SCALE, 59 * WINDOW_SCALE))
+        self.Surface_bg.blit(esquinaDR, (self.obj_square[0][puzzle_size - 1].getPos()[0]+5*WINDOW_SCALE, self.obj_square[puzzle_size - 1][0].getPos()[1]+5*WINDOW_SCALE))
+        self.Surface_bg.blit(esquinaDL, (
+        51*WINDOW_SCALE,
+        self.obj_square[puzzle_size - 1][0].getPos()[1] + 5 * WINDOW_SCALE))
+
 
         ################ HIGHLIGHT SQUARES ################
         self.glow_surface.fill((0, 0, 0, 0))
@@ -454,76 +498,80 @@ class nonogramWindow:
 
         ## Interfaz
         # Añadir cuadro para timer
-        pygame.draw.rect(self.Surface_bg, (0, 0, 0),
-                         (4 * WINDOW_SCALE, 12 * WINDOW_SCALE, 48 * WINDOW_SCALE, 48 * WINDOW_SCALE))
-        draw_text("Tiempo", "Arial", (255, 255, 255), 8 * WINDOW_SCALE, 10 * WINDOW_SCALE, 18 * WINDOW_SCALE,
-                  self.Surface_bg)
+        timerImage = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_cuadroinfo0.png")
+        timerImage = pygame.transform.scale(timerImage, (48*WINDOW_SCALE, 48*WINDOW_SCALE))
+        self.Surface_bg.blit(timerImage, (4 * WINDOW_SCALE, 12 * WINDOW_SCALE))
+
         # Añadir timer
-        draw_text(f"{time_to_minutes(self.timer)}", "Arial", (255, 255, 255), 8 * WINDOW_SCALE, 10 * WINDOW_SCALE, 25 * WINDOW_SCALE,
-                  self.Surface_bg)
+        self.Surface_bg.blit(Font_CutebitmapismA_mediumsize.render(f"{time_to_minutes(self.timer)}", False, (255, 255, 255)),(10 * WINDOW_SCALE, 25 * WINDOW_SCALE))
 
         # Añadir clicks
-        draw_text(f"clicks:{self.clicks}", "Arial", (255, 255, 255), 8 * WINDOW_SCALE, 10 * WINDOW_SCALE,42 * WINDOW_SCALE,self.Surface_bg)
-
+        if self.clicks < 1000:
+            self.Surface_bg.blit(Font_CutebitmapismA_mediumsize.render(f"{self.clicks}", False, (255, 255, 255)),(32 * WINDOW_SCALE, 40 * WINDOW_SCALE))
+        else:
+            self.Surface_bg.blit(Font_CutebitmapismA_smallsize.render(f"{self.clicks}", False, (255, 255, 255)),(32 * WINDOW_SCALE, 42 * WINDOW_SCALE))
 
         # Añadir cuadro para minimapa
-        pygame.draw.rect(self.Surface_bg, (84, 181, 190),
-                         (220 * WINDOW_SCALE, 12 * WINDOW_SCALE, 32 * WINDOW_SCALE, 32 * WINDOW_SCALE))
+        minimapImage = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/Indicador_vista_previa.png")
+        minimapImage = pygame.transform.scale(minimapImage,(32*WINDOW_SCALE, 32*WINDOW_SCALE))
+        self.Surface_bg.blit(minimapImage, (220*WINDOW_SCALE, 20*WINDOW_SCALE))
 
         # Añadir cuadro para colores
-        pygame.draw.rect(self.Surface_bg, (16, 92, 106),
-                         (228 * WINDOW_SCALE, 84 * WINDOW_SCALE, 24 * WINDOW_SCALE, 120 * WINDOW_SCALE))
+        monocolorImage = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_mono_relleno_selector.png")
+        monocolorImage = pygame.transform.scale(monocolorImage, (24*WINDOW_SCALE, 120*WINDOW_SCALE))
+        self.Surface_bg.blit(monocolorImage, (228*WINDOW_SCALE, 84*WINDOW_SCALE))
 
-        # Cuadro derecha, Colores, Botones
-        # pygame.draw.rect(Surface_bg, (235,235,35), (208*WINDOW_SCALE, 0*WINDOW_SCALE,48*WINDOW_SCALE,240*WINDOW_SCALE))
-
-        # Añadir Números Arriba
-        self.Surface_bg.blit(self.Surface_number_up, (56 * WINDOW_SCALE, 8 * WINDOW_SCALE))
-        # Añadir Números Izquierda
-        self.Surface_bg.blit(self.Surface_number_left, (0, 64 * WINDOW_SCALE))
+        # Añadir marco para la grilla
+        #marco_grillaImage = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_marco_grilla.png")
+        #marco_grillaImage = pygame.transform.scale(marco_grillaImage, (256*WINDOW_SCALE,240*WINDOW_SCALE))
+        #self.Surface_bg.blit(marco_grillaImage, (0,0))
 
         # Dibujar Numeros pista
         # Columnas
         for square in self.group_number_hints_up:
-            if square.rec.y < (8 * WINDOW_SCALE) or square.rec.y > (55 * WINDOW_SCALE):
-                square.setAlpha(0)
-            else:
-                square.setAlpha(255)
-            self.Surface_bg.blit(square.image, square.getPos())
+            if 8*WINDOW_SCALE<= square.rec.y <= (56 * WINDOW_SCALE):
+                pos_x = square.getPos()[0]
+                if (pos_x // (8 * WINDOW_SCALE)) % 2 == 0:
+                    pygame.draw.rect(self.Surface_bg, (14, 82, 93),(square.getPos()[0], square.getPos()[1], 8 * WINDOW_SCALE, 8 * WINDOW_SCALE))
+                else:
+                    pygame.draw.rect(self.Surface_bg, (91, 177, 194),(square.getPos()[0], square.getPos()[1], 8 * WINDOW_SCALE, 8 * WINDOW_SCALE))
+
 
         for i in range(self.number_hints.get_puzzle_size()):
             for j in range(self.number_hints.get_max_numbers()):
                 if self.number_hints.get_matriz_columna_value(i, j) != 0:
-                    pos_x = (self.group_number_hints_up.sprites()[
-                                 (i * self.number_hints.get_max_numbers()) + j].getPos()[0] + (2 * WINDOW_SCALE))
-                    pos_y = (self.group_number_hints_up.sprites()[
-                                 (i * self.number_hints.get_max_numbers()) + j].getPos()[1] - (1 * WINDOW_SCALE))
+                    text_surface = Font_smolmatrix_smallsize.render(f"{self.number_hints.get_matriz_columna_value(i, j)}", True, (255, 255, 255))
+                    text_width, text_height = text_surface.get_size()
+                    x = self.group_number_hints_up.sprites()[(i * self.number_hints.get_max_numbers()) + j].getPos()[0]
+                    y = self.group_number_hints_up.sprites()[(i * self.number_hints.get_max_numbers()) + j].getPos()[1]
+                    pos_x = x + (8*WINDOW_SCALE - text_width) // 2
+                    pos_y = y + (8*WINDOW_SCALE - text_height) // 2
 
                     if 4 * WINDOW_SCALE <= pos_y <= 54 * WINDOW_SCALE:
-                        draw_text(f"{self.number_hints.get_matriz_columna_value(i, j)}", "Arial", (255, 255, 255),
-                                  8 * WINDOW_SCALE, pos_x, pos_y, self.Surface_bg)
+                        self.Surface_bg.blit(text_surface,(pos_x, pos_y))
 
         # Filas
         for square in self.group_number_hints_left:
-            if square.rec.x < 0 or square.rec.x > (47 * WINDOW_SCALE):
-                square.setAlpha(0)
-            else:
-                square.setAlpha(255)
-            self.Surface_bg.blit(square.image, square.getPos())
+            if 0 <= square.rec.x <= (47 * WINDOW_SCALE):
+                pos_y = square.getPos()[1]
+                if (pos_y // (8 * WINDOW_SCALE)) % 2 == 0:
+                    pygame.draw.rect(self.Surface_bg, (14, 82, 93),(square.getPos()[0], square.getPos()[1], 8 * WINDOW_SCALE, 8 * WINDOW_SCALE))
+                else:
+                    pygame.draw.rect(self.Surface_bg, (91, 177, 194),(square.getPos()[0], square.getPos()[1], 8 * WINDOW_SCALE, 8 * WINDOW_SCALE))
+
 
         for i in range(self.number_hints.get_puzzle_size()):
             for j in range(self.number_hints.get_max_numbers()):
                 if self.number_hints.get_matriz_fila_value(i, j) != 0:
-                    pos_x = \
-                    self.group_number_hints_left.sprites()[(i * self.number_hints.get_max_numbers()) + j].getPos()[
-                        0] + (2 * WINDOW_SCALE)
-                    pos_y = \
-                    self.group_number_hints_left.sprites()[(i * self.number_hints.get_max_numbers()) + j].getPos()[
-                        1] - (1 * WINDOW_SCALE)
+                    text_surface = Font_smolmatrix_smallsize.render(f"{self.number_hints.get_matriz_fila_value(i, j)}", True, (255, 255, 255))
+                    text_width, text_height = text_surface.get_size()
+                    x = self.group_number_hints_left.sprites()[(i * self.number_hints.get_max_numbers()) + j].getPos()[0]
+                    y = self.group_number_hints_left.sprites()[(i * self.number_hints.get_max_numbers()) + j].getPos()[1]
+                    pos_x = x + (8*WINDOW_SCALE - text_width) // 2
+                    pos_y = y + (8*WINDOW_SCALE - text_height) // 2
 
                     if 0 <= pos_x <= 49 * WINDOW_SCALE:
-                        draw_text(f"{self.number_hints.get_matriz_fila_value(i, j)}", "Arial", (255, 255, 255),
-                                  8 * WINDOW_SCALE, pos_x, pos_y, self.Surface_bg)
+                        self.Surface_bg.blit(text_surface, (pos_x, pos_y))
 
         # Añadir botón de menu
         self.Surface_bg.blit(self.Button_Menu.image, (self.Button_Menu.getPos()))
@@ -531,20 +579,35 @@ class nonogramWindow:
         self.Surface_bg.blit(self.Button_Tips.image, (self.Button_Tips.getPos()))
 
         # Añadir botón de zoom
-        self.Surface_bg.blit(self.Button_Zoom.image, (self.Button_Zoom.getPos()))
+        #self.Surface_bg.blit(self.Button_Zoom.image, (self.Button_Zoom.getPos()))3
         # Añadir botón de antizoom
-        self.Surface_bg.blit(self.Button_AntiZoom.image, (self.Button_AntiZoom.getPos()))
+        #self.Surface_bg.blit(self.Button_AntiZoom.image, (self.Button_AntiZoom.getPos()))
         # Añadir logo de zoom
-        pygame.draw.rect(self.Surface_bg, (47, 110, 117),
-                         (232 * WINDOW_SCALE, 48 * WINDOW_SCALE, 8 * WINDOW_SCALE, 8 * WINDOW_SCALE))
+        #pygame.draw.rect(self.Surface_bg, (47, 110, 117),(232 * WINDOW_SCALE, 48 * WINDOW_SCALE, 8 * WINDOW_SCALE, 8 * WINDOW_SCALE))
         # Añadir botones de colores
+        """
         for i in range(14):
             for j in range(2):
                 self.Surface_bg.blit(self.Button_Colours[j][i].image, (self.Button_Colours[j][i].getPos()))
+        """
         # Mostrar texto "resuelto"
         if self.solved:
-            var_image = pygame.transform.scale(pygame.image.load("Gráfica/resources/Resuelto.png"),
-                                               (200 * WINDOW_SCALE, 100 * WINDOW_SCALE))
-            self.Surface_bg.blit(var_image, (50 * WINDOW_SCALE, 100 * WINDOW_SCALE))
+            # Dibujar rectangulo con alpha
+            s = pygame.Surface((256*WINDOW_SCALE, 240*WINDOW_SCALE))
+            s.set_alpha(128)
+            s.fill((0, 0, 0))
+            self.Surface_bg.blit(s, (0, 0))
+
+            # Dibujar rectangulo nivel completado
+            var_image = pygame.transform.scale(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_popup_nivel_completado.png"),
+                                               (206 * WINDOW_SCALE, 94 * WINDOW_SCALE))
+            self.Surface_bg.blit(var_image, (30 * WINDOW_SCALE, 70 * WINDOW_SCALE))
+
+            # Añadir tiempo
+            self.Surface_bg.blit(Font_CutebitmapismA_bigsize.render(f"{time_to_minutes(self.timer)}", False, (255, 255, 255)),(110 * WINDOW_SCALE, 101 * WINDOW_SCALE))
+
+            # Añadir clicks
+            self.Surface_bg.blit(Font_CutebitmapismA_bigsize.render(f"{self.clicks}", False, (255, 255, 255)), (110*WINDOW_SCALE, 117*WINDOW_SCALE))
+
         pygame.display.flip()
         ################# DRAW ################
