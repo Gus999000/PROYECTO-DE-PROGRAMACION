@@ -1,4 +1,5 @@
 from Gráfica.Ventana_Nonograma import nonogramWindow
+from Lógica.Logros import NonogramAchievementTracker
 import pygame
 import sys
 
@@ -20,6 +21,8 @@ class Game:
         self.nonogramWindow = nonogramWindow(self.screen, self.gameStateManager)
 
         self.states = {'start': self.start, 'nonogramWindow': self.nonogramWindow}
+
+        self.achievement_tracker = NonogramAchievementTracker()
 
     def run(self):
         while True:

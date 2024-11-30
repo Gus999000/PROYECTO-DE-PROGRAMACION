@@ -15,6 +15,7 @@ from Lógica.nonograma_info import metadata_nonograma
 from Lógica.archivos_npz import guardarNPZ
 from Lógica.archivos_npz import cargarNPZ
 from Lógica.time_to_minutes import time_to_minutes
+from Lógica.Logros import NonogramAchievementTracker
 import time
 
 puzzle_size = metadata_nonograma['size'][0]
@@ -31,6 +32,8 @@ class nonogramWindow:
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
+        self.achievement_tracker = NonogramAchievementTracker()
 
         # Crear surface para el fondo
         self.Surface_bg = pygame.surface.Surface((300 * WINDOW_SCALE, 300 * WINDOW_SCALE))
@@ -249,7 +252,9 @@ class nonogramWindow:
                         ################### PISTAS #####################################
 
                         if is_solved(matriz_usuario):
+                            self.achievement_tracker.puzzle_completed((self.timer))
                             self.solved = True
+                            self.achievement_tracker.show_achievements(show_all=True)
 
                     # Dibujar cuadrados
                     for i in range(puzzle_size):
@@ -267,7 +272,9 @@ class nonogramWindow:
                                 self.clicks += 1
 
                                 if is_solved(matriz_usuario):
+                                    self.achievement_tracker.puzzle_completed(self.timer)
                                     self.solved = True
+                                    self.achievement_tracker.show_achievements(show_all=True)
 
 
                 elif event.button == 3:
@@ -502,7 +509,9 @@ class nonogramWindow:
                 else:
                     self.auto_solving = False
                     if is_solved(matriz_usuario):
+                        self.achievement_tracker.puzzle_completed(self.timer)
                         self.solved = True
+                        self.achievement_tracker.show_achievements(show_all=True)
 
         ## Interfaz
         # Añadir cuadro para timer
