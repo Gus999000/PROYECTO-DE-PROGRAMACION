@@ -40,6 +40,9 @@ class nonogramWindow:
         self.glow_surface = pygame.Surface((256*WINDOW_SCALE, 240*WINDOW_SCALE), pygame.SRCALPHA)
         self.glow_surface.fill((0,0,0))
 
+        self.glow_surface2 = pygame.Surface((256*WINDOW_SCALE, 240*WINDOW_SCALE), pygame.SRCALPHA)
+        self.glow_surface.fill((0, 0, 0))
+
         # Timer
         self.timer_event = pygame.event.custom_type()
         pygame.time.set_timer(self.timer_event, 1000)
@@ -85,10 +88,8 @@ class nonogramWindow:
         self.group_number_hints_left = pygame.sprite.Group()
         for i in range(self.number_hints.get_puzzle_size()):
             for j in range(self.number_hints.get_max_numbers()):
-                self.group_number_hints_up.add(
-                    Square((56 + (i * 8)) * WINDOW_SCALE, (48 - (j * 8)) * WINDOW_SCALE, square_size))
-                self.group_number_hints_left.add(
-                    Square((40 - (j * 8)) * WINDOW_SCALE, (64 + (i * 8)) * WINDOW_SCALE, square_size))
+                self.group_number_hints_up.add(Square((56 + (i * 8)) * WINDOW_SCALE, (48 - (j * 8)) * WINDOW_SCALE, square_size))
+                self.group_number_hints_left.add(Square((40 - (j * 8)) * WINDOW_SCALE, (64 + (i * 8)) * WINDOW_SCALE, square_size))
 
         ############### RELLENAR MATRIZ ###############
         self.number_hints.set_matriz_filas(get_row_hints(matriz_solucion))
@@ -132,7 +133,7 @@ class nonogramWindow:
         glow_square = pygame.Surface((5 * WINDOW_SCALE, 5 * WINDOW_SCALE), pygame.SRCALPHA)
         glow_square.fill((255, 255, 255, opacity))
 
-        self.glow_surface.blit(glow_square, ((self.obj_square[i][j].getPos()[0] + 4), (self.obj_square[i][j].getPos()[1] + 4)))
+        self.glow_surface.blit(glow_square, ((self.obj_square[i][j].getPos()[0] + WINDOW_SCALE), (self.obj_square[i][j].getPos()[1] + WINDOW_SCALE)))
         self.screen.blit(self.glow_surface, (0, 0))
 
     def drawLineH(self,x0, y0, x1, y1, isFilling):
@@ -451,6 +452,7 @@ class nonogramWindow:
 
 
         ################ HIGHLIGHT SQUARES ################
+        # Algoritmo
         self.glow_surface.fill((0, 0, 0, 0))
 
         if mouse[0]:
@@ -463,7 +465,13 @@ class nonogramWindow:
                         else:
                             self.drawLine(self.initial_square[0], self.initial_square[1], i, j, False)
 
+        # Pasar mouse por encima
+        self.glow_surface2.fill((0, 0, 0, 0))
 
+        for i in range(puzzle_size):
+            for j in range(puzzle_size):
+                if self.obj_square[i][j].isColliding():
+                    self.highlightPixel(i,j)
 
         ################ HIGHLIGHT SQUARES ################
 
@@ -573,6 +581,39 @@ class nonogramWindow:
                     if 0 <= pos_x <= 49 * WINDOW_SCALE:
                         self.Surface_bg.blit(text_surface, (pos_x, pos_y))
 
+        ############# HIGHLIGHT FILAS Y COLUMNAS #############
+
+        for square in self.group_number_hints_left:
+            # Verificar si está dentro de la grilla
+            if 52*WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= (220 * WINDOW_SCALE) and 60*WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 225*WINDOW_SCALE and 0 <= square.rec.x <= (47 * WINDOW_SCALE):
+                pos_y = square.getPos()[1]
+                # Si el mouse está dentro de los límites de un cuadrado, destacar la grilla de números correspondiente
+                if (pygame.mouse.get_pos()[1] - (7*WINDOW_SCALE) <=pos_y <= pygame.mouse.get_pos()[1]):
+                    glow_surface = pygame.Surface((256 * WINDOW_SCALE, 240 * WINDOW_SCALE), pygame.SRCALPHA)
+                    glow_square = pygame.Surface((8 * WINDOW_SCALE, 8 * WINDOW_SCALE), pygame.SRCALPHA)
+                    glow_square.fill((255, 255, 255, 100))
+
+                    glow_surface.blit(glow_square, (square.getPos()[0], square.getPos()[1]))
+                    self.screen.blit(glow_surface, (0, 0))
+
+        for square in self.group_number_hints_up:
+            # Verificar si está dentro de la grilla
+            if 52 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= (220 * WINDOW_SCALE) and 60 * WINDOW_SCALE <=pygame.mouse.get_pos()[1] <= 225 * WINDOW_SCALE and 8*WINDOW_SCALE<= square.rec.y <= (56 * WINDOW_SCALE):
+                pos_x = square.getPos()[0]
+                # Si el mouse está dentro de los límites de un cuadrado, destacar la grilla de números correspondiente
+                if pygame.mouse.get_pos()[0]-(7*WINDOW_SCALE) <=pos_x <= pygame.mouse.get_pos()[0]:
+                    glow_surface = pygame.Surface((256 * WINDOW_SCALE, 240 * WINDOW_SCALE), pygame.SRCALPHA)
+                    glow_square = pygame.Surface((8 * WINDOW_SCALE, 8 * WINDOW_SCALE), pygame.SRCALPHA)
+                    glow_square.fill((255, 255, 255, 100))
+
+                    glow_surface.blit(glow_square, (square.getPos()[0], square.getPos()[1]))
+                    self.screen.blit(glow_surface, (0, 0))
+
+
+
+        ############# HIGHLIGHT FILAS Y COLUMNAS #############
+
+
         # Añadir botón de menu
         self.Surface_bg.blit(self.Button_Menu.image, (self.Button_Menu.getPos()))
         # Añadir botón de pistas
@@ -611,3 +652,4 @@ class nonogramWindow:
 
         pygame.display.flip()
         ################# DRAW ################
+
