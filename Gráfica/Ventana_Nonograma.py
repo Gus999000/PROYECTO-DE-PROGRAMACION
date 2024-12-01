@@ -6,7 +6,7 @@ from Gráfica.Historial_Nonograma import NonogramHistory
 from Gráfica.draw_text import draw_text
 from Gráfica.Matriz_numeros import matriz_numeros
 from Gráfica.Square import Square, WINDOW_SCALE
-from Lógica.nonograma_info import matriz_usuario
+from Lógica.nonograma_info import matriz_usuario, id_nonograma
 from Lógica.nonograma_info import is_solved
 from Lógica.hints import get_col_hints
 from Lógica.hints import get_row_hints
@@ -252,7 +252,7 @@ class nonogramWindow:
                         ################### PISTAS #####################################
 
                         if is_solved(matriz_usuario):
-                            self.achievement_tracker.puzzle_completed((self.timer))
+                            self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, puzzle_size)
                             self.solved = True
                             self.achievement_tracker.show_achievements(show_all=True)
 
@@ -272,7 +272,7 @@ class nonogramWindow:
                                 self.clicks += 1
 
                                 if is_solved(matriz_usuario):
-                                    self.achievement_tracker.puzzle_completed(self.timer)
+                                    self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, puzzle_size)
                                     self.solved = True
                                     self.achievement_tracker.show_achievements(show_all=True)
 
@@ -509,7 +509,7 @@ class nonogramWindow:
                 else:
                     self.auto_solving = False
                     if is_solved(matriz_usuario):
-                        self.achievement_tracker.puzzle_completed(self.timer)
+                        self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, puzzle_size)
                         self.solved = True
                         self.achievement_tracker.show_achievements(show_all=True)
 

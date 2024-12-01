@@ -1,64 +1,188 @@
 from pychievements import Achievement, tracker, icons
 from pychievements.signals import receiver, goal_achieved
 
+# 0XX  nonogramas <= 5x5
+# 1XX  nonogramas <= 10x10
+# 2XX  nonogramas <= 15x15
+# 3XX  nonogramas <= 20x20
 
-# Logro por número de puzzles completados
-class PuzzleMaster(Achievement):
-    name = 'Puzzle Master'
-    category = 'nonogram'
-    keywords = ('puzzle', 'completion')
+# Logros de Velocidad
+class SpeedsterI(Achievement):
+    name = 'Speedster I'
+    category = 'speed'
+    keywords = ('speed', 'time')
     goals = (
-        {'level': 1, 'name': 'Puzzle Beginner',
-         'icon': icons.star, 'description': 'Completed 1 nonogram puzzles'},
-        {'level': 15, 'name': 'Puzzle Explorer',
-         'icon': icons.star, 'description': 'Completed 15 nonogram puzzles'},
-        {'level': 30, 'name': 'Puzzle Expert',
-         'icon': icons.star, 'description': 'Completed 30 nonogram puzzles'},
-        {'level': 50, 'name': 'Puzzle Master',
-         'icon': icons.star, 'description': 'Completed 50 nonogram puzzles'},
+        {'level': 1, 'name': 'Speedster I',
+         'icon': icons.star, 'description': 'Termina un nivel fácil en menos de 10 segundos'},
     )
 
+    def evaluate(self, difficulty, time_taken, *args, **kwargs):
+        difficulty = int(difficulty.lstrip('n'))
+        if 0 <= difficulty < 200 and time_taken < 10:
+            self._current = 1
+        return self.achieved
 
-# Logro por velocidad
-class SpeedMaster(Achievement):
-    name = 'Speed Master'
-    category = 'nonogram'
-    keywords = ('puzzle', 'speed')
+class SpeedsterII(Achievement):
+    name = 'Speedster II'
+    category = 'speed'
+    keywords = ('speed', 'time')
     goals = (
-        {'level': 1, 'name': 'Quick Solver',
-         'icon': icons.unicodeCheck, 'description': 'Solved a puzzle in under 5 minutes'},
-        {'level': 2, 'name': 'Speed Runner',
-         'icon': icons.unicodeCheckBox, 'description': 'Solved a puzzle in under 3 minutes'},
-        {'level': 3, 'name': 'Lightning Fast',
-         'icon': icons.star, 'description': 'Solved a puzzle in under 1 minute'},
+        {'level': 1, 'name': 'Speedster II',
+         'icon': icons.star, 'description': 'Termina un nivel medio en menos de 30 segundos'},
     )
 
-    def evaluate(self, time_taken, *args, **kwargs):
-        """Evalúa el tiempo tomado y determina el nivel alcanzado"""
-        if (int(time_taken) < 60):  # Menos de 1 minuto
-            self._current = 3
-        elif (int(time_taken) < 180):  # Menos de 3 minutos
-            self._current = 2
-        elif (int(time_taken) < 300):  # Menos de 5 minutos
+    def evaluate(self, difficulty, time_taken, *args, **kwargs):
+        difficulty = int(difficulty.lstrip('n'))
+        if 200 <= difficulty < 400 and time_taken < 30:
+            self._current = 1
+        return self.achieved
+
+class SpeedsterIII(Achievement):
+    name = 'Speedster III'
+    category = 'speed'
+    keywords = ('speed', 'time')
+    goals = (
+        {'level': 1, 'name': 'Speedster III',
+         'icon': icons.star, 'description': 'Termina un nivel difícil en menos de 1 minuto'},
+    )
+
+    def evaluate(self, difficulty, time_taken, *args, **kwargs):
+        difficulty = int(difficulty.lstrip('n'))
+        if 400 <= difficulty < 600 and time_taken < 60:
             self._current = 1
         return self.achieved
 
 
-# Registrar los logros con el tracker
-tracker.register(PuzzleMaster)
-tracker.register(SpeedMaster)
+# Logros de Clicks
+class MinimalistI(Achievement):
+    name = 'Minimalist I'
+    category = 'efficiency'
+    keywords = ('puzzle', 'clicks')
+    goals = (
+        {'level': 1, 'name': 'Minimalist I',
+         'icon': icons.unicodeCheck, 'description': 'Termina un nivel fácil en menos de 10 clicks'},
+    )
+
+    def evaluate(self, difficulty, clicks, *args, **kwargs):
+        difficulty = int(difficulty.lstrip('n'))
+        if 0 <= difficulty < 200 and clicks < 10:
+            self._current = 1
+        return self.achieved
+
+class MinimalistII(Achievement):
+    name = 'Minimalist II'
+    category = 'efficiency'
+    keywords = ('puzzle', 'clicks')
+    goals = (
+        {'level': 1, 'name': 'Minimalist II',
+         'icon': icons.unicodeCheck, 'description': 'Termina un nivel medio en menos de 30 clicks'},
+    )
+
+    def evaluate(self, difficulty, clicks, *args, **kwargs):
+        difficulty = int(difficulty.lstrip('n'))
+        if 200 <= difficulty < 400 and clicks < 30:
+            self._current = 1
+        return self.achieved
+
+class MinimalistIII(Achievement):
+    name = 'Minimalist III'
+    category = 'efficiency'
+    keywords = ('puzzle', 'clicks')
+    goals = (
+        {'level': 1, 'name': 'Minimalist III',
+         'icon': icons.unicodeCheck, 'description': 'Termina un nivel difícil en menos de 50 clicks'},
+    )
+
+    def evaluate(self, difficulty, clicks, *args, **kwargs):
+        difficulty = int(difficulty.lstrip('n'))
+        if 400 <= difficulty < 600 and clicks < 50:
+            self._current = 1
+        return self.achieved
 
 
-# Receptor de señales para mostrar mensajes cuando se alcanza un logro
-@receiver(goal_achieved)
-def new_goal(tracked_id, achievement, goals, **kwargs):
-    """Muestra un mensaje cuando se alcanza un nuevo logro"""
-    for goal in goals:
-        print(f"\n🏆 ¡Logro desbloqueado! {goal['name']}")
-        print(f"   {goal['description']}")
+# Logros de Progresión (sets completados)
+class AccessGranted(Achievement):
+    name = 'Access Granted'
+    category = 'progression'
+    keywords = ('puzzle', 'completion')
+    goals = (
+        {'level': 1, 'name': 'Access Granted',
+         'icon': icons.star, 'description': 'Completa el set de niveles fáciles'},
+    )
+
+    def evaluate(self, difficulty, *args, **kwargs):
+        if difficulty == 'easy':
+            self._current = 1
+        return self.achieved
+
+class Breacher(Achievement):
+    name = 'Breacher'
+    category = 'progression'
+    keywords = ('puzzle', 'completion')
+    goals = (
+        {'level': 1, 'name': 'Breacher',
+         'icon': icons.star, 'description': 'Completa el set de niveles medios'},
+    )
+
+    def evaluate(self, difficulty, *args, **kwargs):
+        if difficulty == 'medium':
+            self._current = 1
+        return self.achieved
+
+class Netrunner(Achievement):
+    name = 'Netrunner'
+    category = 'progression'
+    keywords = ('puzzle', 'completion')
+    goals = (
+        {'level': 1, 'name': 'Netrunner',
+         'icon': icons.star, 'description': 'Completa el set de niveles difíciles'},
+    )
+
+    def evaluate(self, difficulty, *args, **kwargs):
+        if difficulty == 'hard':
+            self._current = 1
+        return self.achieved
 
 
+# Logros Especiales
+class HueShift(Achievement):
+    name = 'HUE Shift'
+    category = 'special'
+    keywords = ('puzzle', 'special')
+    goals = (
+        {'level': 1, 'name': 'HUE Shift',
+         'icon': icons.unicodeCheckBox, 'description': 'Cambia el color de tu UI y juega un nivel'},
+    )
 
+    def evaluate(self, *args, **kwargs):
+        self._current = 1
+        return self.achieved
+
+class Picasso(Achievement):
+    name = 'Picasso'
+    category = 'special'
+    keywords = ('puzzle', 'special')
+    goals = (
+        {'level': 1, 'name': 'Picasso',
+         'icon': icons.unicodeCheckBox, 'description': 'Dibuja 3 puzzles de distintos tamaños'},
+    )
+
+    def evaluate(self, *args, **kwargs):
+        self._current = 1
+        return self.achieved
+
+class Completionist(Achievement):
+    name = 'Completionist'
+    category = 'special'
+    keywords = ('puzzle', 'special')
+    goals = (
+        {'level': 1, 'name': 'Completionist',
+         'icon': icons.star, 'description': 'Completa todos los logros'},
+    )
+
+    def evaluate(self, *args, **kwargs):
+        self._current = 1
+        return self.achieved
 
 
 class NonogramAchievementTracker:
@@ -76,44 +200,103 @@ class NonogramAchievementTracker:
 
         self.player_id = "player1"
         self._initialized = True
+        self.completed_sizes = set()
 
-        # Registrar los logros solo la primera vez
+        # Registrar todos los logros
         if not tracker.achievements():
-            tracker.register(PuzzleMaster)
-            tracker.register(SpeedMaster)
+            # Logros de velocidad
+            tracker.register(SpeedsterI)
+            tracker.register(SpeedsterII)
+            tracker.register(SpeedsterIII)
 
-    def puzzle_completed(self, time_taken):
-        tracker.increment(self.player_id, PuzzleMaster)
-        tracker.evaluate(self.player_id, SpeedMaster, time_taken)
+            # Logros de Clicks
+            tracker.register(MinimalistI)
+            tracker.register(MinimalistII)
+            tracker.register(MinimalistIII)
 
+            # Logros de progresión (sets completados)
+            tracker.register(AccessGranted)
+            tracker.register(Breacher)
+            tracker.register(Netrunner)
+
+            # Logros especiales
+            tracker.register(HueShift)
+            tracker.register(Picasso)
+            tracker.register(Completionist)
+
+    def puzzle_completed(self, difficulty, time_taken, clicks, size):
+        # Evaluar logros de velocidad
+        tracker.evaluate(self.player_id, SpeedsterI, difficulty, time_taken)
+        tracker.evaluate(self.player_id, SpeedsterII, difficulty, time_taken)
+        tracker.evaluate(self.player_id, SpeedsterIII, difficulty, time_taken)
+
+        # Evaluar logros de clicks mínimos
+        tracker.evaluate(self.player_id, MinimalistI, difficulty, clicks)
+        tracker.evaluate(self.player_id, MinimalistII, difficulty, clicks)
+        tracker.evaluate(self.player_id, MinimalistIII, difficulty, clicks)
+
+        # Tracking para Picasso
+        self.completed_sizes.add(size)
+        if len(self.completed_sizes) >= 3:
+            tracker.evaluate(self.player_id, Picasso)
+
+    ####################PENDIENTE##############################################
+    def complete_difficulty_set(self, difficulty):
+        difficulty = int(difficulty.lstrip('n'))
+        if difficulty < 200:
+            tracker.evaluate(self.player_id, AccessGranted, difficulty)
+        elif difficulty < 400:
+            tracker.evaluate(self.player_id, Breacher, difficulty)
+        elif difficulty < 600:
+            tracker.evaluate(self.player_id, Netrunner, difficulty)
+
+
+    def ui_color_changed(self):
+        tracker.evaluate(self.player_id, HueShift)
+
+    ###########################################################################
+
+
+    def check_completionist(self):
+        """Verifica si se han completado todos los otros logros"""
+        all_achievements = [SpeedsterI, SpeedsterII, SpeedsterIII, MinimalistI, MinimalistII, MinimalistIII,
+            AccessGranted, Breacher, Netrunner, HueShift, Picasso]
+
+        all_complete = True
+        for achievement in all_achievements:
+            if tracker.unachieved(self.player_id, achievement):
+                all_complete = False
+                break
+
+        if all_complete:
+            tracker.evaluate(self.player_id, Completionist)
+
+    # Print en consola los logros (para testear)
     def show_achievements(self, show_all=False):
+        all_achievements = [
+            SpeedsterI, SpeedsterII, SpeedsterIII,
+            MinimalistI, MinimalistII, MinimalistIII,
+            AccessGranted, Breacher, Netrunner,
+            HueShift, Picasso, Completionist
+        ]
+
         print("\n=== Logros Conseguidos ===")
-        for achievement in [PuzzleMaster, SpeedMaster]:
+        for achievement in all_achievements:
             achieved = tracker.achieved(self.player_id, achievement)
             for goal in achieved:
                 print(f"{goal['icon']} {goal['name']}: {goal['description']}")
 
         if show_all:
             print("\n=== Logros Pendientes ===")
-            for achievement in [PuzzleMaster, SpeedMaster]:
+            for achievement in all_achievements:
                 unachieved = tracker.unachieved(self.player_id, achievement)
                 for goal in unachieved:
                     print(f"{goal['icon']} {goal['name']}: {goal['description']}")
 
 
-# Ejemplo de uso
-def main():
-    # Crear el tracker de logros
-    achievement_tracker = NonogramAchievementTracker()
-
-    # Simular completar algunos puzzles
-    achievement_tracker.puzzle_completed(400)  # 6:40 minutos
-    achievement_tracker.puzzle_completed(240)  # 4 minutos
-    achievement_tracker.puzzle_completed(45)  # 45 segundos
-
-    # Mostrar todos los logros
-    achievement_tracker.show_achievements(show_all=True)
-
-
-if __name__ == "__main__":
-    main()
+# Muestra mensaje en la consola cuando se alcanza un nuevo logro
+@receiver(goal_achieved)
+def new_goal(tracked_id, achievement, goals, **kwargs):
+    for goal in goals:
+        print(f"\n🏆 ¡Logro desbloqueado! {goal['name']}")
+        print(f"   {goal['description']}")
