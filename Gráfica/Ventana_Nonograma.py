@@ -196,6 +196,64 @@ class nonogramWindow:
         if isFilling:
             self.history.push_state(matriz_usuario.copy())
 
+    def dibujarNN(self, x0, y0, x1, y1, isFilling):
+        dibujo = np.zeros((20, 20))
+
+        def lim(val, min_val, max_val):
+            return max(min(val, max_val), min_val)
+
+        x0, y0 = lim(x0, 0, 19), lim(y0, 0, 19)
+        x1, y1 = lim(x1, 0, 19), lim(y1, 0, 19)
+
+        if abs(x1 - x0) > abs(y1 - y0):
+            if x0 > x1:
+                x0, x1 = x1, x0
+                y0, y1 = y1, y0
+
+            dx = x1 - x0
+            dy = abs(y1 - y0)
+            dir = 1 if y1 > y0 else -1
+            y = y0
+            p = 2 * dy - dx
+
+            for i in range(dx + 1):
+                if 0 <= x0 + i < 20 and 0 <= y < 20:
+                    if isFilling:
+                        self.putPixel(x0 + i, y)
+                    else:
+                        self.highlightPixel(x0 + i, y)
+
+                if p >= 0:
+                    y += dir
+                    p -= 2 * dx
+                p += 2 * dy
+        else:
+            if y0 > y1:
+                x0, x1 = x1, x0
+                y0, y1 = y1, y0
+
+            dx = abs(x1 - x0)
+            dy = y1 - y0
+            dir = 1 if x1 > x0 else -1
+            x = x0
+            p = 2 * dx - dy
+
+            for i in range(dy + 1):
+                if 0 <= x < 20 and 0 <= y0 + i < 20:
+                    if isFilling:
+                        self.putPixel(x, y0 + i)
+                    else:
+                        self.highlightPixel(x, y0 + i)
+
+                if p >= 0:
+                    x += dir
+                    p -= 2 * dy
+                p += 2 * dx
+
+        if isFilling:
+            self.history.push_state(dibujo.copy())
+
+        guardarNPZ("created.npz", id, dibujo)
 
     def run(self, events):
         mouse = pygame.mouse.get_pressed()
