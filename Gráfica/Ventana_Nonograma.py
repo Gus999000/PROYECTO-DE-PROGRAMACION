@@ -21,10 +21,10 @@ puzzle_size = metadata_nonograma['size'][0]
 WINDOW_SCALE = 3
 
 pygame.font.init()
-Font_smolmatrix_smallsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/3x5-smolmatrix.ttf", 5*WINDOW_SCALE)
-Font_CutebitmapismA_smallsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/7x-D3CutebitmapismA.ttf", 5*WINDOW_SCALE)
-Font_CutebitmapismA_mediumsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/7x-D3CutebitmapismA.ttf", 7*WINDOW_SCALE)
-Font_CutebitmapismA_bigsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/7x-D3CutebitmapismA.ttf", 8*WINDOW_SCALE)
+Font_smolmatrix_smallsize =pygame.font.Font("Gráfica/Recursos/Fonts/3x5-smolmatrix.ttf", 5*WINDOW_SCALE)
+Font_CutebitmapismA_smallsize =pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 5*WINDOW_SCALE)
+Font_CutebitmapismA_mediumsize =pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 7*WINDOW_SCALE)
+Font_CutebitmapismA_bigsize =pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 8*WINDOW_SCALE)
 
 
 class nonogramWindow:
@@ -104,10 +104,10 @@ class nonogramWindow:
                                       "Gráfica/resources/Zoom.png")
 
         # Boton de menú
-        self.Button_Menu = Button(228 * WINDOW_SCALE, 204 * WINDOW_SCALE, 24 * WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Jugar/boton_pausa.png")
+        self.Button_Menu = Button(228 * WINDOW_SCALE, 204 * WINDOW_SCALE, 24 * WINDOW_SCALE,"Gráfica/Recursos/Sprites/Jugar/boton_pausa.png")
 
         # Boton de pistas
-        self.Button_Tips = Button(228 * WINDOW_SCALE, 60 * WINDOW_SCALE, 24 * WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_pista.png")
+        self.Button_Tips = Button(228 * WINDOW_SCALE, 60 * WINDOW_SCALE, 24 * WINDOW_SCALE,"Gráfica/Recursos/Sprites/Jugar/lvl_boton_pista.png")
 
         # Colores
         self.Button_Colours = [[Button(((j * 8) + 232) * WINDOW_SCALE, ((i * 8) + 88) * WINDOW_SCALE, 8 * WINDOW_SCALE,
@@ -462,7 +462,7 @@ class nonogramWindow:
 
         # Cuadrados puzzle
         self.screen.blit(self.Surface_bg, (0, 0))
-        surface_bg_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_overlay_nivel-max.png")
+        surface_bg_image = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_overlay_nivel-max.png")
         surface_bg_image = pygame.transform.scale(surface_bg_image, (256*WINDOW_SCALE, 240*WINDOW_SCALE))
         self.Surface_bg.blit(surface_bg_image, (0,0))
 
@@ -484,7 +484,7 @@ class nonogramWindow:
             # Bordes Horizontales
             pos_x = self.obj_square[0][i].getPos()[0]
             height = (8*puzzle_size + 62)*WINDOW_SCALE
-            borde = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_bordes_grilla.png")
+            borde = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_bordes_grilla.png")
             borde = pygame.transform.scale(borde, (8 * WINDOW_SCALE, 8 * WINDOW_SCALE))
             self.Surface_bg.blit(borde, (pos_x, 57 * WINDOW_SCALE))
             self.Surface_bg.blit(borde, (pos_x, height))
@@ -496,7 +496,7 @@ class nonogramWindow:
             self.Surface_bg.blit(bordeV, (49*WINDOW_SCALE, pos_y))
             self.Surface_bg.blit(bordeV, (width, pos_y))
         # Añadir esquinas a la grilla
-        esquina = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_esquinas_grilla.png")
+        esquina = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_esquinas_grilla.png")
         esquina = pygame.transform.scale(esquina, (8*WINDOW_SCALE, 8*WINDOW_SCALE))
         esquinaUR = pygame.transform.rotate(esquina, -90)
         esquinaDR = pygame.transform.rotate(esquina, 180)
@@ -564,7 +564,7 @@ class nonogramWindow:
 
         ## Interfaz
         # Añadir cuadro para timer
-        timerImage = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_cuadroinfo0.png")
+        timerImage = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_cuadroinfo0.png")
         timerImage = pygame.transform.scale(timerImage, (48*WINDOW_SCALE, 48*WINDOW_SCALE))
         self.Surface_bg.blit(timerImage, (4 * WINDOW_SCALE, 12 * WINDOW_SCALE))
 
@@ -578,17 +578,17 @@ class nonogramWindow:
             self.Surface_bg.blit(Font_CutebitmapismA_smallsize.render(f"{self.clicks}", False, (255, 255, 255)),(32 * WINDOW_SCALE, 42 * WINDOW_SCALE))
 
         # Añadir cuadro para minimapa
-        minimapImage = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/Indicador_vista_previa.png")
+        minimapImage = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/Indicador_vista_previa.png")
         minimapImage = pygame.transform.scale(minimapImage,(32*WINDOW_SCALE, 32*WINDOW_SCALE))
         self.Surface_bg.blit(minimapImage, (220*WINDOW_SCALE, 20*WINDOW_SCALE))
 
         # Añadir cuadro para colores
-        monocolorImage = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_mono_relleno_selector.png")
+        monocolorImage = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_mono_relleno_selector.png")
         monocolorImage = pygame.transform.scale(monocolorImage, (24*WINDOW_SCALE, 120*WINDOW_SCALE))
         self.Surface_bg.blit(monocolorImage, (228*WINDOW_SCALE, 84*WINDOW_SCALE))
 
         # Añadir marco para la grilla
-        #marco_grillaImage = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_marco_grilla.png")
+        #marco_grillaImage = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_marco_grilla.png")
         #marco_grillaImage = pygame.transform.scale(marco_grillaImage, (256*WINDOW_SCALE,240*WINDOW_SCALE))
         #self.Surface_bg.blit(marco_grillaImage, (0,0))
 
@@ -698,7 +698,7 @@ class nonogramWindow:
             self.Surface_bg.blit(s, (0, 0))
 
             # Dibujar rectangulo nivel completado
-            var_image = pygame.transform.scale(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_popup_nivel_completado.png"),
+            var_image = pygame.transform.scale(pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_popup_nivel_completado.png"),
                                                (206 * WINDOW_SCALE, 94 * WINDOW_SCALE))
             self.Surface_bg.blit(var_image, (30 * WINDOW_SCALE, 70 * WINDOW_SCALE))
 
