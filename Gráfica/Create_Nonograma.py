@@ -26,7 +26,6 @@ Font_CutebitmapismA_smallsize =pygame.font.Font("Gráfica/Audiovisual_juego/Font
 Font_CutebitmapismA_mediumsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/7x-D3CutebitmapismA.ttf", 7*WINDOW_SCALE)
 Font_CutebitmapismA_bigsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/7x-D3CutebitmapismA.ttf", 8*WINDOW_SCALE)
 
-
 class createNonogram:
     def __init__(self, display, gameStateManager):
         self.screen = display

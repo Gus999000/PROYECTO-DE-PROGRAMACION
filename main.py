@@ -35,7 +35,8 @@ class Game:
         self.levelSelectionScreen = level_selection_Screen(self.screen, self.gameStateManager)
 
         # Crear
-        self.createScreen = createNonogram(self.screen, self.gameStateManager)
+        self.createScreen = create_Screen(self.screen, self.gameStateManager)
+        self.createNonogram = createNonogram(self.screen, self.gameStateManager)
 
         # Logros
         self.achievementsScreen = achievements_Screen(self.screen, self.gameStateManager)
@@ -58,6 +59,7 @@ class Game:
             'difficultyScreen': self.difficultyScreen,
             'levelSelectionScreen': self.levelSelectionScreen,
             'createScreen': self.createScreen,
+            'createNonogram': self.createNonogram,
             "achievementsScreen": self.achievementsScreen
         }
 

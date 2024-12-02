@@ -1,5 +1,8 @@
 import pygame, sys
 
+from Gráfica.Ventana_Nonograma import WINDOW_SCALE
+from Gráfica.Button import Button, Button_notSquare
+
 # Setup pygame/ventana
 mainClock = pygame.time.Clock()
 from pygame.locals import *
@@ -399,11 +402,16 @@ class audio_Options():
         self.screen.blit(scaled_surface, (0, 0))
         pygame.display.update()
         mainClock.tick(60)
-
+# Ventana para crear
 class create_Screen():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
+        # Botones
+        self.draw_Button = Button_notSquare(43*WINDOW_SCALE, 90*WINDOW_SCALE, 84*WINDOW_SCALE,98*WINDOW_SCALE, "Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_dibujar.png")
+        self.import_Button = Button_notSquare(135 * WINDOW_SCALE, 90 * WINDOW_SCALE, 84 * WINDOW_SCALE,98*WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_importar.png")
+
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
         draw_text("Crear", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 4)
@@ -413,10 +421,20 @@ class create_Screen():
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_ESCAPE:
-                self.gameStateManager.set_state('MenuWindow')
+                self.gameStateManager.set_state('menuWindow')
 
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    # Presionar boton de dibujar
+                    if self.draw_Button.isColliding():
+                        self.gameStateManager.set_state('createNonogram')
+        ######## DIBUJAR ########
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
+        self.screen.blit(self.draw_Button.image, (self.draw_Button.getPos()))
+        self.screen.blit(self.import_Button.image, (self.import_Button.getPos()))
+
+        ######## DIBUJAR ########
         pygame.display.update()
         mainClock.tick(60)
 
@@ -459,6 +477,8 @@ def sub_screen(title):
         pygame.display.update()
         mainClock.tick(60)
 """
+
+
 
 class menuWindow():
     def __init__(self, display, gameStateManager):
