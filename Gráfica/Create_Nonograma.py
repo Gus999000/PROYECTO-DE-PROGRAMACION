@@ -180,7 +180,6 @@ class createNonogram:
         if isFilling:
             self.history.push_state(matriz_usuario.copy())
 
-
     def GuardarMatriz(self, id: str):
         self.history.push_state(matriz_usuario.copy())
         guardarNPZ("created.npz", id, matriz_usuario)
