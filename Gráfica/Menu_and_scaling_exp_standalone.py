@@ -1,5 +1,8 @@
 import pygame, sys
 
+from Gráfica.Button import Button_notScaled, Button_notSquare
+from Gráfica.Ventana_Nonograma import WINDOW_SCALE
+
 # Setup pygame/ventana
 mainClock = pygame.time.Clock()
 from pygame.locals import *
@@ -35,7 +38,8 @@ virtual_screen = pygame.Surface((ORIGINAL_WIDTH, ORIGINAL_HEIGHT))
 
 # Renderizacion de texto
 title_font = pygame.font.Font('Gráfica/Audiovisual_juego/Fonts/16x-Vermin Vibes 1989.ttf', 36)
-font = pygame.font.SysFont('OCR-A Extended', 12, bold=True)
+#font = pygame.font.SysFont('OCR-A Extended', 12, bold=True)
+font = pygame.font.Font('Gráfica/Audiovisual_juego/Fonts/7x-zx-spectrum.ttf', 8)
 
 # opciones en video
 display_modes = ["Windowed", "Fullscreen", "Windowed Fullscreen"]
@@ -104,34 +108,57 @@ class video_Options():
         self.click = False
         # actualiza el indice de resolucion
         self.current_resolution_index = get_current_resolution()
+
+        # Botones
+        self.buttons = []
+        for i in range(6):
+            if i%2 == 0:
+                self.buttons.append(Button_notScaled(0,0,4*scale_factor,6*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_izq.png"))
+            else:
+                self.buttons.append(Button_notScaled(0, 0, 4*scale_factor, 6*scale_factor, "Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_der.png"))
     def run(self, events):
         global current_display_mode, brightness, selected_option, selected_color, scale_factor
         virtual_screen.fill((0, 0, 0))
-        draw_text("Video", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 30)
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_detalle_fondo_submenu.png"), (0,0))
 
-        # controles de resolucion
-        draw_text("Resolucion:", font, (255, 255, 255), virtual_screen, 50, 70)
+        # Texto
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_subtitulo_video.png"), (15, 15))
+
+        # Resolucion
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video_resolucion.png"),(20, 40))
         current_res = f"{resolutions[current_resolution_index][0]}x{resolutions[current_resolution_index][1]}"
-        draw_text(current_res, font, (255, 255, 255), virtual_screen, 175, 70)
-        left_arrow_res = draw_arrow(virtual_screen, 120, 65, 'left')
-        right_arrow_res = draw_arrow(virtual_screen, 230, 65, 'right')
+        draw_text(current_res, font, (255, 255, 255), virtual_screen, 175, 40)
 
-        # controles de display mode
-        draw_text("Pantalla:", font, (255, 255, 255), virtual_screen, 43, 100)
-        draw_text(display_modes[current_display_mode], font, (255, 255, 255), virtual_screen, 175, 100)
-        left_arrow_display = draw_arrow(virtual_screen, 120, 95, 'left')
-        right_arrow_display = draw_arrow(virtual_screen, 230, 95, 'right')
+        self.buttons[0].updatePos(130 * scale_factor, 40 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[0].image, (self.buttons[0].getPos()[0] // scale_factor, self.buttons[0].getPos()[1] // scale_factor))
+        self.buttons[1].updatePos(230 * scale_factor, 40 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[1].image,(self.buttons[1].getPos()[0] // scale_factor, self.buttons[1].getPos()[1] // scale_factor))
 
-        # control de brillo
-        draw_text("Brillo:", font, (255, 255, 255), virtual_screen, 35, 130)
-        pygame.draw.rect(virtual_screen, (100, 100, 100), (140, 125, 80, 10))
-        pygame.draw.rect(virtual_screen, (255, 255, 255), (140, 125, brightness * 0.8, 10))
-        left_arrow_brightness = draw_arrow(virtual_screen, 120, 125, 'left')
-        right_arrow_brightness = draw_arrow(virtual_screen, 230, 125, 'right')
+
+        # Display Mode
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video_pantalla.png"),(20, 70))
+        draw_text(display_modes[current_display_mode], font, (255, 255, 255), virtual_screen, 175, 70)
+
+        self.buttons[2].updatePos(130 * scale_factor, 70 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
+        self.buttons[3].updatePos(230 * scale_factor, 70 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[3].image,(self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
+
+        # Control de Brillo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video_brillo.png"), (20, 100))
+
+        self.buttons[4].updatePos(130 * scale_factor, 100 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[4].image, (self.buttons[4].getPos()[0] // scale_factor, self.buttons[4].getPos()[1] // scale_factor))
+        self.buttons[5].updatePos(230 * scale_factor, 100 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[5].image,(self.buttons[5].getPos()[0] // scale_factor, self.buttons[5].getPos()[1] // scale_factor))
+
+        pygame.draw.rect(virtual_screen, (100, 100, 100), (140, 100, 80, 10))
+        pygame.draw.rect(virtual_screen, (255, 255, 255), (140, 100, brightness * 0.8, 10))
 
         # Elejir color de UI
-        draw_text("Color UI:", font, (255, 255, 255), virtual_screen, 63, 160)
-        color_positions = [(100, 155), (140, 155), (180, 155)]
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video_colorui.png"),(20, 130))
+        color_positions = [(100, 130), (140, 130), (180, 130)]
 
         for i, color_option in enumerate(ui_colors):
             color_option["pos"] = color_positions[i]
@@ -152,19 +179,19 @@ class video_Options():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.gameSateManager.set_state('optionsMenu')
-            if event.type == MOUSEBUTTONDOWN:
+            if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
-                    if left_arrow_res.collidepoint(scaled_mx, scaled_my):
+                    if self.buttons[0].isColliding():
                         change_resolution(current_resolution_index - 1)
-                    elif right_arrow_res.collidepoint(scaled_mx, scaled_my):
+                    if self.buttons[1].isColliding():
                         change_resolution(current_resolution_index + 1)
-                    elif left_arrow_display.collidepoint(scaled_mx, scaled_my):
+                    if self.buttons[2].isColliding():
                         current_display_mode = (current_display_mode - 1) % len(display_modes)
-                    elif right_arrow_display.collidepoint(scaled_mx, scaled_my):
+                    if self.buttons[3].isColliding():
                         current_display_mode = (current_display_mode + 1) % len(display_modes)
-                    elif left_arrow_brightness.collidepoint(scaled_mx, scaled_my):
+                    if self.buttons[4].isColliding():
                         brightness = max(0, brightness - 5)
-                    elif right_arrow_brightness.collidepoint(scaled_mx, scaled_my):
+                    if self.buttons[5].isColliding():
                         brightness = min(100, brightness + 5)
 
                     # seleccion de colores
@@ -186,17 +213,36 @@ class options_Menu():
         self.screen = display
         self.gameSateManager = gameStateManager
         self.click = False
+
+        # Botones
+        self.Button_controles = Button_notScaled(65*scale_factor, 30*scale_factor, 72*scale_factor,8*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_controles.png")
+        self.Button_video = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,
+                                                 8 * scale_factor,
+                                                 "Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video.png")
+        self.Button_audio = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,
+                                                 8 * scale_factor,
+                                                 "Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_audio.png")
+
     def run(self, events):
         global scale_factor
         virtual_screen.fill((0, 0, 0))
-        draw_text("Opciones", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 30)
 
-        button_texts = ["Controles", "Video", "Audio"]
-        button_rects = []
-        for i, text in enumerate(button_texts):
-            button_rect = draw_button(virtual_screen, text, ORIGINAL_WIDTH // 2, 80 + i * 40)
-            button_rects.append(button_rect)
-            draw_text(text, font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 80 + i * 40)
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_detalle_fondo_menu.png"), (0, 0))
+
+        #Texto
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_titulo.png"), (65,53))
+
+        # Botones
+        self.Button_controles.updatePos(100 * scale_factor, 90 * scale_factor, 72 * scale_factor, 8 * scale_factor)
+        virtual_screen.blit(self.Button_controles.image, (self.Button_controles.getPos()[0] // scale_factor, self.Button_controles.getPos()[1] // scale_factor))
+
+        self.Button_video.updatePos(115 * scale_factor, 125 * scale_factor, 72 * scale_factor, 8 * scale_factor)
+        virtual_screen.blit(self.Button_video.image, (self.Button_video.getPos()[0] // scale_factor, self.Button_video.getPos()[1] // scale_factor))
+
+        self.Button_audio.updatePos(115 * scale_factor, 160 * scale_factor, 72 * scale_factor, 8 * scale_factor)
+        virtual_screen.blit(self.Button_audio.image, (
+        self.Button_audio.getPos()[0] // scale_factor, self.Button_audio.getPos()[1] // scale_factor))
 
         mx, my = pygame.mouse.get_pos()
         scaled_mx = int(mx / scale_factor)
@@ -209,16 +255,15 @@ class options_Menu():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.gameSateManager.set_state('menuWindow')
-            if event.type == MOUSEBUTTONDOWN:
+
+            if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
-                    for i, rect in enumerate(button_rects):
-                        if rect.collidepoint(scaled_mx, scaled_my):
-                            if i == 0:
-                                self.gameSateManager.set_state('controlsOptions')
-                            elif i == 1:
-                                self.gameSateManager.set_state('videoOptions')
-                            elif i == 2:
-                                self.gameSateManager.set_state('audioOptions')
+                    if self.Button_controles.isColliding():
+                        self.gameSateManager.set_state('controlsOptions')
+                    if self.Button_audio.isColliding():
+                        self.gameSateManager.set_state('audioOptions')
+                    if self.Button_video.isColliding():
+                        self.gameSateManager.set_state('videoOptions')
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
@@ -230,15 +275,35 @@ class level_type_Screen():
         self.options = ["Clásico", "Color", "Custom"]
         self.screen = display
         self.gameStateManager = gameStateManager
+
+        # Botones
+        self.Button_Clasico = Button_notScaled(30*scale_factor, 100*scale_factor,58*scale_factor,66*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_clasico.png")
+        self.Button_Color = Button_notScaled(60 * scale_factor, 100 * scale_factor, 52 * scale_factor,
+                                               66 * scale_factor,
+                                               "Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_ejemplo_boton_color.png")
+        self.Button_Custom = Button_notScaled(90 * scale_factor, 100 * scale_factor, 52 * scale_factor,
+                                               66 * scale_factor,
+                                               "Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_custom.png")
+
+
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
-        draw_text("Selecciona el tipo de nivel", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 30)
 
-        button_rects = []
-        for i, option in enumerate(self.options):
-            button_rect = draw_button(virtual_screen, option, ORIGINAL_WIDTH // 2, 80 + i * 40)
-            button_rects.append(button_rect)
-            draw_text(option, font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 80 + i * 40)
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_menu_detalle_fondo.png"),(0,0))
+
+        # Texto
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_menu_categoria_titulo.png"),(55,55))
+
+        # Botones
+        self.Button_Clasico.updatePos(30*scale_factor, 100*scale_factor,58*scale_factor,66*scale_factor)
+        virtual_screen.blit(self.Button_Clasico.image, (self.Button_Clasico.getPos()[0] // scale_factor, self.Button_Clasico.getPos()[1] // scale_factor))
+
+        self.Button_Color.updatePos(103 * scale_factor, 100 * scale_factor, 52 * scale_factor, 66 * scale_factor)
+        virtual_screen.blit(self.Button_Color.image, (self.Button_Color.getPos()[0] // scale_factor, self.Button_Color.getPos()[1] // scale_factor))
+
+        self.Button_Custom.updatePos(175 * scale_factor, 100 * scale_factor, 58 * scale_factor, 66 * scale_factor)
+        virtual_screen.blit(self.Button_Custom.image, (self.Button_Custom.getPos()[0] // scale_factor, self.Button_Custom.getPos()[1] // scale_factor))
 
         mx, my = pygame.mouse.get_pos()
         scaled_mx = int(mx / scale_factor)
@@ -251,10 +316,14 @@ class level_type_Screen():
 
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.gameStateManager.set_state('menuWindow')
-            if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                for i, rect in enumerate(button_rects):
-                    if rect.collidepoint(scaled_mx, scaled_my):
-                        self.gameStateManager.set_state('difficultyScreen')
+
+            if event.type == MOUSEBUTTONUP:
+                if self.Button_Clasico.isColliding():
+                    self.gameStateManager.set_state('difficultyScreen')
+                if self.Button_Color.isColliding():
+                    self.gameStateManager.set_state('difficultyScreen')
+                if self.Button_Custom.isColliding():
+                    self.gameStateManager.set_state('difficultyScreen')
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
@@ -265,16 +334,37 @@ class difficulty_Screen():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
-        self.difficulties = ["Fácil", "Medio", "Difícil"]
+
+        # Botones
+        self.Button_Facil = Button_notScaled(46*scale_factor, 80*scale_factor,164*scale_factor,20*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_dificultad_facil.png")
+        self.Button_Medio = Button_notScaled(46 * scale_factor, 100 * scale_factor, 164 * scale_factor,
+                                             20 * scale_factor,
+                                             "Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_dificultad_medio.png")
+        self.Button_Dificil = Button_notScaled(46 * scale_factor, 100 * scale_factor, 164 * scale_factor,
+                                             20 * scale_factor,
+                                             "Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_dificultad_dificil.png")
+
+
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
-        draw_text("Selecciona la dificultad", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 30)
 
-        button_rects = []
-        for i, difficulty in enumerate(self.difficulties):
-            button_rect = draw_button(virtual_screen, difficulty, ORIGINAL_WIDTH // 2, 80 + i * 40)
-            button_rects.append(button_rect)
-            draw_text(difficulty, font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 80 + i * 40)
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_dificultad_detalle_fondo.png"),(0, 0))
+
+        # Texto
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_dificultad_titulo.png"),(55,55))
+
+        # Botones
+        self.Button_Facil.updatePos(46 * scale_factor, 90 * scale_factor, 164 * scale_factor, 20 * scale_factor)
+        virtual_screen.blit(self.Button_Facil.image, (self.Button_Facil.getPos()[0] // scale_factor, self.Button_Facil.getPos()[1] // scale_factor))
+
+        self.Button_Medio.updatePos(46 * scale_factor, 130 * scale_factor, 164 * scale_factor, 20 * scale_factor)
+        virtual_screen.blit(self.Button_Medio.image, (
+        self.Button_Medio.getPos()[0] // scale_factor, self.Button_Medio.getPos()[1] // scale_factor))
+
+        self.Button_Dificil.updatePos(46 * scale_factor, 170 * scale_factor, 164 * scale_factor, 20 * scale_factor)
+        virtual_screen.blit(self.Button_Dificil.image, (
+            self.Button_Dificil.getPos()[0] // scale_factor, self.Button_Dificil.getPos()[1] // scale_factor))
 
         mx, my = pygame.mouse.get_pos()
         scaled_mx = int(mx / scale_factor)
@@ -286,10 +376,15 @@ class difficulty_Screen():
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.gameStateManager.set_state('levelTypeScreen')
-            if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                for i, rect in enumerate(button_rects):
-                    if rect.collidepoint(scaled_mx, scaled_my):
-                        self.gameStateManager.set_state('levelSelectionScreen')
+
+            if event.type == MOUSEBUTTONUP:
+                if self.Button_Facil.isColliding():
+                    self.gameStateManager.set_state_id('levelSelectionScreen', 0)
+
+                if self.Button_Medio.isColliding():
+                    self.gameStateManager.set_state_id('levelSelectionScreen', 1)
+                if self.Button_Dificil.isColliding():
+                    self.gameStateManager.set_state_id('levelSelectionScreen', 2)
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
@@ -297,30 +392,57 @@ class difficulty_Screen():
         mainClock.tick(60)
 
 class level_selection_Screen():
+    id = 0
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
         self.num_levels = 8
         self.rows, self.cols = 2, 4  # Grid arrangement
-        self.level_size = 40
+        self.level_size = 36
 
         self.horizontal_spacing = (ORIGINAL_WIDTH - (self.cols * self.level_size)) // (self.cols + 1)
         self.vertical_spacing = (ORIGINAL_HEIGHT - (self.rows * self.level_size) - 60) // (self.rows + 1)  # Account for title space (60px)
+
+
+        # Botones
+        self.Buttons = []
+        for i in range(self.rows):
+            for j in range(self.cols):
+                pos_x = (self.horizontal_spacing + j * (self.level_size + self.horizontal_spacing))*scale_factor
+                pos_y = (60 + self.vertical_spacing + i * (self.level_size + self.vertical_spacing))*scale_factor
+                id = ((i*4)+j)+1
+                boton = {
+                    "id": id,  # Asignar un ID único, desde 1 a 8
+                    "button": Button_notScaled(pos_x,pos_y,36*scale_factor, 36*scale_factor, f"Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_nivel{id}.png")
+                }
+                self.Buttons.append(boton)
+    def set_id(self,id):
+        self.id = id
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
-        draw_text("Selecciona el nivel", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, 30)
 
-        level_rects = []
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_niveles_detalle_fondo.png"),(0, 0))
+
+        #Text
+        if self.id == 0:
+            text_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_subtitulo_dificultad_facil.png")
+        elif self.id == 1:
+            text_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_subtitulo_dificultad_medio.png")
+        elif self.id == 2:
+            text_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_subtitulo_dificultad_dificil.png")
+
+        virtual_screen.blit(text_image, (5, 15))
+
+        # Botones
         for row in range(self.rows):
             for col in range(self.cols):
-                level_index = row * self.cols + col
+                level_index = (row * 4) + col
                 x = self.horizontal_spacing + col * (self.level_size + self.horizontal_spacing)
                 y = 60 + self.vertical_spacing + row * (self.level_size + self.vertical_spacing)
-                level_rect = pygame.Rect(x, y, self.level_size, self.level_size)
-                level_rects.append(level_rect)
-                pygame.draw.rect(virtual_screen, (255, 255, 255), level_rect)
-                draw_text(str(level_index + 1), font, (0, 0, 0), virtual_screen, x + self.level_size // 2,
-                          y + self.level_size // 2)
+                boton = self.Buttons[level_index]["button"]
+                boton.updatePos(x * scale_factor, y * scale_factor, 36 * scale_factor,36 * scale_factor)
+                virtual_screen.blit(boton.image, (x,y))
 
         mx, my = pygame.mouse.get_pos()
         scaled_mx = int(mx / scale_factor)
@@ -332,9 +454,31 @@ class level_selection_Screen():
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.gameStateManager.set_state('difficultyScreen')
-            if event.type == MOUSEBUTTONDOWN and event.button == 1:
-                for i, rect in enumerate(level_rects):
-                    if rect.collidepoint(scaled_mx, scaled_my):
+
+            if event.type == MOUSEBUTTONUP:
+                if event.button == 1:
+                    if self.Buttons[0]["button"].isColliding():
+                        self.gameStateManager.set_state('nonogramWindow')
+
+                    if self.Buttons[1]["button"].isColliding():
+                        self.gameStateManager.set_state('nonogramWindow')
+
+                    if self.Buttons[2]["button"].isColliding():
+                        self.gameStateManager.set_state('nonogramWindow')
+
+                    if self.Buttons[3]["button"].isColliding():
+                        self.gameStateManager.set_state('nonogramWindow')
+
+                    if self.Buttons[4]["button"].isColliding():
+                        self.gameStateManager.set_state('nonogramWindow')
+
+                    if self.Buttons[5]["button"].isColliding():
+                        self.gameStateManager.set_state('nonogramWindow')
+
+                    if self.Buttons[6]["button"].isColliding():
+                        self.gameStateManager.set_state('nonogramWindow')
+
+                    if self.Buttons[7]["button"].isColliding():
                         self.gameStateManager.set_state('nonogramWindow')
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
@@ -367,7 +511,14 @@ class controls_Options():
         self.gameStateManager = gameStateManager
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
-        draw_text("Controles", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 4)
+
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_detalle_fondo_submenu.png"),(0, 0))
+
+        # Texto
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_subtitulo_controles.png"), (15, 15))
+
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_pantalla_controles_texto.png"),(30, 40))
 
         for event in events:
             if event.type == QUIT:
@@ -385,9 +536,41 @@ class audio_Options():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
+        # Botones
+        self.buttons = []
+        for i in range(6):
+            if i % 2 == 0:
+                self.buttons.append(Button_notScaled(0, 0, 4 * scale_factor, 6 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_izq.png"))
+            else:
+                self.buttons.append(Button_notScaled(0, 0, 4 * scale_factor, 6 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_der.png"))
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
-        draw_text("Audio", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 4)
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_detalle_fondo_submenu.png"), (0, 0))
+
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_subtitulo_audio.png"),(15, 15))
+        # Global
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_audio_global.png"), (20, 40))
+        self.buttons[0].updatePos(130 * scale_factor, 40 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[0].image, (self.buttons[0].getPos()[0] // scale_factor, self.buttons[0].getPos()[1] // scale_factor))
+        self.buttons[1].updatePos(230 * scale_factor, 40 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[1].image,(self.buttons[1].getPos()[0] // scale_factor, self.buttons[1].getPos()[1] // scale_factor))
+
+        #Musica
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_audio_musica.png"),(20, 70))
+        self.buttons[2].updatePos(130 * scale_factor, 70 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
+        self.buttons[3].updatePos(230 * scale_factor, 70 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[3].image,(self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
+
+        #SFX
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_audio_SFX.png"),(20, 100))
+        self.buttons[4].updatePos(130 * scale_factor, 100 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[4].image, (self.buttons[4].getPos()[0] // scale_factor, self.buttons[4].getPos()[1] // scale_factor))
+        self.buttons[5].updatePos(230 * scale_factor, 100 * scale_factor, 4 * scale_factor, 6 * scale_factor)
+        virtual_screen.blit(self.buttons[5].image,(self.buttons[5].getPos()[0] // scale_factor, self.buttons[5].getPos()[1] // scale_factor))
+
 
         for event in events:
             if event.type == QUIT:
@@ -424,9 +607,119 @@ class achievements_Screen():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
+        # Botones
+        self.Button_vel1 = Button_notScaled(20*scale_factor, 50*scale_factor, 32*scale_factor,32*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_vel1.png")
+        self.Button_vel2 = Button_notScaled(20 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_vel2.png")
+        self.Button_vel3 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_vel3.png")
+
+        self.Button_dif1 = Button_notScaled(20 * scale_factor, 30 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dif1.png")
+        self.Button_dif2 = Button_notScaled(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dif2.png")
+        self.Button_dif3 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dif3.png")
+
+        self.Button_click1 = Button_notScaled(20 * scale_factor, 30 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click1.png")
+        self.Button_click2 = Button_notScaled(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click2.png")
+        self.Button_click3 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click3.png")
+
+        self.Button_creapuzzle = Button_notScaled(20 * scale_factor, 30 * scale_factor, 32 * scale_factor,32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_creapuzle.png")
+        self.Button_cambiacolor = Button_notScaled(20 * scale_factor, 50 * scale_factor, 32 * scale_factor,32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_cambiacolor.png")
+        self.Button_logros100 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor,32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_logros100.png")
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
-        draw_text("Logros", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 4)
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/logros/lgr_detalle_fondo.png"),(0,0))
+
+        # Texto
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_titulo.png"),(80, 15))
+
+        ###### LOGROS ######
+        # Velocidad
+        self.Button_vel1.updatePos(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_vel1.image, (self.Button_vel1.getPos()[0] // scale_factor, self.Button_vel1.getPos()[1] // scale_factor))
+        # Para este checkbox necesitamos una condición if, que vendrá por la parte lógica de Logros
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(44,74))
+
+        self.Button_vel2.updatePos(20 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_vel2.image, (self.Button_vel2.getPos()[0] // scale_factor, self.Button_vel2.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 134))
+
+        self.Button_vel3.updatePos(20 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_vel3.image, (self.Button_vel3.getPos()[0] // scale_factor, self.Button_vel3.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 194))
+
+
+        # Dificultad
+        self.Button_dif1.updatePos(80 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_dif1.image, (
+        self.Button_dif1.getPos()[0] // scale_factor, self.Button_dif1.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 74))
+
+        self.Button_dif2.updatePos(80 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_dif2.image, (
+        self.Button_dif2.getPos()[0] // scale_factor, self.Button_dif2.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 134))
+
+        self.Button_dif3.updatePos(80 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_dif3.image, (
+        self.Button_dif3.getPos()[0] // scale_factor, self.Button_dif3.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 194))
+
+        # Clicks
+        self.Button_click1.updatePos(140 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_click1.image, (self.Button_click1.getPos()[0] // scale_factor, self.Button_click1.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 74))
+
+        self.Button_click2.updatePos(140 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_click2.image, (self.Button_click2.getPos()[0] // scale_factor, self.Button_click2.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 134))
+
+        self.Button_click3.updatePos(140 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_click3.image, (self.Button_click3.getPos()[0] // scale_factor, self.Button_click3.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 194))
+
+        # Miscelanea
+        self.Button_creapuzzle.updatePos(200 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_creapuzzle.image, (self.Button_creapuzzle.getPos()[0] // scale_factor, self.Button_creapuzzle.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 74))
+
+        self.Button_cambiacolor.updatePos(200 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_cambiacolor.image, (self.Button_cambiacolor.getPos()[0] // scale_factor, self.Button_cambiacolor.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 134))
+
+        self.Button_logros100.updatePos(200 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
+        virtual_screen.blit(self.Button_logros100.image, (self.Button_logros100.getPos()[0] // scale_factor, self.Button_logros100.getPos()[1] // scale_factor))
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 194))
+
+        ###### LOGROS ######
+
+        # Mostrar logros
+        if self.Button_vel1.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_tiempo1_desc.png"),(70,40))
+        elif self.Button_vel2.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_tiempo2_desc.png"),(70,100))
+        elif self.Button_vel3.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_tiempo3_desc.png"),(70,160))
+
+        if self.Button_dif1.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dificultad1_desc.png"),(130,40))
+        elif self.Button_dif2.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dificultad2_desc.png"),(130,100))
+        elif self.Button_dif3.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dificultad3_desc.png"),(130,160))
+
+        if self.Button_click1.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click1_desc.png"),(10,40))
+        elif self.Button_click2.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click2_desc.png"),(10,100))
+        elif self.Button_click3.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click3_desc.png"),(10,160))
+
+        if self.Button_creapuzzle.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dibujapuzle_desc.png"),(70,40))
+        elif self.Button_cambiacolor.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_cambiacolor_desc.png"),(70,100))
+        elif self.Button_logros100.isColliding():
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_logros100_desc.png"),(70,160))
 
         for event in events:
             if event.type == QUIT:
@@ -434,6 +727,7 @@ class achievements_Screen():
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.gameStateManager.set_state('menuWindow')
+
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
@@ -464,44 +758,51 @@ class menuWindow():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
+        # Botones
+        self.Button_Jugar = Button_notScaled(109*scale_factor, 101*scale_factor, 40*scale_factor,8*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_boton_jugar.png")
+        self.Button_Opciones = Button_notScaled(109*scale_factor, 118*scale_factor, 64*scale_factor, 8*scale_factor,
+                                             "Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_boton_opciones.png")
+        self.Button_Crear = Button_notScaled(109*scale_factor, 135*scale_factor, 40*scale_factor, 8*scale_factor,
+                                             "Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_boton_crear.png")
+        self.Button_Logros = Button_notScaled(109*scale_factor, 152*scale_factor, 47*scale_factor, 8*scale_factor,
+                                             "Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_boton_logros.png")
+
         self.click = False
         self.confirm_exit = False
-
     def run(self, events):
         # Gradiente en fondo
         for y in range(ORIGINAL_HEIGHT):
             color = (0 + y // 4, 0 + y // 12, 0 + y // 3)
             pygame.draw.line(virtual_screen, color, (0, y), (ORIGINAL_WIDTH, y))
 
+        # Fondo
+        bg_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_fondo.png")
+        virtual_screen.blit(bg_image,(0,0))
+
         # Dibuja texto
-        draw_text('Gridlock', title_font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 4)
+        bg_text = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_Titulo.png")
+        virtual_screen.blit(bg_text, (15,15))
+        bg_text_detalle = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_detalles.png")
+        virtual_screen.blit(bg_text_detalle, (35, 208))
+
 
         # Display de botones y funcionalidad
-        button_texts = ["Jugar", "Opciones", "Crear", "Logros"]
-        button_rects = []
-        for i, text in enumerate(button_texts):
-            button_rect = draw_button(virtual_screen, text, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 2 - 20 + i * 20)
-            button_rects.append(button_rect)
-            draw_text(text, font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2,
-                      ORIGINAL_HEIGHT // 2 - 20 + i * 20)
+        self.Button_Jugar.updatePos(109*scale_factor, 101*scale_factor, 40*scale_factor,8*scale_factor)
+        self.Button_Opciones.updatePos(109*scale_factor, 118*scale_factor, 64*scale_factor, 8*scale_factor)
+        self.Button_Crear.updatePos(109*scale_factor, 135*scale_factor, 40*scale_factor, 8*scale_factor)
+        self.Button_Logros.updatePos(109*scale_factor, 152*scale_factor, 47*scale_factor, 8*scale_factor)
+        virtual_screen.blit(self.Button_Jugar.image,(self.Button_Jugar.getPos()[0]//scale_factor,self.Button_Jugar.getPos()[1]//scale_factor))
+        virtual_screen.blit(self.Button_Opciones.image, (self.Button_Opciones.getPos()[0]//scale_factor,self.Button_Opciones.getPos()[1]//scale_factor))
+        virtual_screen.blit(self.Button_Logros.image, (self.Button_Logros.getPos()[0]//scale_factor,self.Button_Logros.getPos()[1]//scale_factor))
+        virtual_screen.blit(self.Button_Crear.image, (self.Button_Crear.getPos()[0]//scale_factor,self.Button_Crear.getPos()[1]//scale_factor))
+
 
         mx, my = pygame.mouse.get_pos()
         mx = int(mx / scale_factor)
         my = int(my / scale_factor)
 
         if not self.confirm_exit:
-            if self.click:
-                for i, rect in enumerate(button_rects):
-                    if rect.collidepoint(mx, my):
-                        if i == 0:
-                            self.gameStateManager.set_state('levelTypeScreen')
-                        elif i == 1:
-                            # Cambiar estado a 'optionsMenu', ver en objeto stateManager en main
-                            self.gameStateManager.set_state('optionsMenu')
-                        elif i == 2:
-                            self.gameStateManager.set_state('createScreen')
-                        elif i == 3:
-                            self.gameStateManager.set_state('achievementsScreen')
             self.click = False
 
         for event in events:
@@ -514,6 +815,16 @@ class menuWindow():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.click = True
+            if event.type == MOUSEBUTTONUP:
+                if event.button == 1:
+                    if self.Button_Jugar.isColliding():
+                        self.gameStateManager.set_state('levelTypeScreen')
+                    if self.Button_Opciones.isColliding():
+                        self.gameStateManager.set_state('optionsMenu')
+                    if self.Button_Crear.isColliding():
+                        self.gameStateManager.set_state('createScreen')
+                    if self.Button_Logros.isColliding():
+                        self.gameStateManager.set_state('achievementsScreen')
 
         if self.confirm_exit:
             pygame.draw.rect(virtual_screen, (0, 0, 0), (50, 80, 156, 80))

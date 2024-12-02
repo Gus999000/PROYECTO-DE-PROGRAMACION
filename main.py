@@ -62,7 +62,9 @@ class Game:
 
     def run(self):
         while True:
-
+            # Cambiar ID de ventanas
+            self.levelSelectionScreen.set_id(self.gameStateManager.id)
+            # Eventos
             events = pygame.event.get()
 
             for event in events:
@@ -85,11 +87,15 @@ class Start:
 
 # Clase que cambiará los estados entre las ventanas
 class GameStateManager:
+    id = 0
     def __init__(self, currentState):
         self.currentState = currentState
     def get_state(self):
         return self.currentState
     def set_state(self, state):
+        self.currentState = state
+    def set_state_id(self, state, id):
+        self.id = id
         self.currentState = state
 
 if __name__ == "__main__":
