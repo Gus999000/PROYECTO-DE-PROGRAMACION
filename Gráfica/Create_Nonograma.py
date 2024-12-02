@@ -181,8 +181,15 @@ class createNonogram:
             self.history.push_state(matriz_usuario.copy())
 
     def GuardarMatriz(self, id: str):
-        self.history.push_state(matriz_usuario.copy())
-        guardarNPZ("created.npz", id, matriz_usuario)
+        estado_actual = matriz_usuario.copy()
+        matriz_binaria = np.zeros_like(estado_actual)
+
+        for i in range(puzzle_size):
+            for j in range(puzzle_size):
+                if estado_actual[i][j] == 1:
+                    matriz_binaria[i][j] = 1
+
+        guardarNPZ("created.npz", id, matriz_binaria)
 
     def run(self, events):
         mouse = pygame.mouse.get_pressed()
@@ -406,4 +413,3 @@ class createNonogram:
 
         pygame.display.flip()
         ################# DRAW ################
-
