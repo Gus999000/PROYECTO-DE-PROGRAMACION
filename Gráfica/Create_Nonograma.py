@@ -186,7 +186,7 @@ class createNonogram:
 
         for i in range(puzzle_size):
             for j in range(puzzle_size):
-                if estado_actual[i][j] == 1:
+                if estado_actual[i][j].isFilling():
                     matriz_binaria[i][j] = 1
 
         guardarNPZ("created.npz", id, matriz_binaria)
