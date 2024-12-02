@@ -181,10 +181,9 @@ class createNonogram:
             self.history.push_state(matriz_usuario.copy())
 
 
-    def GuardarMatriz(self):
-        if isFilling:
-            self.history.push_state(dibujo.copy())
-        guardarNPZ("created.npz", id, dibujo)
+    def GuardarMatriz(self, id: str):
+        self.history.push_state(matriz_usuario.copy())
+        guardarNPZ("created.npz", id, matriz_usuario)
 
     def run(self, events):
         mouse = pygame.mouse.get_pressed()

@@ -48,5 +48,3 @@ def importarIMG_color(ruta: str):
     except Exception as e:
         print(f"Error al procesar la imagen: {e}")
         return None
-
-#def dibujarNN():
