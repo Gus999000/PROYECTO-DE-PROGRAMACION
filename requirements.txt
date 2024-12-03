@@ -1,0 +1,4 @@
+pychievements~=0.1.2
+numpy~=1.26.4
+pillow~=11.0.0
+pygame~=2.6.0

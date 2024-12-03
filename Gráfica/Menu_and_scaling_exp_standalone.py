@@ -1,3 +1,5 @@
+import tkinter
+import tkinter.filedialog
 import pygame, sys
 
 from Gráfica.Button import Button_notScaled, Button_notSquare
@@ -332,6 +334,10 @@ class level_type_Screen():
                 if self.Button_Color.isColliding():
                     self.gameStateManager.set_state('difficultyScreen')
                 if self.Button_Custom.isColliding():
+                    top = tkinter.Tk()
+                    top.withdraw()  # hide window
+                    file_name = tkinter.filedialog.askopenfilename(parent=top)
+                    top.destroy()
                     self.gameStateManager.set_state('difficultyScreen')
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
