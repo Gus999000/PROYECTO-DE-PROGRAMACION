@@ -1,7 +1,7 @@
 import pygame, sys
 
 from Gráfica.Ventana_Nonograma import WINDOW_SCALE
-from Gráfica.Button import Button, Button_notSquare
+from Gráfica.Button import Button, Button_notSquare, Button_notScaled
 
 # Setup pygame/ventana
 mainClock = pygame.time.Clock()
@@ -409,8 +409,19 @@ class create_Screen():
         self.gameStateManager = gameStateManager
 
         # Botones
-        self.draw_Button = Button_notSquare(40*WINDOW_SCALE, 85*WINDOW_SCALE, 84*WINDOW_SCALE,98*WINDOW_SCALE, "Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_dibujar.png")
-        self.import_Button = Button_notSquare(135 * WINDOW_SCALE, 85 * WINDOW_SCALE, 84 * WINDOW_SCALE,98*WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_importar.png")
+        self.draw_Button = Button_notScaled(40*scale_factor, 85*scale_factor, 84*scale_factor,98*scale_factor, "Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_dibujar.png")
+        self.import_Button = Button_notScaled(135 * scale_factor, 85 * scale_factor, 84 * scale_factor,98*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_importar.png")
+
+        self.Button_Confirmar = Button_notScaled(134*scale_factor,157*scale_factor, 84*scale_factor,20*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_popup_confirmar.png")
+        self.Button_Cancelar = Button_notScaled(38 * scale_factor, 157 * scale_factor, 84 * scale_factor,20 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_popup_cancelar.png")
+
+        # Popup elegir tamaño
+        self.choose_size = False
+        self.buttons = []
+        self.buttons.append(Button_notScaled(135*scale_factor,109*scale_factor,4*scale_factor,6*scale_factor, "Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_izq.png"))
+        self.buttons.append(Button_notScaled(170*scale_factor, 109*scale_factor, 4 * scale_factor, 6 * scale_factor, "Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_der.png"))
+        self.buttons.append(Button_notScaled(135 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_izq.png"))
+        self.buttons.append(Button_notScaled(170 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_der.png"))
 
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
@@ -426,18 +437,49 @@ class create_Screen():
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_ESCAPE:
-                self.gameStateManager.set_state('menuWindow')
+                if self.choose_size:
+                    self.choose_size = False
+                else:
+                    self.choose_size = False
+                    self.gameStateManager.set_state('menuWindow')
 
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     # Presionar boton de dibujar
                     if self.draw_Button.isColliding():
-                        self.gameStateManager.set_state('createNonogram')
+                        self.choose_size = True
+                    if self.choose_size == True:
+                        if self.Button_Cancelar.isColliding():
+                            self.choose_size = False
+                        if self.Button_Confirmar.isColliding():
+                            self.gameStateManager.set_state('createNonogram')
         ######## DIBUJAR ########
+
+        virtual_screen.blit(self.draw_Button.image, (self.draw_Button.getPos()[0]//scale_factor, self.draw_Button.getPos()[1]//scale_factor))
+        virtual_screen.blit(self.import_Button.image, (self.import_Button.getPos()[0]//scale_factor, self.import_Button.getPos()[1]//scale_factor))
+
+
+        if self.choose_size:
+            # Dibujar rectangulo con alpha
+            s = pygame.Surface((256*scale_factor, 240*scale_factor))
+            s.set_alpha(128)
+            s.fill((0, 0, 0))
+            virtual_screen.blit(s, (0, 0))
+
+            # Dibujar popup
+            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Crear/cr_popup_opciones0.png"),(25, 80))
+
+            # Botones
+            virtual_screen.blit(self.buttons[0].image, (self.buttons[0].getPos()[0] // scale_factor, self.buttons[0].getPos()[1] // scale_factor))
+            virtual_screen.blit(self.buttons[1].image, (self.buttons[1].getPos()[0] // scale_factor, self.buttons[1].getPos()[1] // scale_factor))
+            virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
+            virtual_screen.blit(self.buttons[3].image, (self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
+
+            virtual_screen.blit(self.Button_Confirmar.image, (self.Button_Confirmar.getPos()[0] // scale_factor, self.Button_Confirmar.getPos()[1] // scale_factor))
+            virtual_screen.blit(self.Button_Cancelar.image, (self.Button_Cancelar.getPos()[0] // scale_factor, self.Button_Cancelar.getPos()[1] // scale_factor))
+
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
-        self.screen.blit(self.draw_Button.image, (self.draw_Button.getPos()))
-        self.screen.blit(self.import_Button.image, (self.import_Button.getPos()))
 
         ######## DIBUJAR ########
         pygame.display.update()
