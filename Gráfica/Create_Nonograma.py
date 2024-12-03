@@ -18,15 +18,17 @@ import time
 WINDOW_SCALE = 3
 
 pygame.font.init()
-Font_smolmatrix_smallsize =pygame.font.Font("Gráfica/Recursos/Fonts/3x5-smolmatrix.ttf", 5*WINDOW_SCALE)
-Font_CutebitmapismA_smallsize =pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 5*WINDOW_SCALE)
-Font_CutebitmapismA_mediumsize =pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 7*WINDOW_SCALE)
-Font_CutebitmapismA_bigsize =pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 8*WINDOW_SCALE)
+
 
 class createNonogram:
     _user_text = "" # MAX 27 CHARACTERS
     update = True
     puzzle_size = 20
+    Font_smolmatrix_smallsize = pygame.font.Font("Gráfica/Recursos/Fonts/3x5-smolmatrix.ttf", 5 * WINDOW_SCALE)
+    Font_CutebitmapismA_smallsize = pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 5 * WINDOW_SCALE)
+    Font_CutebitmapismA_mediumsize = pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf",7 * WINDOW_SCALE)
+    Font_CutebitmapismA_bigsize = pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 8 * WINDOW_SCALE)
+
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
@@ -405,50 +407,51 @@ class createNonogram:
                             self._user_text += event.unicode
 
                 # Resetear dibujo
-                if event.key == pygame.K_r:
-                    # Resetear matriz
-                    self.matriz_usuario[:] = np.zeros_like(self.matriz_usuario)
-                    for i in range(self.puzzle_size):
-                        for j in range(self.puzzle_size):
-                            if self.obj_square[i][j].isFilled():
-                                self.obj_square[i][j].changeImage()
-
-                if event.key == pygame.K_z:     #deshacer
-                    new_state = self.history.undo()
-                    # Actualizar la visualización
-                    for i in range(self.puzzle_size):
-                        for j in range(self.puzzle_size):
-                            if new_state[i][j] != self.matriz_usuario[i][j]:
-                                if new_state[i][j] == 1:
+                if not self.pause and self.guardar:
+                    if event.key == pygame.K_r:
+                        # Resetear matriz
+                        self.matriz_usuario[:] = np.zeros_like(self.matriz_usuario)
+                        for i in range(self.puzzle_size):
+                            for j in range(self.puzzle_size):
+                                if self.obj_square[i][j].isFilled():
                                     self.obj_square[i][j].changeImage()
-                                elif new_state[i][j] == 2:
-                                    self.obj_square[i][j].changeImageX()
-                                else:
-                                    if self.matriz_usuario[i][j] == 2:
+
+                    if event.key == pygame.K_z:     #deshacer
+                        new_state = self.history.undo()
+                        # Actualizar la visualización
+                        for i in range(self.puzzle_size):
+                            for j in range(self.puzzle_size):
+                                if new_state[i][j] != self.matriz_usuario[i][j]:
+                                    if new_state[i][j] == 1:
+                                        self.obj_square[i][j].changeImage()
+                                    elif new_state[i][j] == 2:
                                         self.obj_square[i][j].changeImageX()
                                     else:
+                                        if self.matriz_usuario[i][j] == 2:
+                                            self.obj_square[i][j].changeImageX()
+                                        else:
+                                            self.obj_square[i][j].changeImage()
+
+                        self.matriz_usuario[:] = new_state
+
+                    if event.key == pygame.K_x:  # Rehacer
+                        new_state = self.history.redo()
+                        # Actualizar la visualización
+                        for i in range(self.puzzle_size):
+                            for j in range(self.puzzle_size):
+                                if new_state[i][j] != self.matriz_usuario[i][j]:
+                                    if new_state[i][j] == 1:
                                         self.obj_square[i][j].changeImage()
-
-                    self.matriz_usuario[:] = new_state
-
-                if event.key == pygame.K_x:  # Rehacer
-                    new_state = self.history.redo()
-                    # Actualizar la visualización
-                    for i in range(self.puzzle_size):
-                        for j in range(self.puzzle_size):
-                            if new_state[i][j] != self.matriz_usuario[i][j]:
-                                if new_state[i][j] == 1:
-                                    self.obj_square[i][j].changeImage()
-                                elif new_state[i][j] == 2:
-                                    self.obj_square[i][j].changeImageX()
-                                else:
-                                    if self.matriz_usuario[i][j] == 2:
+                                    elif new_state[i][j] == 2:
                                         self.obj_square[i][j].changeImageX()
-
                                     else:
-                                        self.obj_square[i][j].changeImage()
+                                        if self.matriz_usuario[i][j] == 2:
+                                            self.obj_square[i][j].changeImageX()
 
-                    self.matriz_usuario[:] = new_state
+                                        else:
+                                            self.obj_square[i][j].changeImage()
+
+                        self.matriz_usuario[:] = new_state
 
         ################# DRAW ################
 
@@ -561,7 +564,7 @@ class createNonogram:
             self.Surface_bg.blit(self.Button_Cancelar.image, self.Button_Cancelar.getPos())
 
             # Ingresar texto
-            text_surface = Font_CutebitmapismA_mediumsize.render(self._user_text, False, (255,255,255))
+            text_surface = self.Font_CutebitmapismA_mediumsize.render(self._user_text, False, (255,255,255))
             self.Surface_bg.blit(text_surface,(43*WINDOW_SCALE,98*WINDOW_SCALE))
         elif self.pause:
             # Dibujar rectangulo con alpha
