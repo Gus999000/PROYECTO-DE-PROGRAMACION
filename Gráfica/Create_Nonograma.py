@@ -190,7 +190,7 @@ class createNonogram:
         if isFilling:
             self.history.push_state(matriz_usuario.copy())
 
-    def GuardarMatriz(self, id: str):
+    def GuardarMatriz(self, nombre:str, id: str):
         estado_actual = matriz_usuario.copy()
         matriz_binaria = np.zeros_like(estado_actual)
 
@@ -199,7 +199,7 @@ class createNonogram:
                 if estado_actual[i][j] == 1:
                     matriz_binaria[i][j] = 1
 
-        guardarNPZ("created.npz", id, matriz_binaria)
+        guardarNPZ(nombre, id, matriz_binaria)
 
     def run(self, events):
         mouse = pygame.mouse.get_pressed()
@@ -237,7 +237,7 @@ class createNonogram:
                                 self._user_text = ""
                                 self.guardar = False
                             elif self.Button_GuardarySalir.isColliding():
-                                self.GuardarMatriz(self._user_text)
+                                self.GuardarMatriz("created.npz", self._user_text)
                                 self.gameStateManager.set_state("menuWindow")
                     # Menu
                     if self.Button_Menu.isColliding():

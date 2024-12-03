@@ -287,6 +287,17 @@ class nonogramWindow:
         if isFilling:
             self.history.push_state(matriz_usuario.copy())
 
+    def GuardarMatriz(self, nombre:str, id: str):
+        estado_actual = matriz_usuario.copy()
+        matriz_binaria = np.zeros_like(estado_actual)
+
+        for i in range(puzzle_size):
+            for j in range(puzzle_size):
+                if estado_actual[i][j] == 1:
+                    matriz_binaria[i][j] = 1
+
+        guardarNPZ(nombre, id, matriz_binaria)
+
     def run(self, events):
         mouse = pygame.mouse.get_pressed()
         WINDOW_SCALE = get_variable()
@@ -380,6 +391,7 @@ class nonogramWindow:
                     elif self.pause:
                         if self.Button_Guardar.isColliding():
                             self.update = True
+                            self.GuardarMatriz("saved.npz", id_nonograma)
                             self.gameStateManager.set_state("menuWindow")
                         if self.Button_MenuPrincipal.isColliding():
                             self.update = True
