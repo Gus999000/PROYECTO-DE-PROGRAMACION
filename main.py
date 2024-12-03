@@ -5,15 +5,15 @@ from Lógica.Logros import NonogramAchievementTracker
 import pygame
 import sys
 
-WINDOW_SCALE = 3
-SCREEN_SIZE = (256 * WINDOW_SCALE, 240 * WINDOW_SCALE)
 
 FPS = 60
 
 class Game:
+    WINDOW_SCALE = 3
+    SCREEN_SIZE = (256 * WINDOW_SCALE, 240 * WINDOW_SCALE)
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode(SCREEN_SIZE)
+        self.screen = pygame.display.set_mode(self.SCREEN_SIZE)
         self.clock = pygame.time.Clock()
 
         # Aquí es donde se cambia el estado del juego, probar cambiar con "nonogramWindow" y "start"

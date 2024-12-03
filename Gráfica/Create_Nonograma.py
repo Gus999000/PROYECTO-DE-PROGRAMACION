@@ -472,16 +472,16 @@ class createNonogram:
             s = pygame.Surface((256*WINDOW_SCALE, 240*WINDOW_SCALE))
             s.set_alpha(128)
             s.fill((0, 0, 0))
-            self.Surface_bg.blit(s, (0, 0))
+            self.screen.blit(s, (0, 0))
 
             # Dibujar cuadro
             var_image = pygame.transform.scale(pygame.image.load("Gráfica/Recursos/Sprites/Crear/cr_popup_pausa.png"),(158 * WINDOW_SCALE, 94 * WINDOW_SCALE))
-            self.Surface_bg.blit(var_image, (30 * WINDOW_SCALE, 70 * WINDOW_SCALE))
+            self.screen.blit(var_image, (30 * WINDOW_SCALE, 70 * WINDOW_SCALE))
 
             # Dibujar botones
-            self.Surface_bg.blit(self.Button_Guardar.image,self.Button_Guardar.getPos())
-            self.Surface_bg.blit(self.Button_MenuPrincipal.image, self.Button_MenuPrincipal.getPos())
-            self.Surface_bg.blit(self.Button_CerrarJuego.image, self.Button_CerrarJuego.getPos())
+            self.screen.blit(self.Button_Guardar.image,self.Button_Guardar.getPos())
+            self.screen.blit(self.Button_MenuPrincipal.image, self.Button_MenuPrincipal.getPos())
+            self.screen.blit(self.Button_CerrarJuego.image, self.Button_CerrarJuego.getPos())
 
         pygame.display.flip()
         ################# DRAW ################

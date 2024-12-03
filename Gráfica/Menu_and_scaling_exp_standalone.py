@@ -1,7 +1,7 @@
 import pygame, sys
 
 from Gráfica.Button import Button_notScaled, Button_notSquare
-from Gráfica.Ventana_Nonograma import WINDOW_SCALE
+from Lógica.nonograma_info import set_variable
 
 # Setup pygame/ventana
 mainClock = pygame.time.Clock()
@@ -90,6 +90,7 @@ def change_resolution(new_index):
         new_width, new_height = resolutions[current_resolution_index]
         scale_factor = new_width // ORIGINAL_WIDTH
         screen = pygame.display.set_mode((new_width, new_height), RESIZABLE)
+        set_variable(scale_factor)
         return True
     return False
 

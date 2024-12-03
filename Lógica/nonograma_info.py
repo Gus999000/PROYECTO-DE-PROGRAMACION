@@ -1,6 +1,8 @@
 import numpy as np
 import os
 
+from Gráfica.Create_Nonograma import WINDOW_SCALE
+
 """
 Casa: n001 (5x5)
 Fuerte: n002 (5x5)
@@ -22,6 +24,13 @@ Micro: n201 (20x20)
 Dino: n202 (20x20)
 
 """
+window_scale = 3
+
+def set_variable(value):
+    global window_scale
+    window_scale = value
+def get_variable():
+    return window_scale
 
 id_nonograma = 'n106'
 

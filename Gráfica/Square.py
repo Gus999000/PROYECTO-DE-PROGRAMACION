@@ -46,7 +46,7 @@ class Square(pg.sprite.Sprite):
             self.image = pg.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_mono_celda.png")
             self.Crossed = False
         else:
-            self.image = pg.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_mono_celda_marcada.png")
+            self.image = pg.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_mono_celdaX.png")
             self.Filled = False
             self.Crossed = True
         self.image = pg.transform.scale(self.image, (self.rec[2], self.rec[2]))
