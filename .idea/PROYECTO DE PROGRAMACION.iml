@@ -6,6 +6,7 @@
     </content>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <orderEntry type="jdk" jdkName="Python 3.12 (PROYECTO-DE-PROGRAMACION)" jdkType="Python SDK" />
 =======
     <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
@@ -13,6 +14,9 @@
 =======
     <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
 >>>>>>> 44a223e95d88168aff4002cc1560ca5e48a48034
+=======
+    <orderEntry type="jdk" jdkName="Python 3.12" jdkType="Python SDK" />
+>>>>>>> Crear_Nonograma
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
