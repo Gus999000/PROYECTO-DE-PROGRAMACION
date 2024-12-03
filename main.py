@@ -1,5 +1,6 @@
 from Gráfica.Ventana_Nonograma import nonogramWindow
 from Gráfica.Menu_and_scaling_exp_standalone import menuWindow, options_Menu, video_Options, level_type_Screen, difficulty_Screen, level_selection_Screen, controls_Options, audio_Options, create_Screen, achievements_Screen
+from Lógica.Logros import NonogramAchievementTracker
 import pygame
 import sys
 
@@ -59,6 +60,8 @@ class Game:
             'createScreen': self.createScreen,
             "achievementsScreen": self.achievementsScreen
         }
+
+        self.achievement_tracker = NonogramAchievementTracker()
 
     def run(self):
         while True:

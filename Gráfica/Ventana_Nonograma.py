@@ -6,7 +6,7 @@ from Gráfica.Historial_Nonograma import NonogramHistory
 from Gráfica.draw_text import draw_text
 from Gráfica.Matriz_numeros import matriz_numeros
 from Gráfica.Square import Square, WINDOW_SCALE
-from Lógica.nonograma_info import matriz_usuario
+from Lógica.nonograma_info import matriz_usuario, id_nonograma
 from Lógica.nonograma_info import is_solved
 from Lógica.hints import get_col_hints
 from Lógica.hints import get_row_hints
@@ -15,6 +15,7 @@ from Lógica.nonograma_info import metadata_nonograma
 from Lógica.archivos_npz import guardarNPZ
 from Lógica.archivos_npz import cargarNPZ
 from Lógica.time_to_minutes import time_to_minutes
+from Lógica.Logros import NonogramAchievementTracker
 import time
 
 puzzle_size = metadata_nonograma['size'][0]
@@ -31,6 +32,8 @@ class nonogramWindow:
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
+        self.achievement_tracker = NonogramAchievementTracker()
 
         # Crear surface para el fondo
         self.Surface_bg = pygame.surface.Surface((300 * WINDOW_SCALE, 300 * WINDOW_SCALE))
@@ -248,7 +251,9 @@ class nonogramWindow:
                         ################### PISTAS #####################################
 
                         if is_solved(matriz_usuario):
+                            self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, puzzle_size)
                             self.solved = True
+                            self.achievement_tracker.show_achievements(show_all=True)
 
                     # Dibujar cuadrados
                     for i in range(puzzle_size):
@@ -266,7 +271,9 @@ class nonogramWindow:
                                 self.clicks += 1
 
                                 if is_solved(matriz_usuario):
+                                    self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, puzzle_size)
                                     self.solved = True
+                                    self.achievement_tracker.show_achievements(show_all=True)
 
 
                 elif event.button == 3:
@@ -501,7 +508,9 @@ class nonogramWindow:
                 else:
                     self.auto_solving = False
                     if is_solved(matriz_usuario):
+                        self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, puzzle_size)
                         self.solved = True
+                        self.achievement_tracker.show_achievements(show_all=True)
 
         ## Interfaz
         # Añadir cuadro para timer

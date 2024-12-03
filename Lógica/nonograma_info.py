@@ -2,17 +2,28 @@ import numpy as np
 import os
 
 """
-Casa: n001
-
-Pikachu: n100
-
-Game Boy: n200
-
-Micro: n301
+Casa: n001 (5x5)
+Fuerte: n002 (5x5)
+2: n003 (6x6)
+Pikachu: n004 (10x10)
+Ignored: n005 (8x8)
+Café: n006 (10x10)
+Casco: n007 (10x10)
+Mario: n008 (10x10)
+Game Boy: n101 (15x15)
+Super Estrella: n102 (15x15)
+Mago: n103 (15x15)
+Rata: n104 (15x15)
+Bicho: n105 (17x17)
+Ying-Yang: n106 (18x18)
+Aperture Science: n107 (20x20)
+Bomba: n108 (20x20)
+Micro: n201 (20x20)
+Dino: n202 (20x20)
 
 """
 
-id_nonograma = 'n001'
+id_nonograma = 'n106'
 
 # Crear una ruta relativa basada en la ubicación de este archivo
 current_dir = os.path.dirname(__file__)
