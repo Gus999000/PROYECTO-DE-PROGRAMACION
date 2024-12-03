@@ -37,9 +37,9 @@ screen = pygame.display.set_mode((ORIGINAL_WIDTH * scale_factor, ORIGINAL_HEIGHT
 virtual_screen = pygame.Surface((ORIGINAL_WIDTH, ORIGINAL_HEIGHT))
 
 # Renderizacion de texto
-title_font = pygame.font.Font('Gráfica/Audiovisual_juego/Fonts/16x-Vermin Vibes 1989.ttf', 36)
+title_font = pygame.font.Font('Gráfica/Recursos/Fonts/16x-Vermin Vibes 1989.ttf', 36)
 #font = pygame.font.SysFont('OCR-A Extended', 12, bold=True)
-font = pygame.font.Font('Gráfica/Audiovisual_juego/Fonts/7x-zx-spectrum.ttf', 8)
+font = pygame.font.Font('Gráfica/Recursos/Fonts/7x-zx-spectrum.ttf', 8)
 
 # opciones en video
 display_modes = ["Windowed", "Fullscreen", "Windowed Fullscreen"]
@@ -113,20 +113,20 @@ class video_Options():
         self.buttons = []
         for i in range(6):
             if i%2 == 0:
-                self.buttons.append(Button_notScaled(0,0,4*scale_factor,6*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_izq.png"))
+                self.buttons.append(Button_notScaled(0,0,4*scale_factor,6*scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
             else:
-                self.buttons.append(Button_notScaled(0, 0, 4*scale_factor, 6*scale_factor, "Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_der.png"))
+                self.buttons.append(Button_notScaled(0, 0, 4*scale_factor, 6*scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
     def run(self, events):
         global current_display_mode, brightness, selected_option, selected_color, scale_factor
         virtual_screen.fill((0, 0, 0))
         # Fondo
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_detalle_fondo_submenu.png"), (0,0))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_detalle_fondo_submenu.png"), (0,0))
 
         # Texto
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_subtitulo_video.png"), (15, 15))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_subtitulo_video.png"), (15, 15))
 
         # Resolucion
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video_resolucion.png"),(20, 40))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_opcion_video_resolucion.png"),(20, 40))
         current_res = f"{resolutions[current_resolution_index][0]}x{resolutions[current_resolution_index][1]}"
         draw_text(current_res, font, (255, 255, 255), virtual_screen, 175, 40)
 
@@ -137,7 +137,7 @@ class video_Options():
 
 
         # Display Mode
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video_pantalla.png"),(20, 70))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_opcion_video_pantalla.png"),(20, 70))
         draw_text(display_modes[current_display_mode], font, (255, 255, 255), virtual_screen, 175, 70)
 
         self.buttons[2].updatePos(130 * scale_factor, 70 * scale_factor, 4 * scale_factor, 6 * scale_factor)
@@ -146,7 +146,7 @@ class video_Options():
         virtual_screen.blit(self.buttons[3].image,(self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
 
         # Control de Brillo
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video_brillo.png"), (20, 100))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_opcion_video_brillo.png"), (20, 100))
 
         self.buttons[4].updatePos(130 * scale_factor, 100 * scale_factor, 4 * scale_factor, 6 * scale_factor)
         virtual_screen.blit(self.buttons[4].image, (self.buttons[4].getPos()[0] // scale_factor, self.buttons[4].getPos()[1] // scale_factor))
@@ -157,7 +157,7 @@ class video_Options():
         pygame.draw.rect(virtual_screen, (255, 255, 255), (140, 100, brightness * 0.8, 10))
 
         # Elejir color de UI
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video_colorui.png"),(20, 130))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_opcion_video_colorui.png"),(20, 130))
         color_positions = [(100, 130), (140, 130), (180, 130)]
 
         for i, color_option in enumerate(ui_colors):
@@ -215,23 +215,23 @@ class options_Menu():
         self.click = False
 
         # Botones
-        self.Button_controles = Button_notScaled(65*scale_factor, 30*scale_factor, 72*scale_factor,8*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_controles.png")
+        self.Button_controles = Button_notScaled(65*scale_factor, 30*scale_factor, 72*scale_factor,8*scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_opcion_controles.png")
         self.Button_video = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,
                                                  8 * scale_factor,
-                                                 "Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_video.png")
+                                                 "Gráfica/Recursos/Sprites/Opciones/op_opcion_video.png")
         self.Button_audio = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,
                                                  8 * scale_factor,
-                                                 "Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_audio.png")
+                                                 "Gráfica/Recursos/Sprites/Opciones/op_opcion_audio.png")
 
     def run(self, events):
         global scale_factor
         virtual_screen.fill((0, 0, 0))
 
         # Fondo
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_detalle_fondo_menu.png"), (0, 0))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_detalle_fondo_menu.png"), (0, 0))
 
         #Texto
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_titulo.png"), (65,53))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_titulo.png"), (65,53))
 
         # Botones
         self.Button_controles.updatePos(100 * scale_factor, 90 * scale_factor, 72 * scale_factor, 8 * scale_factor)
@@ -277,23 +277,23 @@ class level_type_Screen():
         self.gameStateManager = gameStateManager
 
         # Botones
-        self.Button_Clasico = Button_notScaled(30*scale_factor, 100*scale_factor,58*scale_factor,66*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_clasico.png")
+        self.Button_Clasico = Button_notScaled(30*scale_factor, 100*scale_factor,58*scale_factor,66*scale_factor,"Gráfica/Recursos/Sprites/Jugar/lvl_boton_clasico.png")
         self.Button_Color = Button_notScaled(60 * scale_factor, 100 * scale_factor, 52 * scale_factor,
                                                66 * scale_factor,
-                                               "Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_ejemplo_boton_color.png")
+                                               "Gráfica/Recursos/Sprites/Jugar/lvl_ejemplo_boton_color.png")
         self.Button_Custom = Button_notScaled(90 * scale_factor, 100 * scale_factor, 52 * scale_factor,
                                                66 * scale_factor,
-                                               "Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_custom.png")
+                                               "Gráfica/Recursos/Sprites/Jugar/lvl_boton_custom.png")
 
 
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
 
         # Fondo
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_menu_detalle_fondo.png"),(0,0))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_menu_detalle_fondo.png"),(0,0))
 
         # Texto
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_menu_categoria_titulo.png"),(55,55))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_menu_categoria_titulo.png"),(55,55))
 
         # Botones
         self.Button_Clasico.updatePos(30*scale_factor, 100*scale_factor,58*scale_factor,66*scale_factor)
@@ -336,23 +336,23 @@ class difficulty_Screen():
         self.gameStateManager = gameStateManager
 
         # Botones
-        self.Button_Facil = Button_notScaled(46*scale_factor, 80*scale_factor,164*scale_factor,20*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_dificultad_facil.png")
+        self.Button_Facil = Button_notScaled(46*scale_factor, 80*scale_factor,164*scale_factor,20*scale_factor,"Gráfica/Recursos/Sprites/Jugar/lvl_boton_dificultad_facil.png")
         self.Button_Medio = Button_notScaled(46 * scale_factor, 100 * scale_factor, 164 * scale_factor,
                                              20 * scale_factor,
-                                             "Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_dificultad_medio.png")
+                                             "Gráfica/Recursos/Sprites/Jugar/lvl_boton_dificultad_medio.png")
         self.Button_Dificil = Button_notScaled(46 * scale_factor, 100 * scale_factor, 164 * scale_factor,
                                              20 * scale_factor,
-                                             "Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_dificultad_dificil.png")
+                                             "Gráfica/Recursos/Sprites/Jugar/lvl_boton_dificultad_dificil.png")
 
 
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
 
         # Fondo
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_dificultad_detalle_fondo.png"),(0, 0))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_dificultad_detalle_fondo.png"),(0, 0))
 
         # Texto
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_dificultad_titulo.png"),(55,55))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_dificultad_titulo.png"),(55,55))
 
         # Botones
         self.Button_Facil.updatePos(46 * scale_factor, 90 * scale_factor, 164 * scale_factor, 20 * scale_factor)
@@ -413,7 +413,7 @@ class level_selection_Screen():
                 id = ((i*4)+j)+1
                 boton = {
                     "id": id,  # Asignar un ID único, desde 1 a 8
-                    "button": Button_notScaled(pos_x,pos_y,36*scale_factor, 36*scale_factor, f"Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_nivel{id}.png")
+                    "button": Button_notScaled(pos_x,pos_y,36*scale_factor, 36*scale_factor, f"Gráfica/Recursos/Sprites/Jugar/lvl_boton_nivel{id}.png")
                 }
                 self.Buttons.append(boton)
     def set_id(self,id):
@@ -422,15 +422,15 @@ class level_selection_Screen():
         virtual_screen.fill((0, 0, 0))
 
         # Fondo
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_niveles_detalle_fondo.png"),(0, 0))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_niveles_detalle_fondo.png"),(0, 0))
 
         #Text
         if self.id == 0:
-            text_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_subtitulo_dificultad_facil.png")
+            text_image = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_subtitulo_dificultad_facil.png")
         elif self.id == 1:
-            text_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_subtitulo_dificultad_medio.png")
+            text_image = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_subtitulo_dificultad_medio.png")
         elif self.id == 2:
-            text_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_subtitulo_dificultad_dificil.png")
+            text_image = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_subtitulo_dificultad_dificil.png")
 
         virtual_screen.blit(text_image, (5, 15))
 
@@ -513,12 +513,12 @@ class controls_Options():
         virtual_screen.fill((0, 0, 0))
 
         # Fondo
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_detalle_fondo_submenu.png"),(0, 0))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_detalle_fondo_submenu.png"),(0, 0))
 
         # Texto
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_subtitulo_controles.png"), (15, 15))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_subtitulo_controles.png"), (15, 15))
 
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_pantalla_controles_texto.png"),(30, 40))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_pantalla_controles_texto.png"),(30, 40))
 
         for event in events:
             if event.type == QUIT:
@@ -541,31 +541,31 @@ class audio_Options():
         self.buttons = []
         for i in range(6):
             if i % 2 == 0:
-                self.buttons.append(Button_notScaled(0, 0, 4 * scale_factor, 6 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_izq.png"))
+                self.buttons.append(Button_notScaled(0, 0, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
             else:
-                self.buttons.append(Button_notScaled(0, 0, 4 * scale_factor, 6 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Opciones/op_boton_flecha_der.png"))
+                self.buttons.append(Button_notScaled(0, 0, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
         # Fondo
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_detalle_fondo_submenu.png"), (0, 0))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_detalle_fondo_submenu.png"), (0, 0))
 
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_subtitulo_audio.png"),(15, 15))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_subtitulo_audio.png"),(15, 15))
         # Global
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_audio_global.png"), (20, 40))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_opcion_audio_global.png"), (20, 40))
         self.buttons[0].updatePos(130 * scale_factor, 40 * scale_factor, 4 * scale_factor, 6 * scale_factor)
         virtual_screen.blit(self.buttons[0].image, (self.buttons[0].getPos()[0] // scale_factor, self.buttons[0].getPos()[1] // scale_factor))
         self.buttons[1].updatePos(230 * scale_factor, 40 * scale_factor, 4 * scale_factor, 6 * scale_factor)
         virtual_screen.blit(self.buttons[1].image,(self.buttons[1].getPos()[0] // scale_factor, self.buttons[1].getPos()[1] // scale_factor))
 
         #Musica
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_audio_musica.png"),(20, 70))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_opcion_audio_musica.png"),(20, 70))
         self.buttons[2].updatePos(130 * scale_factor, 70 * scale_factor, 4 * scale_factor, 6 * scale_factor)
         virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
         self.buttons[3].updatePos(230 * scale_factor, 70 * scale_factor, 4 * scale_factor, 6 * scale_factor)
         virtual_screen.blit(self.buttons[3].image,(self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
 
         #SFX
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Opciones/op_opcion_audio_SFX.png"),(20, 100))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_opcion_audio_SFX.png"),(20, 100))
         self.buttons[4].updatePos(130 * scale_factor, 100 * scale_factor, 4 * scale_factor, 6 * scale_factor)
         virtual_screen.blit(self.buttons[4].image, (self.buttons[4].getPos()[0] // scale_factor, self.buttons[4].getPos()[1] // scale_factor))
         self.buttons[5].updatePos(230 * scale_factor, 100 * scale_factor, 4 * scale_factor, 6 * scale_factor)
@@ -609,117 +609,117 @@ class achievements_Screen():
         self.gameStateManager = gameStateManager
 
         # Botones
-        self.Button_vel1 = Button_notScaled(20*scale_factor, 50*scale_factor, 32*scale_factor,32*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_vel1.png")
-        self.Button_vel2 = Button_notScaled(20 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_vel2.png")
-        self.Button_vel3 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_vel3.png")
+        self.Button_vel1 = Button_notScaled(20*scale_factor, 50*scale_factor, 32*scale_factor,32*scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_vel1.png")
+        self.Button_vel2 = Button_notScaled(20 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_vel2.png")
+        self.Button_vel3 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_vel3.png")
 
-        self.Button_dif1 = Button_notScaled(20 * scale_factor, 30 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dif1.png")
-        self.Button_dif2 = Button_notScaled(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dif2.png")
-        self.Button_dif3 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dif3.png")
+        self.Button_dif1 = Button_notScaled(20 * scale_factor, 30 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_dif1.png")
+        self.Button_dif2 = Button_notScaled(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_dif2.png")
+        self.Button_dif3 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_dif3.png")
 
-        self.Button_click1 = Button_notScaled(20 * scale_factor, 30 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click1.png")
-        self.Button_click2 = Button_notScaled(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click2.png")
-        self.Button_click3 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click3.png")
+        self.Button_click1 = Button_notScaled(20 * scale_factor, 30 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_click1.png")
+        self.Button_click2 = Button_notScaled(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_click2.png")
+        self.Button_click3 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor, 32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_click3.png")
 
-        self.Button_creapuzzle = Button_notScaled(20 * scale_factor, 30 * scale_factor, 32 * scale_factor,32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_creapuzle.png")
-        self.Button_cambiacolor = Button_notScaled(20 * scale_factor, 50 * scale_factor, 32 * scale_factor,32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_cambiacolor.png")
-        self.Button_logros100 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor,32 * scale_factor,"Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_logros100.png")
+        self.Button_creapuzzle = Button_notScaled(20 * scale_factor, 30 * scale_factor, 32 * scale_factor,32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_creapuzle.png")
+        self.Button_cambiacolor = Button_notScaled(20 * scale_factor, 50 * scale_factor, 32 * scale_factor,32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_cambiacolor.png")
+        self.Button_logros100 = Button_notScaled(20 * scale_factor, 80 * scale_factor, 32 * scale_factor,32 * scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_logros100.png")
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
         # Fondo
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/logros/lgr_detalle_fondo.png"),(0,0))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/logros/lgr_detalle_fondo.png"),(0,0))
 
         # Texto
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_titulo.png"),(80, 15))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_titulo.png"),(80, 15))
 
         ###### LOGROS ######
         # Velocidad
         self.Button_vel1.updatePos(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_vel1.image, (self.Button_vel1.getPos()[0] // scale_factor, self.Button_vel1.getPos()[1] // scale_factor))
         # Para este checkbox necesitamos una condición if, que vendrá por la parte lógica de Logros
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(44,74))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(44,74))
 
         self.Button_vel2.updatePos(20 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_vel2.image, (self.Button_vel2.getPos()[0] // scale_factor, self.Button_vel2.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 134))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 134))
 
         self.Button_vel3.updatePos(20 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_vel3.image, (self.Button_vel3.getPos()[0] // scale_factor, self.Button_vel3.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 194))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 194))
 
 
         # Dificultad
         self.Button_dif1.updatePos(80 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_dif1.image, (
         self.Button_dif1.getPos()[0] // scale_factor, self.Button_dif1.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 74))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 74))
 
         self.Button_dif2.updatePos(80 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_dif2.image, (
         self.Button_dif2.getPos()[0] // scale_factor, self.Button_dif2.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 134))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 134))
 
         self.Button_dif3.updatePos(80 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_dif3.image, (
         self.Button_dif3.getPos()[0] // scale_factor, self.Button_dif3.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 194))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 194))
 
         # Clicks
         self.Button_click1.updatePos(140 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click1.image, (self.Button_click1.getPos()[0] // scale_factor, self.Button_click1.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 74))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 74))
 
         self.Button_click2.updatePos(140 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click2.image, (self.Button_click2.getPos()[0] // scale_factor, self.Button_click2.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 134))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 134))
 
         self.Button_click3.updatePos(140 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click3.image, (self.Button_click3.getPos()[0] // scale_factor, self.Button_click3.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 194))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 194))
 
         # Miscelanea
         self.Button_creapuzzle.updatePos(200 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_creapuzzle.image, (self.Button_creapuzzle.getPos()[0] // scale_factor, self.Button_creapuzzle.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 74))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 74))
 
         self.Button_cambiacolor.updatePos(200 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_cambiacolor.image, (self.Button_cambiacolor.getPos()[0] // scale_factor, self.Button_cambiacolor.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 134))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 134))
 
         self.Button_logros100.updatePos(200 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_logros100.image, (self.Button_logros100.getPos()[0] // scale_factor, self.Button_logros100.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 194))
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 194))
 
         ###### LOGROS ######
 
         # Mostrar logros
         if self.Button_vel1.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_tiempo1_desc.png"),(70,40))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_tiempo1_desc.png"),(70,40))
         elif self.Button_vel2.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_tiempo2_desc.png"),(70,100))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_tiempo2_desc.png"),(70,100))
         elif self.Button_vel3.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_tiempo3_desc.png"),(70,160))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_tiempo3_desc.png"),(70,160))
 
         if self.Button_dif1.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dificultad1_desc.png"),(130,40))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_dificultad1_desc.png"),(130,40))
         elif self.Button_dif2.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dificultad2_desc.png"),(130,100))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_dificultad2_desc.png"),(130,100))
         elif self.Button_dif3.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dificultad3_desc.png"),(130,160))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_dificultad3_desc.png"),(130,160))
 
         if self.Button_click1.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click1_desc.png"),(10,40))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_click1_desc.png"),(10,40))
         elif self.Button_click2.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click2_desc.png"),(10,100))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_click2_desc.png"),(10,100))
         elif self.Button_click3.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_click3_desc.png"),(10,160))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_click3_desc.png"),(10,160))
 
         if self.Button_creapuzzle.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_dibujapuzle_desc.png"),(70,40))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_dibujapuzle_desc.png"),(70,40))
         elif self.Button_cambiacolor.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_cambiacolor_desc.png"),(70,100))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_cambiacolor_desc.png"),(70,100))
         elif self.Button_logros100.isColliding():
-            virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Logros/lgr_icono_logros100_desc.png"),(70,160))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_logros100_desc.png"),(70,160))
 
         for event in events:
             if event.type == QUIT:
@@ -760,13 +760,13 @@ class menuWindow():
         self.gameStateManager = gameStateManager
 
         # Botones
-        self.Button_Jugar = Button_notScaled(109*scale_factor, 101*scale_factor, 40*scale_factor,8*scale_factor,"Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_boton_jugar.png")
+        self.Button_Jugar = Button_notScaled(109*scale_factor, 101*scale_factor, 40*scale_factor,8*scale_factor,"Gráfica/Recursos/Sprites/Menu_principal/mp_boton_jugar.png")
         self.Button_Opciones = Button_notScaled(109*scale_factor, 118*scale_factor, 64*scale_factor, 8*scale_factor,
-                                             "Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_boton_opciones.png")
+                                             "Gráfica/Recursos/Sprites/Menu_principal/mp_boton_opciones.png")
         self.Button_Crear = Button_notScaled(109*scale_factor, 135*scale_factor, 40*scale_factor, 8*scale_factor,
-                                             "Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_boton_crear.png")
+                                             "Gráfica/Recursos/Sprites/Menu_principal/mp_boton_crear.png")
         self.Button_Logros = Button_notScaled(109*scale_factor, 152*scale_factor, 47*scale_factor, 8*scale_factor,
-                                             "Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_boton_logros.png")
+                                             "Gráfica/Recursos/Sprites/Menu_principal/mp_boton_logros.png")
 
         self.click = False
         self.confirm_exit = False
@@ -777,13 +777,13 @@ class menuWindow():
             pygame.draw.line(virtual_screen, color, (0, y), (ORIGINAL_WIDTH, y))
 
         # Fondo
-        bg_image = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_fondo.png")
+        bg_image = pygame.image.load("Gráfica/Recursos/Sprites/Menu_principal/mp_fondo.png")
         virtual_screen.blit(bg_image,(0,0))
 
         # Dibuja texto
-        bg_text = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_Titulo.png")
+        bg_text = pygame.image.load("Gráfica/Recursos/Sprites/Menu_principal/mp_Titulo.png")
         virtual_screen.blit(bg_text, (15,15))
-        bg_text_detalle = pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Menu_principal/mp_detalles.png")
+        bg_text_detalle = pygame.image.load("Gráfica/Recursos/Sprites/Menu_principal/mp_detalles.png")
         virtual_screen.blit(bg_text_detalle, (35, 208))
 
 
