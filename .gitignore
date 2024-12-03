@@ -1,0 +1,12 @@
+# Ignorar el entorno virtual
+venv/
+
+# Ignorar archivos temporales de PyCharm
+.idea/
+
+# Ignorar archivos compilados de Python
+*.pyc
+__pycache__/
+
+# Otros archivos de configuración que no deseas agregar
+*.log
