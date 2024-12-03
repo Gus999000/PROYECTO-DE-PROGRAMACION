@@ -599,11 +599,13 @@ class create_Screen():
 
         # Popup elegir tamaño
         self.choose_size = False
+        self.size = 20
+
         self.buttons = []
         self.buttons.append(Button_notScaled(135*scale_factor,109*scale_factor,4*scale_factor,6*scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
-        self.buttons.append(Button_notScaled(170*scale_factor, 109*scale_factor, 4 * scale_factor, 6 * scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
-        self.buttons.append(Button_notScaled(135 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
-        self.buttons.append(Button_notScaled(170 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
+        self.buttons.append(Button_notScaled(180*scale_factor, 109*scale_factor, 4 * scale_factor, 6 * scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
+        #self.buttons.append(Button_notScaled(135 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
+        #self.buttons.append(Button_notScaled(170 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
 
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
@@ -634,7 +636,17 @@ class create_Screen():
                         if self.Button_Cancelar.isColliding():
                             self.choose_size = False
                         if self.Button_Confirmar.isColliding():
+                            self.choose_size = False
                             self.gameStateManager.set_state('createNonogram')
+                        if self.buttons[0].isColliding():
+                            if self.size > 5:
+                                self.size -= 1
+                                self.gameStateManager.set_create_nonogram_puzzle_size(self.size)
+                        if self.buttons[1].isColliding():
+                            if self.size < 20:
+                                self.size += 1
+                                self.gameStateManager.set_create_nonogram_puzzle_size(self.size)
+
         ######## DIBUJAR ########
 
         virtual_screen.blit(self.draw_Button.image, (self.draw_Button.getPos()[0]//scale_factor, self.draw_Button.getPos()[1]//scale_factor))
@@ -651,11 +663,14 @@ class create_Screen():
             # Dibujar popup
             virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Crear/cr_popup_opciones0.png"),(25, 80))
 
+            # Tamaño
+            draw_text(f"{self.size}px", font, (255, 255, 255), virtual_screen, 160, 112)
+
             # Botones
             virtual_screen.blit(self.buttons[0].image, (self.buttons[0].getPos()[0] // scale_factor, self.buttons[0].getPos()[1] // scale_factor))
             virtual_screen.blit(self.buttons[1].image, (self.buttons[1].getPos()[0] // scale_factor, self.buttons[1].getPos()[1] // scale_factor))
-            virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
-            virtual_screen.blit(self.buttons[3].image, (self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
+            #virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
+            #virtual_screen.blit(self.buttons[3].image, (self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
 
             virtual_screen.blit(self.Button_Confirmar.image, (self.Button_Confirmar.getPos()[0] // scale_factor, self.Button_Confirmar.getPos()[1] // scale_factor))
             virtual_screen.blit(self.Button_Cancelar.image, (self.Button_Cancelar.getPos()[0] // scale_factor, self.Button_Cancelar.getPos()[1] // scale_factor))
@@ -756,7 +771,7 @@ class achievements_Screen():
         self.Button_click1.updatePos(140 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click1.image, (self.Button_click1.getPos()[0] // scale_factor, self.Button_click1.getPos()[1] // scale_factor))
         if "Minimalist I" in self.achievement_tracker.show_achievements():
-            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbo1.png"),(164, 74))
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(164, 74))
         else:
             virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 74))
 

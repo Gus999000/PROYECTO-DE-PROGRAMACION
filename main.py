@@ -94,6 +94,7 @@ class Start:
 class GameStateManager:
     id = 0
     id_nonograma = ""
+    create_nonogram_puzzle_size = 20
     def __init__(self, currentState):
         self.currentState = currentState
     def get_state(self):
@@ -107,6 +108,10 @@ class GameStateManager:
         self.id_nonograma = id
     def get_id_nonograma(self):
         return self.id_nonograma
+    def set_create_nonogram_puzzle_size(self,size):
+        self.create_nonogram_puzzle_size = size
+    def get_create_nonogram_puzzle_size(self):
+        return self.create_nonogram_puzzle_size
 
 if __name__ == "__main__":
     game = Game()
