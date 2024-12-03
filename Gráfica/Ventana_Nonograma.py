@@ -1,32 +1,30 @@
 import numpy as np
 import pygame
 import sys
-from Lógica.nonograma_info import window_scale, get_variable
+from Lógica.nonograma_info import window_scale, get_variable, cargar_Matriz, set_id
 from Gráfica.Button import Button, Button_notSquare
 from Gráfica.Historial_Nonograma import NonogramHistory
 from Gráfica.draw_text import draw_text
 from Gráfica.Matriz_numeros import matriz_numeros
 from Gráfica.Square import Square, WINDOW_SCALE
-from Lógica.nonograma_info import matriz_usuario, id_nonograma
+from Lógica.nonograma_info import id_nonograma
 from Lógica.nonograma_info import is_solved
 from Lógica.hints import get_col_hints
 from Lógica.hints import get_row_hints
-from Lógica.nonograma_info import matriz_solucion
-from Lógica.nonograma_info import metadata_nonograma
 from Lógica.archivos_npz import guardarNPZ
 from Lógica.archivos_npz import cargarNPZ
 from Lógica.time_to_minutes import time_to_minutes
 from Lógica.Logros import NonogramAchievementTracker
 import time
 
-puzzle_size = metadata_nonograma['size'][0]
+
 pygame.font.init()
 WINDOW_SCALE = window_scale
 
 
 class nonogramWindow:
     update = True
-
+    
     Font_smolmatrix_smallsize = pygame.font.Font("Gráfica/Recursos/Fonts/3x5-smolmatrix.ttf", 5 * WINDOW_SCALE)
     Font_CutebitmapismA_smallsize = pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 5 * WINDOW_SCALE)
     Font_CutebitmapismA_mediumsize = pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf",                                              7 * WINDOW_SCALE)
@@ -34,7 +32,13 @@ class nonogramWindow:
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+        # Matriz usuario
+        self.matriz_usuario = np.zeros_like(cargar_Matriz("n001")[0])
+        metadata = cargar_Matriz("n001")[1]
+        self.puzzle_size = metadata['size'][0]
+        set_id(self.gameStateManager.get_id_nonograma())
 
+        # Achievements
         self.achievement_tracker = NonogramAchievementTracker()
 
         # Crear surface para el fondo
@@ -59,16 +63,17 @@ class nonogramWindow:
 
         self.pause = False  # Pausa del juego
 
+
         # Ingresar tamaño del puzzle y el cuadrado
-        # square_size = (160*WINDOW_SCALE)/puzzle_size
+        # square_size = (160*WINDOW_SCALE)/self.puzzle_size
         square_size = 8 * WINDOW_SCALE
         self.obj_square = [
             [Square((i * square_size) + (56 * WINDOW_SCALE), (j * square_size) + 64 * WINDOW_SCALE, 8 * WINDOW_SCALE)
-             for i in range(puzzle_size)] for j in range(puzzle_size)]
+             for i in range(self.puzzle_size)] for j in range(self.puzzle_size)]
         # Añadir cuadrados al grupo de sprites, para así poder trabajar con ellos de forma conjunta
         self.group_squares = pygame.sprite.Group()
-        for i in range(puzzle_size):
-            for j in range(puzzle_size):
+        for i in range(self.puzzle_size):
+            for j in range(self.puzzle_size):
                 self.group_squares.add(self.obj_square[i][j])
 
         ########## Crear interfaz ##########
@@ -79,7 +84,7 @@ class nonogramWindow:
         self.Surface_number_left = pygame.surface.Surface((48 * WINDOW_SCALE, 160 * WINDOW_SCALE))
         self.Surface_number_left.fill((18, 100, 114))
 
-        self.number_hints = matriz_numeros(puzzle_size)
+        self.number_hints = matriz_numeros(self.puzzle_size)
 
         # Añadir cuadrados al grupo de sprites, para así poder trabajar con ellos de forma conjunta
         self.group_number_hints_up = pygame.sprite.Group()
@@ -90,8 +95,8 @@ class nonogramWindow:
                 self.group_number_hints_left.add(Square((40 - (j * 8)) * WINDOW_SCALE, (64 + (i * 8)) * WINDOW_SCALE, square_size))
 
         ############### RELLENAR MATRIZ ###############
-        self.number_hints.set_matriz_filas(get_row_hints(matriz_solucion))
-        self.number_hints.set_matriz_columnas(get_col_hints(matriz_solucion))
+        self.number_hints.set_matriz_filas(get_row_hints(cargar_Matriz("n001")[0]))
+        self.number_hints.set_matriz_columnas(get_col_hints(cargar_Matriz("n001")[0]))
         ############### RELLENAR MATRIZ ###############
 
         self.Button_Guardar = Button_notSquare(76 * WINDOW_SCALE, 102 * WINDOW_SCALE, 117 * WINDOW_SCALE,7 * WINDOW_SCALE,"Gráfica/Recursos/Sprites/Jugar/lvl_opcion_guardarysalir_pausa.png")
@@ -117,7 +122,7 @@ class nonogramWindow:
         # Creación de la cámara para Zoom
         camera_group = pygame.sprite.Group()
 
-        self.history = NonogramHistory(matriz_usuario.copy())
+        self.history = NonogramHistory(self.matriz_usuario.copy())
         self.solved = False
 
     def updateScreen(self, WINDOW_SCALE):
@@ -127,6 +132,11 @@ class nonogramWindow:
         self.Font_CutebitmapismA_bigsize = pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf",8 * WINDOW_SCALE)
 
         self.achievement_tracker = NonogramAchievementTracker()
+        # Matriz usuario
+        self.matriz_usuario = np.zeros_like(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0])
+        metadata = cargar_Matriz(self.gameStateManager.get_id_nonograma())[1]
+        self.puzzle_size = metadata['size'][0]
+        set_id(self.gameStateManager.get_id_nonograma())
 
         # Crear surface para el fondo
         self.Surface_bg = pygame.surface.Surface((300 * WINDOW_SCALE, 300 * WINDOW_SCALE))
@@ -151,15 +161,15 @@ class nonogramWindow:
         self.pause = False  # Pausa del juego
 
         # Ingresar tamaño del puzzle y el cuadrado
-        # square_size = (160*WINDOW_SCALE)/puzzle_size
+        # square_size = (160*WINDOW_SCALE)/self.puzzle_size
         square_size = 8 * WINDOW_SCALE
         self.obj_square = [
             [Square((i * square_size) + (56 * WINDOW_SCALE), (j * square_size) + 64 * WINDOW_SCALE, 8 * WINDOW_SCALE)
-             for i in range(puzzle_size)] for j in range(puzzle_size)]
+             for i in range(self.puzzle_size)] for j in range(self.puzzle_size)]
         # Añadir cuadrados al grupo de sprites, para así poder trabajar con ellos de forma conjunta
         self.group_squares = pygame.sprite.Group()
-        for i in range(puzzle_size):
-            for j in range(puzzle_size):
+        for i in range(self.puzzle_size):
+            for j in range(self.puzzle_size):
                 self.group_squares.add(self.obj_square[i][j])
 
         ########## Crear interfaz ##########
@@ -170,7 +180,7 @@ class nonogramWindow:
         self.Surface_number_left = pygame.surface.Surface((48 * WINDOW_SCALE, 160 * WINDOW_SCALE))
         self.Surface_number_left.fill((18, 100, 114))
 
-        self.number_hints = matriz_numeros(puzzle_size)
+        self.number_hints = matriz_numeros(self.puzzle_size)
 
         # Añadir cuadrados al grupo de sprites, para así poder trabajar con ellos de forma conjunta
         self.group_number_hints_up = pygame.sprite.Group()
@@ -181,8 +191,8 @@ class nonogramWindow:
                 self.group_number_hints_left.add(Square((40 - (j * 8)) * WINDOW_SCALE, (64 + (i * 8)) * WINDOW_SCALE, square_size))
 
         ############### RELLENAR MATRIZ ###############
-        self.number_hints.set_matriz_filas(get_row_hints(matriz_solucion))
-        self.number_hints.set_matriz_columnas(get_col_hints(matriz_solucion))
+        self.number_hints.set_matriz_filas(get_row_hints(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0]))
+        self.number_hints.set_matriz_columnas(get_col_hints(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0]))
         ############### RELLENAR MATRIZ ###############
 
         self.Button_Guardar = Button_notSquare(76 * WINDOW_SCALE, 102 * WINDOW_SCALE, 117 * WINDOW_SCALE,7 * WINDOW_SCALE,"Gráfica/Recursos/Sprites/Jugar/lvl_opcion_guardarysalir_pausa.png")
@@ -208,12 +218,12 @@ class nonogramWindow:
         # Creación de la cámara para Zoom
         camera_group = pygame.sprite.Group()
 
-        self.history = NonogramHistory(matriz_usuario.copy())
+        self.history = NonogramHistory(self.matriz_usuario.copy())
         self.solved = False
 
     def putPixel(self,x, y):
         self.obj_square[x][y].changeImage()
-        matriz_usuario[x][y] = self.obj_square[x][y].isFilled()
+        self.matriz_usuario[x][y] = self.obj_square[x][y].isFilled()
 
     def highlightPixel(self, i, j):
         WINDOW_SCALE = get_variable()
@@ -285,9 +295,10 @@ class nonogramWindow:
         else:
             self.drawLineV(x0, y0, x1, y1, isFilling)
         if isFilling:
-            self.history.push_state(matriz_usuario.copy())
+            self.history.push_state(self.matriz_usuario.copy())
 
     def run(self, events):
+        matriz_usuario = self.matriz_usuario
         mouse = pygame.mouse.get_pressed()
         WINDOW_SCALE = get_variable()
         # Actualizar ventana al ingresar al nivel
@@ -296,8 +307,8 @@ class nonogramWindow:
             self.updateScreen(WINDOW_SCALE)
             # Resetear matriz
             matriz_usuario[:] = np.zeros_like(matriz_usuario)
-            for i in range(puzzle_size):
-                for j in range(puzzle_size):
+            for i in range(self.puzzle_size):
+                for j in range(self.puzzle_size):
                     if self.obj_square[i][j].isFilled():
                         self.obj_square[i][j].changeImage()
             self.update = False
@@ -311,8 +322,8 @@ class nonogramWindow:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     # Guardar cuadrado que presionaste inicialmente
-                    for i in range(puzzle_size):
-                        for j in range(puzzle_size):
+                    for i in range(self.puzzle_size):
+                        for j in range(self.puzzle_size):
                             if self.obj_square[i][j].isColliding():
                                 self.initial_square = [i,j]
                                 break
@@ -330,7 +341,7 @@ class nonogramWindow:
                             if not is_solved(matriz_usuario):
                                 matriz_aux = matriz_usuario
                                 matriz_aux[matriz_aux != 1] = 0
-                                matriz_pistas = np.logical_xor(matriz_solucion, matriz_aux)
+                                matriz_pistas = np.logical_xor(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0], matriz_aux)
 
                                 # Obtener las posiciones donde hay 1's
                                 posiciones = np.where(matriz_pistas == 1)
@@ -352,13 +363,13 @@ class nonogramWindow:
                             ################### PISTAS #####################################
 
                             if is_solved(matriz_usuario):
-                                self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, puzzle_size)
+                                self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, self.puzzle_size)
                                 self.solved = True
                                 self.achievement_tracker.show_achievements(show_all=True)
 
                         # Dibujar cuadrados
-                        for i in range(puzzle_size):
-                            for j in range(puzzle_size):
+                        for i in range(self.puzzle_size):
+                            for j in range(self.puzzle_size):
 
                                 if self.obj_square[i][j].isColliding():
                                     if self.initial_square[0] == i and self.initial_square[1] == j:
@@ -372,7 +383,7 @@ class nonogramWindow:
                                     self.clicks += 1
 
                                     if is_solved(matriz_usuario):
-                                        self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, puzzle_size)
+                                        self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, self.puzzle_size)
                                         self.solved = True
                                         self.achievement_tracker.show_achievements(show_all=True)
                         if self.Button_Menu.isColliding():
@@ -399,8 +410,8 @@ class nonogramWindow:
                 elif event.button == 3:
                     if not self.pause and not self.solved:
                         # Dibujar cuadrados
-                        for i in range(puzzle_size):
-                            for j in range(puzzle_size):
+                        for i in range(self.puzzle_size):
+                            for j in range(self.puzzle_size):
                                 if self.obj_square[i][j].isColliding():
                                     self.obj_square[i][j].changeImageX()
                                     matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
@@ -420,8 +431,8 @@ class nonogramWindow:
                     if event.key == pygame.K_r:
                         # Resetear matriz
                         matriz_usuario[:] = np.zeros_like(matriz_usuario)
-                        for i in range(puzzle_size):
-                            for j in range(puzzle_size):
+                        for i in range(self.puzzle_size):
+                            for j in range(self.puzzle_size):
                                 if self.obj_square[i][j].isFilled():
                                     self.obj_square[i][j].changeImage()
                     # MOVER CÁMARA DE PUZZLE
@@ -431,20 +442,20 @@ class nonogramWindow:
                         if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (
                                 60 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
                             for square in self.group_squares:
-                                square.updatePos(square.rec.x, square.rec.y - ((160 * WINDOW_SCALE) / puzzle_size))
+                                square.updatePos(square.rec.x, square.rec.y - ((160 * WINDOW_SCALE) / self.puzzle_size))
                         # GRILLA DE NUMEROS
                         if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 215 * WINDOW_SCALE) and (
                                 8 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 55 * WINDOW_SCALE):
                             if 48 * WINDOW_SCALE > self.group_number_hints_up.sprites()[0].getPos()[1] or \
                                     self.group_number_hints_up.sprites()[0].getPos()[1] > 55 * WINDOW_SCALE:
                                 for square in self.group_number_hints_up:
-                                    square.updatePos(square.rec.x, square.rec.y - ((160 * WINDOW_SCALE) / puzzle_size))
+                                    square.updatePos(square.rec.x, square.rec.y - ((160 * WINDOW_SCALE) / self.puzzle_size))
 
                     if event.key == pygame.K_DOWN:
                         if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (
                                 60 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
                             for square in self.group_squares:
-                                square.updatePos(square.rec.x, square.rec.y + ((160 * WINDOW_SCALE) / puzzle_size))
+                                square.updatePos(square.rec.x, square.rec.y + ((160 * WINDOW_SCALE) / self.puzzle_size))
                         # GRILLA DE NUMEROS
                         if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 215 * WINDOW_SCALE) and (
                                 8 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 55 * WINDOW_SCALE):
@@ -453,13 +464,13 @@ class nonogramWindow:
                                     self.group_number_hints_up.sprites()[self.number_hints.get_max_numbers() - 1].getPos()[
                                         1] > 16 * WINDOW_SCALE:
                                 for square in self.group_number_hints_up:
-                                    square.updatePos(square.rec.x, square.rec.y + ((160 * WINDOW_SCALE) / puzzle_size))
+                                    square.updatePos(square.rec.x, square.rec.y + ((160 * WINDOW_SCALE) / self.puzzle_size))
 
                     if event.key == pygame.K_RIGHT:
                         if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (
                                 60 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
                             for square in self.group_squares:
-                                square.updatePos(square.rec.x + ((160 * WINDOW_SCALE) / puzzle_size), square.rec.y)
+                                square.updatePos(square.rec.x + ((160 * WINDOW_SCALE) / self.puzzle_size), square.rec.y)
                         # GRILLA DE NUMEROS
                         if (0 <= pygame.mouse.get_pos()[0] <= 47 * WINDOW_SCALE) and (
                                 64 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 224 * WINDOW_SCALE):
@@ -468,20 +479,20 @@ class nonogramWindow:
                                     self.group_number_hints_left.sprites()[self.number_hints.get_max_numbers() - 1].getPos()[
                                         0] > 9 * WINDOW_SCALE:
                                 for square in self.group_number_hints_left:
-                                    square.updatePos(square.rec.x + ((160 * WINDOW_SCALE) / puzzle_size), square.rec.y)
+                                    square.updatePos(square.rec.x + ((160 * WINDOW_SCALE) / self.puzzle_size), square.rec.y)
 
                     if event.key == pygame.K_LEFT:
                         if (56 * WINDOW_SCALE <= pygame.mouse.get_pos()[0] <= 210 * WINDOW_SCALE) and (
                                 60 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 220 * WINDOW_SCALE):
                             for square in self.group_squares:
-                                square.updatePos(square.rec.x - ((160 * WINDOW_SCALE) / puzzle_size), square.rec.y)
+                                square.updatePos(square.rec.x - ((160 * WINDOW_SCALE) / self.puzzle_size), square.rec.y)
                         # GRILLA DE NUMEROS
                         if (0 <= pygame.mouse.get_pos()[0] <= 47 * WINDOW_SCALE) and (
                                 64 * WINDOW_SCALE <= pygame.mouse.get_pos()[1] <= 224 * WINDOW_SCALE):
                             if 39 * WINDOW_SCALE > self.group_number_hints_left.sprites()[0].getPos()[0] or \
                                     self.group_number_hints_left.sprites()[0].getPos()[0] > 46 * WINDOW_SCALE:
                                 for square in self.group_number_hints_left:
-                                    square.updatePos(square.rec.x - ((160 * WINDOW_SCALE) / puzzle_size), square.rec.y)
+                                    square.updatePos(square.rec.x - ((160 * WINDOW_SCALE) / self.puzzle_size), square.rec.y)
 
                     if event.key == pygame.K_o:
                         ################# RESOLUCIÓN AUTOMÁTICA #######################
@@ -498,8 +509,8 @@ class nonogramWindow:
                         # Incrementar variable clicks
                         self.clicks += 1
                         # Actualizar la visualización
-                        for i in range(puzzle_size):
-                            for j in range(puzzle_size):
+                        for i in range(self.puzzle_size):
+                            for j in range(self.puzzle_size):
                                 if new_state[i][j] != matriz_usuario[i][j]:
                                     if new_state[i][j] == 1:
                                         self.obj_square[i][j].changeImage()
@@ -522,8 +533,8 @@ class nonogramWindow:
                         # Actualizar la visualización
                         # Incrementar variable clicks
                         self.clicks += 1
-                        for i in range(puzzle_size):
-                            for j in range(puzzle_size):
+                        for i in range(self.puzzle_size):
+                            for j in range(self.puzzle_size):
                                 if new_state[i][j] != matriz_usuario[i][j]:
                                     if new_state[i][j] == 1:
                                         self.obj_square[i][j].changeImage()
@@ -553,8 +564,8 @@ class nonogramWindow:
         surface_bg_image = pygame.transform.scale(surface_bg_image, (256*WINDOW_SCALE, 240*WINDOW_SCALE))
         self.Surface_bg.blit(surface_bg_image, (0,0))
 
-        for i in range(puzzle_size):
-            for j in range(puzzle_size):
+        for i in range(self.puzzle_size):
+            for j in range(self.puzzle_size):
                 # Esconder si está fuera de pantalla
                 if self.obj_square[i][j].rec.y < (62 * WINDOW_SCALE) or self.obj_square[i][j].rec.y > (
                         220 * WINDOW_SCALE) or self.obj_square[i][j].rec.x < (54 * WINDOW_SCALE) or self.obj_square[i][
@@ -567,10 +578,10 @@ class nonogramWindow:
                 self.Surface_bg.blit(self.obj_square[i][j].image,
                                      (self.obj_square[i][j].getPos()[0], self.obj_square[i][j].getPos()[1]))
         # Añadir bordes a la grilla
-        for i in range(puzzle_size):
+        for i in range(self.puzzle_size):
             # Bordes Horizontales
             pos_x = self.obj_square[0][i].getPos()[0]
-            height = (8*puzzle_size + 62)*WINDOW_SCALE
+            height = (8*self.puzzle_size + 62)*WINDOW_SCALE
             borde = pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_bordes_grilla.png")
             borde = pygame.transform.scale(borde, (8 * WINDOW_SCALE, 8 * WINDOW_SCALE))
             self.Surface_bg.blit(borde, (pos_x, 57 * WINDOW_SCALE))
@@ -578,7 +589,7 @@ class nonogramWindow:
 
             #Bordes Verticales
             pos_y = self.obj_square[i][0].getPos()[1]
-            width = (8*metadata_nonograma['size'][0] + 54)*WINDOW_SCALE
+            width = (8*self.puzzle_size + 54)*WINDOW_SCALE
             bordeV = pygame.transform.rotate(borde, 90)
             self.Surface_bg.blit(bordeV, (49*WINDOW_SCALE, pos_y))
             self.Surface_bg.blit(bordeV, (width, pos_y))
@@ -589,9 +600,9 @@ class nonogramWindow:
         esquinaDR = pygame.transform.rotate(esquina, 180)
         esquinaDL = pygame.transform.rotate(esquina, 90)
         self.Surface_bg.blit(esquina, (51*WINDOW_SCALE, 59*WINDOW_SCALE))
-        self.Surface_bg.blit(esquinaUR, (self.obj_square[0][puzzle_size - 1].getPos()[0]+5*WINDOW_SCALE, 59 * WINDOW_SCALE))
-        self.Surface_bg.blit(esquinaDR, (self.obj_square[0][puzzle_size - 1].getPos()[0]+5*WINDOW_SCALE, self.obj_square[puzzle_size - 1][0].getPos()[1]+5*WINDOW_SCALE))
-        self.Surface_bg.blit(esquinaDL, (51*WINDOW_SCALE,self.obj_square[puzzle_size - 1][0].getPos()[1] + 5 * WINDOW_SCALE))
+        self.Surface_bg.blit(esquinaUR, (self.obj_square[0][self.puzzle_size - 1].getPos()[0]+5*WINDOW_SCALE, 59 * WINDOW_SCALE))
+        self.Surface_bg.blit(esquinaDR, (self.obj_square[0][self.puzzle_size - 1].getPos()[0]+5*WINDOW_SCALE, self.obj_square[self.puzzle_size - 1][0].getPos()[1]+5*WINDOW_SCALE))
+        self.Surface_bg.blit(esquinaDL, (51*WINDOW_SCALE,self.obj_square[self.puzzle_size - 1][0].getPos()[1] + 5 * WINDOW_SCALE))
 
 
         ################ HIGHLIGHT SQUARES ################
@@ -601,8 +612,8 @@ class nonogramWindow:
 
             if mouse[0]:
                 # Resaltar casillas
-                for i in range(puzzle_size):
-                    for j in range(puzzle_size):
+                for i in range(self.puzzle_size):
+                    for j in range(self.puzzle_size):
                         if self.obj_square[i][j].isColliding():
                             if self.initial_square[0] == i and self.initial_square[1] == j:
                                 self.highlightPixel(i,j)
@@ -612,8 +623,8 @@ class nonogramWindow:
             # Pasar mouse por encima
             self.glow_surface2.fill((0, 0, 0, 0))
 
-            for i in range(puzzle_size):
-                for j in range(puzzle_size):
+            for i in range(self.puzzle_size):
+                for j in range(self.puzzle_size):
                     if self.obj_square[i][j].isColliding():
                         self.highlightPixel(i,j)
 
@@ -625,7 +636,7 @@ class nonogramWindow:
             if current_time - self.last_solve_time >= self.solve_delay:
                 matriz_limpia = matriz_usuario
                 matriz_limpia[matriz_limpia != 1] = 0
-                matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
+                matriz_pistas = np.logical_xor(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0], matriz_usuario)
                 posiciones = np.where(matriz_pistas == 1)
                 # Incrementar variable clicks
                 self.clicks += 1
@@ -646,7 +657,7 @@ class nonogramWindow:
                 else:
                     self.auto_solving = False
                     if is_solved(matriz_usuario):
-                        self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, puzzle_size)
+                        self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, self.puzzle_size)
                         self.solved = True
                         self.achievement_tracker.show_achievements(show_all=True)
 

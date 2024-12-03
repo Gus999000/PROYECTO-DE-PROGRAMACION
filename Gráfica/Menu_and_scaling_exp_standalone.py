@@ -470,30 +470,13 @@ class level_selection_Screen():
 
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
-                    if self.Buttons[0]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[1]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[2]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[3]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[4]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[5]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[6]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[7]["button"].isColliding():
-
-                        self.gameStateManager.set_state('nonogramWindow')
+                    for i in range(8):
+                        if self.Buttons[i]["button"].isColliding():
+                            if self.gameStateManager.id*100 + i + 1 >= 100:
+                                self.gameStateManager.set_id_nonograma("n" + str(self.gameStateManager.id * 100 + i + 1))
+                            else:
+                                self.gameStateManager.set_id_nonograma("n00" + str(self.gameStateManager.id * 100 + i + 1))
+                            self.gameStateManager.set_state('nonogramWindow')
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))

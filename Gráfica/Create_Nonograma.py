@@ -6,18 +6,16 @@ from Gráfica.Historial_Nonograma import NonogramHistory
 from Gráfica.draw_text import draw_text
 from Gráfica.Matriz_numeros import matriz_numeros
 from Gráfica.Square import Square, WINDOW_SCALE
-from Lógica.nonograma_info import matriz_usuario
+from Lógica.nonograma_info import cargar_Matriz, set_id
 from Lógica.nonograma_info import is_solved
 from Lógica.hints import get_col_hints
 from Lógica.hints import get_row_hints
-from Lógica.nonograma_info import matriz_solucion
-from Lógica.nonograma_info import metadata_nonograma
 from Lógica.archivos_npz import guardarNPZ
 from Lógica.archivos_npz import cargarNPZ
 from Lógica.time_to_minutes import time_to_minutes
 import time
 
-puzzle_size = metadata_nonograma['size'][0]
+puzzle_size = 20
 WINDOW_SCALE = 3
 
 pygame.font.init()
@@ -31,7 +29,12 @@ class createNonogram:
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
-
+        # Matriz usuario
+        self.matriz_usuario = np.zeros_like(cargar_Matriz("n107")[0])
+        metadata = cargar_Matriz("n107")[1]
+        self.puzzle_size = metadata['size'][0]
+        #set_id(self.gameStateManager.get_id_nonograma())
+        
         # Crear surface para el fondo
         self.Surface_bg = pygame.surface.Surface((300 * WINDOW_SCALE, 300 * WINDOW_SCALE))
         self.Surface_bg.fill((0, 0, 0))
@@ -83,8 +86,8 @@ class createNonogram:
                 self.group_number_hints_left.add(Square((40 - (j * 8)) * WINDOW_SCALE, (64 + (i * 8)) * WINDOW_SCALE, square_size))
 
         ############### RELLENAR MATRIZ ###############
-        self.number_hints.set_matriz_filas(get_row_hints(matriz_solucion))
-        self.number_hints.set_matriz_columnas(get_col_hints(matriz_solucion))
+        self.number_hints.set_matriz_filas(get_row_hints(cargar_Matriz("n107")[0]))
+        self.number_hints.set_matriz_columnas(get_col_hints(cargar_Matriz("n107")[0]))
         ############### RELLENAR MATRIZ ###############
 
         # Botones de menú
@@ -111,13 +114,13 @@ class createNonogram:
         # Creación de la cámara para Zoom
         camera_group = pygame.sprite.Group()
 
-        self.history = NonogramHistory(matriz_usuario.copy())
+        self.history = NonogramHistory(self.matriz_usuario.copy())
         self.solved = False
 
     def putPixel(self,x, y):
         if not self.obj_square[x][y].isFilled():
             self.obj_square[x][y].changeImage()
-            matriz_usuario[x][y] = self.obj_square[x][y].isFilled()
+            self.matriz_usuario[x][y] = self.obj_square[x][y].isFilled()
 
     def highlightPixel(self, i, j):
         # Varying opacity based on some dynamic factor (e.g., sine wave)
@@ -188,10 +191,10 @@ class createNonogram:
         else:
             self.drawLineV(x0, y0, x1, y1, isFilling)
         if isFilling:
-            self.history.push_state(matriz_usuario.copy())
+            self.history.push_state(self.matriz_usuario.copy())
 
     def GuardarMatriz(self, id: str):
-        estado_actual = matriz_usuario.copy()
+        estado_actual = self.matriz_usuario.copy()
         matriz_binaria = np.zeros_like(estado_actual)
 
         for i in range(puzzle_size):
@@ -227,8 +230,8 @@ class createNonogram:
                                 if self.obj_square[i][j].isColliding():
                                     if self.initial_square[0] == i and self.initial_square[1] == j:
                                         self.obj_square[i][j].changeImage()
-                                        matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
-                                        self.history.push_state(matriz_usuario.copy())
+                                        self.matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
+                                        self.history.push_state(self.matriz_usuario.copy())
                                     else:
                                         self.drawLine(self.initial_square[0], self.initial_square[1], i, j, True)
                     else:
@@ -259,8 +262,8 @@ class createNonogram:
                             for j in range(puzzle_size):
                                 if self.obj_square[i][j].isColliding():
                                     self.obj_square[i][j].changeImageX()
-                                    matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
-                                    self.history.push_state(matriz_usuario.copy())
+                                    self.matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
+                                    self.history.push_state(self.matriz_usuario.copy())
 
             if event.type == pygame.KEYDOWN:
                 # Pausa
@@ -284,7 +287,7 @@ class createNonogram:
                 # Resetear dibujo
                 if event.key == pygame.K_r:
                     # Resetear matriz
-                    matriz_usuario[:] = np.zeros_like(matriz_usuario)
+                    self.matriz_usuario[:] = np.zeros_like(self.matriz_usuario)
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
                             if self.obj_square[i][j].isFilled():
@@ -295,37 +298,37 @@ class createNonogram:
                     # Actualizar la visualización
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
-                            if new_state[i][j] != matriz_usuario[i][j]:
+                            if new_state[i][j] != self.matriz_usuario[i][j]:
                                 if new_state[i][j] == 1:
                                     self.obj_square[i][j].changeImage()
                                 elif new_state[i][j] == 2:
                                     self.obj_square[i][j].changeImageX()
                                 else:
-                                    if matriz_usuario[i][j] == 2:
+                                    if self.matriz_usuario[i][j] == 2:
                                         self.obj_square[i][j].changeImageX()
                                     else:
                                         self.obj_square[i][j].changeImage()
 
-                    matriz_usuario[:] = new_state
+                    self.matriz_usuario[:] = new_state
 
                 if event.key == pygame.K_x:  # Rehacer
                     new_state = self.history.redo()
                     # Actualizar la visualización
                     for i in range(puzzle_size):
                         for j in range(puzzle_size):
-                            if new_state[i][j] != matriz_usuario[i][j]:
+                            if new_state[i][j] != self.matriz_usuario[i][j]:
                                 if new_state[i][j] == 1:
                                     self.obj_square[i][j].changeImage()
                                 elif new_state[i][j] == 2:
                                     self.obj_square[i][j].changeImageX()
                                 else:
-                                    if matriz_usuario[i][j] == 2:
+                                    if self.matriz_usuario[i][j] == 2:
                                         self.obj_square[i][j].changeImageX()
 
                                     else:
                                         self.obj_square[i][j].changeImage()
 
-                    matriz_usuario[:] = new_state
+                    self.matriz_usuario[:] = new_state
 
         ################# DRAW ################
 
@@ -405,33 +408,6 @@ class createNonogram:
                         self.highlightPixel(i,j)
 
         ################ HIGHLIGHT SQUARES ################
-
-        # Resolución automática del puzzle
-        if hasattr(self, 'auto_solving') and self.auto_solving:
-            current_time = time.time()
-            if current_time - self.last_solve_time >= self.solve_delay:
-                matriz_limpia = matriz_usuario
-                matriz_limpia[matriz_limpia != 1] = 0
-                matriz_pistas = np.logical_xor(matriz_solucion, matriz_usuario)
-                posiciones = np.where(matriz_pistas == 1)
-
-                if len(posiciones[0]) > 0:
-                    # Elegir la siguiente posición a rellenar
-                    indice_random = np.random.randint(len(posiciones[0]))
-                    fila_random = posiciones[0][indice_random]
-                    columna_random = posiciones[1][indice_random]
-
-                    matriz_usuario[fila_random, columna_random] = 1
-                    self.obj_square[fila_random][columna_random].changeImage()
-                    matriz_usuario[fila_random][columna_random] = self.obj_square[fila_random][
-                        columna_random].isFilled()
-                    self.history.push_state(matriz_usuario.copy())
-
-                    self.last_solve_time = current_time
-                else:
-                    self.auto_solving = False
-                    if is_solved(matriz_usuario):
-                        self.solved = True
 
         ## Interfaz
 

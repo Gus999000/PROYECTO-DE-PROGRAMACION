@@ -94,6 +94,7 @@ class Start:
 # Clase que cambiará los estados entre las ventanas
 class GameStateManager:
     id = 0
+    id_nonograma = ""
     def __init__(self, currentState):
         self.currentState = currentState
     def get_state(self):
@@ -103,6 +104,10 @@ class GameStateManager:
     def set_state_id(self, state, id):
         self.id = id
         self.currentState = state
+    def set_id_nonograma(self,id):
+        self.id_nonograma = id
+    def get_id_nonograma(self):
+        return self.id_nonograma
 
 if __name__ == "__main__":
     game = Game()

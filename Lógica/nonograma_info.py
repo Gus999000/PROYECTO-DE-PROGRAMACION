@@ -33,6 +33,9 @@ def get_variable():
     return window_scale
 
 id_nonograma = 'n106'
+def set_id(id):
+    global id_nonograma
+    id_nonograma = id
 
 # Crear una ruta relativa basada en la ubicación de este archivo
 current_dir = os.path.dirname(__file__)
@@ -40,24 +43,27 @@ nonograms_path = os.path.join(current_dir, 'nonograms.npz')
 metadata_path = os.path.join(current_dir, 'nonograms_metadata.npz')
 
 # Cargar la matriz y metadatos desde el archivo .npz
-with np.load(nonograms_path) as nonograms_data:
-    matriz_solucion = nonograms_data[id_nonograma]                    # Acceder a los nonogramas
+def cargar_Matriz(id):
+    with np.load(nonograms_path) as nonograms_data:
+        matriz_solucion = nonograms_data[id]                    # Acceder a los nonogramas
 
-with np.load(metadata_path, allow_pickle=True) as metadata:
-    metadata_nonograma = metadata[id_nonograma].item()           # Acceder a los metadatos
+    with np.load(metadata_path, allow_pickle=True) as metadata:
+        metadata_nonograma = metadata[id].item()           # Acceder a los metadatos
 
+    # Imprimir metadatos del nonograma
+    print("Información del Nonograma")
+    print(f"Título: {metadata_nonograma['title']}")
+    print(f"Descripción: {metadata_nonograma['description']}")
+    print(f"Tamaño: {metadata_nonograma['size'][0]}x{metadata_nonograma['size'][1]}")
+    print(f"Color: {metadata_nonograma['color']}")
+    print(f"Fecha de creación: {metadata_nonograma['date_created']}")
 
-matriz_usuario = np.zeros_like(matriz_solucion)
+    return matriz_solucion, metadata_nonograma
+
 
 def is_solved(self):
+    matriz_solucion = cargar_Matriz(id_nonograma)[0]
     matriz_limpia = self.copy()
     matriz_limpia[matriz_limpia != 1] = 0
     return np.array_equal(matriz_solucion, matriz_limpia)
 
-# Imprimir metadatos del nonograma
-print("Información del Nonograma")
-print(f"Título: {metadata_nonograma['title']}")
-print(f"Descripción: {metadata_nonograma['description']}")
-print(f"Tamaño: {metadata_nonograma['size'][0]}x{metadata_nonograma['size'][1]}")
-print(f"Color: {metadata_nonograma['color']}")
-print(f"Fecha de creación: {metadata_nonograma['date_created']}")
