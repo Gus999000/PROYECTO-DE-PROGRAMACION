@@ -1,7 +1,7 @@
 import numpy as np
 import pygame
 import sys
-from Gráfica.Button import Button
+from Gráfica.Button import Button, Button_notSquare
 from Gráfica.Historial_Nonograma import NonogramHistory
 from Gráfica.draw_text import draw_text
 from Gráfica.Matriz_numeros import matriz_numeros
@@ -27,6 +27,7 @@ Font_CutebitmapismA_mediumsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fon
 Font_CutebitmapismA_bigsize =pygame.font.Font("Gráfica/Audiovisual_juego/Fonts/7x-D3CutebitmapismA.ttf", 8*WINDOW_SCALE)
 
 class createNonogram:
+    _user_text = "" # MAX 27 CHARACTERS
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
@@ -86,8 +87,17 @@ class createNonogram:
         self.number_hints.set_matriz_columnas(get_col_hints(matriz_solucion))
         ############### RELLENAR MATRIZ ###############
 
-        # Boton de menú
+        # Botones de menú
         self.Button_Menu = Button(228 * WINDOW_SCALE, 204 * WINDOW_SCALE, 24 * WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Jugar/boton_pausa.png")
+        self.Button_Guardar = Button_notSquare(54*WINDOW_SCALE,102*WINDOW_SCALE,54*WINDOW_SCALE, 6*WINDOW_SCALE, "Gráfica/Audiovisual_juego/Sprites/Crear/cr_opcion_guardar_popup.png")
+        self.Button_MenuPrincipal = Button_notSquare(54*WINDOW_SCALE, 118*WINDOW_SCALE, 110 * WINDOW_SCALE, 7 * WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_opcion_menuprincipal_popup.png")
+        self.Button_CerrarJuego = Button_notSquare(54*WINDOW_SCALE, 134*WINDOW_SCALE, 94 * WINDOW_SCALE, 7 * WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_opcion_cerrarjuego_popup.png")
+
+        self.Button_GuardarySalir = Button_notSquare(38*WINDOW_SCALE,123*WINDOW_SCALE,84*WINDOW_SCALE,20*WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_popup_guardar.png")
+        self.Button_Cancelar = Button_notSquare(134*WINDOW_SCALE, 123*WINDOW_SCALE, 84*WINDOW_SCALE, 20*WINDOW_SCALE, "Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_popup_cancelar.png")
+
+        self.pause = False  # Pausa del juego
+        self.guardar = False # Popup para guardar
 
         # Boton de pistas
         self.Button_Tips = Button(228 * WINDOW_SCALE, 60 * WINDOW_SCALE, 24 * WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Jugar/lvl_boton_pista.png")
@@ -186,7 +196,7 @@ class createNonogram:
 
         for i in range(puzzle_size):
             for j in range(puzzle_size):
-                if estado_actual[i][j].isFilling():
+                if estado_actual[i][j] == 1:
                     matriz_binaria[i][j] = 1
 
         guardarNPZ("created.npz", id, matriz_binaria)
@@ -200,43 +210,78 @@ class createNonogram:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     # Guardar cuadrado que presionaste inicialmente
-                    for i in range(puzzle_size):
-                        for j in range(puzzle_size):
-                            if self.obj_square[i][j].isColliding():
-                                self.initial_square = [i,j]
-                                break
-
-
-                elif event.button == 3:
-                    # Esta función será para marcar el cuadro donde tienes el mouse
-                    pass
+                    if not self.pause:
+                        for i in range(puzzle_size):
+                            for j in range(puzzle_size):
+                                if self.obj_square[i][j].isColliding():
+                                    self.initial_square = [i,j]
+                                    break
 
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     # Dibujar cuadrados
-                    for i in range(puzzle_size):
-                        for j in range(puzzle_size):
+                    if not self.pause:
+                        for i in range(puzzle_size):
+                            for j in range(puzzle_size):
 
-                            if self.obj_square[i][j].isColliding():
-                                if self.initial_square[0] == i and self.initial_square[1] == j:
-                                    self.obj_square[i][j].changeImage()
-                                    matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
-                                    self.history.push_state(matriz_usuario.copy())
-                                else:
-                                    self.drawLine(self.initial_square[0], self.initial_square[1], i, j, True)
-
+                                if self.obj_square[i][j].isColliding():
+                                    if self.initial_square[0] == i and self.initial_square[1] == j:
+                                        self.obj_square[i][j].changeImage()
+                                        matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
+                                        self.history.push_state(matriz_usuario.copy())
+                                    else:
+                                        self.drawLine(self.initial_square[0], self.initial_square[1], i, j, True)
+                    else:
+                        if self.guardar:
+                            if self.Button_Cancelar.isColliding():
+                                self._user_text = ""
+                                self.guardar = False
+                            elif self.Button_GuardarySalir.isColliding():
+                                self.GuardarMatriz(self._user_text)
+                                self.gameStateManager.set_state("menuWindow")
+                    # Menu
+                    if self.Button_Menu.isColliding():
+                        self.pause = True
+                    # Botones del Menú
+                    if self.pause:
+                        if self.Button_Guardar.isColliding():
+                            self.guardar = True
+                        if self.Button_MenuPrincipal.isColliding():
+                            self.gameStateManager.set_state("menuWindow")
+                        if self.Button_CerrarJuego.isColliding():
+                            pygame.quit()
+                            sys.exit()
 
                 elif event.button == 3:
                     # Dibujar cuadrados
-                    for i in range(puzzle_size):
-                        for j in range(puzzle_size):
-                            if self.obj_square[i][j].isColliding():
-                                self.obj_square[i][j].changeImageX()
-                                matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
-                                self.history.push_state(matriz_usuario.copy())
+                    if not self.pause:
+                        for i in range(puzzle_size):
+                            for j in range(puzzle_size):
+                                if self.obj_square[i][j].isColliding():
+                                    self.obj_square[i][j].changeImageX()
+                                    matriz_usuario[i][j] = self.obj_square[i][j].isFilled()
+                                    self.history.push_state(matriz_usuario.copy())
 
-            # MOVER CÁMARA DE PUZZLE
             if event.type == pygame.KEYDOWN:
+                # Pausa
+                if event.key == pygame.K_ESCAPE:
+                    if self.pause and not self.guardar:
+                        self.pause = False
+                        self.guardar = False
+                    elif self.pause and self.guardar:
+                        self.guardar = False
+                        self._user_text = ""
+                    else:
+                        self.pause = True
+                # Ingresar texto al presionar cualquier tecla
+                if self.pause and self.guardar:
+                    if event.key == pygame.K_BACKSPACE:
+                        self._user_text = self._user_text[0:-1]
+                    else:
+                        if len(self._user_text) <= 27:
+                            self._user_text += event.unicode
+
+                # Resetear dibujo
                 if event.key == pygame.K_r:
                     # Resetear matriz
                     matriz_usuario[:] = np.zeros_like(matriz_usuario)
@@ -244,15 +289,6 @@ class createNonogram:
                         for j in range(puzzle_size):
                             if self.obj_square[i][j].isFilled():
                                 self.obj_square[i][j].changeImage()
-
-                if event.key == pygame.K_o:
-                    ################# RESOLUCIÓN AUTOMÁTICA #######################
-                    # Solo iniciar si no está ya en proceso de resolución
-                    if not hasattr(self, 'auto_solving') or not self.auto_solving:
-                        self.auto_solving = True
-                        self.last_solve_time = time.time()
-                        self.solve_delay = 0.001 # Como se usan 60 FPS el minimo delay es 0.0167
-                    ################# RESOLUCIÓN AUTOMÁTICA ########################
 
                 if event.key == pygame.K_z:     #deshacer
                     new_state = self.history.undo()
@@ -346,26 +382,27 @@ class createNonogram:
 
 
         ################ HIGHLIGHT SQUARES ################
-        # Algoritmo
-        self.glow_surface.fill((0, 0, 0, 0))
+        if not self.pause:
+            # Algoritmo
+            self.glow_surface.fill((0, 0, 0, 0))
 
-        if mouse[0]:
-            # Resaltar casillas
+            if mouse[0]:
+                # Resaltar casillas
+                for i in range(puzzle_size):
+                    for j in range(puzzle_size):
+                        if self.obj_square[i][j].isColliding():
+                            if self.initial_square[0] == i and self.initial_square[1] == j:
+                                self.highlightPixel(i,j)
+                            else:
+                                self.drawLine(self.initial_square[0], self.initial_square[1], i, j, False)
+
+            # Pasar mouse por encima
+            self.glow_surface2.fill((0, 0, 0, 0))
+
             for i in range(puzzle_size):
                 for j in range(puzzle_size):
                     if self.obj_square[i][j].isColliding():
-                        if self.initial_square[0] == i and self.initial_square[1] == j:
-                            self.highlightPixel(i,j)
-                        else:
-                            self.drawLine(self.initial_square[0], self.initial_square[1], i, j, False)
-
-        # Pasar mouse por encima
-        self.glow_surface2.fill((0, 0, 0, 0))
-
-        for i in range(puzzle_size):
-            for j in range(puzzle_size):
-                if self.obj_square[i][j].isColliding():
-                    self.highlightPixel(i,j)
+                        self.highlightPixel(i,j)
 
         ################ HIGHLIGHT SQUARES ################
 
@@ -410,6 +447,41 @@ class createNonogram:
 
         # Añadir botón de menu
         self.Surface_bg.blit(self.Button_Menu.image, (self.Button_Menu.getPos()))
+
+        # Pausa
+        if self.pause and self.guardar:
+            # Dibujar rectangulo con alpha
+            s = pygame.Surface((256*WINDOW_SCALE, 240*WINDOW_SCALE))
+            s.set_alpha(128)
+            s.fill((0, 0, 0))
+            self.Surface_bg.blit(s, (0, 0))
+
+            # Dibujar cuadro
+            var_image = pygame.transform.scale(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Crear/cr_popup_guardar.png"),(206 * WINDOW_SCALE, 86 * WINDOW_SCALE))
+            self.Surface_bg.blit(var_image, (25 * WINDOW_SCALE, 70 * WINDOW_SCALE))
+
+            # Dibujar botones
+            self.Surface_bg.blit(self.Button_GuardarySalir.image,self.Button_GuardarySalir.getPos())
+            self.Surface_bg.blit(self.Button_Cancelar.image, self.Button_Cancelar.getPos())
+
+            # Ingresar texto
+            text_surface = Font_CutebitmapismA_mediumsize.render(self._user_text, False, (255,255,255))
+            self.Surface_bg.blit(text_surface,(43*WINDOW_SCALE,98*WINDOW_SCALE))
+        elif self.pause:
+            # Dibujar rectangulo con alpha
+            s = pygame.Surface((256*WINDOW_SCALE, 240*WINDOW_SCALE))
+            s.set_alpha(128)
+            s.fill((0, 0, 0))
+            self.Surface_bg.blit(s, (0, 0))
+
+            # Dibujar cuadro
+            var_image = pygame.transform.scale(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Crear/cr_popup_pausa.png"),(158 * WINDOW_SCALE, 94 * WINDOW_SCALE))
+            self.Surface_bg.blit(var_image, (30 * WINDOW_SCALE, 70 * WINDOW_SCALE))
+
+            # Dibujar botones
+            self.Surface_bg.blit(self.Button_Guardar.image,self.Button_Guardar.getPos())
+            self.Surface_bg.blit(self.Button_MenuPrincipal.image, self.Button_MenuPrincipal.getPos())
+            self.Surface_bg.blit(self.Button_CerrarJuego.image, self.Button_CerrarJuego.getPos())
 
         pygame.display.flip()
         ################# DRAW ################

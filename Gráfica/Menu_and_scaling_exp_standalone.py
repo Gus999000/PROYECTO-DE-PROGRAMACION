@@ -409,12 +409,17 @@ class create_Screen():
         self.gameStateManager = gameStateManager
 
         # Botones
-        self.draw_Button = Button_notSquare(43*WINDOW_SCALE, 90*WINDOW_SCALE, 84*WINDOW_SCALE,98*WINDOW_SCALE, "Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_dibujar.png")
-        self.import_Button = Button_notSquare(135 * WINDOW_SCALE, 90 * WINDOW_SCALE, 84 * WINDOW_SCALE,98*WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_importar.png")
+        self.draw_Button = Button_notSquare(40*WINDOW_SCALE, 85*WINDOW_SCALE, 84*WINDOW_SCALE,98*WINDOW_SCALE, "Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_dibujar.png")
+        self.import_Button = Button_notSquare(135 * WINDOW_SCALE, 85 * WINDOW_SCALE, 84 * WINDOW_SCALE,98*WINDOW_SCALE,"Gráfica/Audiovisual_juego/Sprites/Crear/cr_boton_importar.png")
 
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
-        draw_text("Crear", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 4)
+
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Crear/cr_detalle_fondo.png"),(0,0))
+
+        # Texto
+        virtual_screen.blit(pygame.image.load("Gráfica/Audiovisual_juego/Sprites/Crear/cr_titulo.png"), (85, 55))
 
         for event in events:
             if event.type == QUIT:
