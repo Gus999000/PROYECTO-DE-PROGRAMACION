@@ -5,10 +5,14 @@
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
     </content>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <orderEntry type="jdk" jdkName="Python 3.12 (PROYECTO-DE-PROGRAMACION)" jdkType="Python SDK" />
 =======
     <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
 >>>>>>> Menus_&_Ventanas
+=======
+    <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
+>>>>>>> 44a223e95d88168aff4002cc1560ca5e48a48034
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
