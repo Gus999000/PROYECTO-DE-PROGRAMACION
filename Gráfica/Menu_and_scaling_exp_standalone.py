@@ -41,6 +41,7 @@ title_font = pygame.font.Font('Gráfica/Recursos/Fonts/16x-Vermin Vibes 1989.ttf
 #font = pygame.font.SysFont('OCR-A Extended', 12, bold=True)
 font = pygame.font.Font('Gráfica/Recursos/Fonts/7x-zx-spectrum.ttf', 8)
 
+
 # opciones en video
 display_modes = ["Windowed", "Fullscreen", "Windowed Fullscreen"]
 current_display_mode = 0
@@ -108,6 +109,7 @@ class video_Options():
         self.click = False
         # actualiza el indice de resolucion
         self.current_resolution_index = get_current_resolution()
+
 
         # Botones
         self.buttons = []
@@ -179,6 +181,7 @@ class video_Options():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     self.gameSateManager.set_state('optionsMenu')
+
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
                     if self.buttons[0].isColliding():
@@ -213,6 +216,7 @@ class options_Menu():
         self.screen = display
         self.gameSateManager = gameStateManager
         self.click = False
+
 
         # Botones
         self.Button_controles = Button_notScaled(65*scale_factor, 30*scale_factor, 72*scale_factor,8*scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_opcion_controles.png")
@@ -256,6 +260,7 @@ class options_Menu():
                 if event.key == K_ESCAPE:
                     self.gameSateManager.set_state('menuWindow')
 
+
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
                     if self.Button_controles.isColliding():
@@ -275,6 +280,7 @@ class level_type_Screen():
         self.options = ["Clásico", "Color", "Custom"]
         self.screen = display
         self.gameStateManager = gameStateManager
+
 
         # Botones
         self.Button_Clasico = Button_notScaled(30*scale_factor, 100*scale_factor,58*scale_factor,66*scale_factor,"Gráfica/Recursos/Sprites/Jugar/lvl_boton_clasico.png")
@@ -317,6 +323,7 @@ class level_type_Screen():
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.gameStateManager.set_state('menuWindow')
 
+
             if event.type == MOUSEBUTTONUP:
                 if self.Button_Clasico.isColliding():
                     self.gameStateManager.set_state('difficultyScreen')
@@ -334,6 +341,7 @@ class difficulty_Screen():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
 
         # Botones
         self.Button_Facil = Button_notScaled(46*scale_factor, 80*scale_factor,164*scale_factor,20*scale_factor,"Gráfica/Recursos/Sprites/Jugar/lvl_boton_dificultad_facil.png")
@@ -377,6 +385,7 @@ class difficulty_Screen():
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.gameStateManager.set_state('levelTypeScreen')
 
+
             if event.type == MOUSEBUTTONUP:
                 if self.Button_Facil.isColliding():
                     self.gameStateManager.set_state_id('levelSelectionScreen', 0)
@@ -392,12 +401,14 @@ class difficulty_Screen():
         mainClock.tick(60)
 
 class level_selection_Screen():
+
     id = 0
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
         self.num_levels = 8
         self.rows, self.cols = 2, 4  # Grid arrangement
+
         self.level_size = 36
 
         self.horizontal_spacing = (ORIGINAL_WIDTH - (self.cols * self.level_size)) // (self.cols + 1)
@@ -455,6 +466,7 @@ class level_selection_Screen():
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.gameStateManager.set_state('difficultyScreen')
 
+
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
                     if self.Buttons[0]["button"].isColliding():
@@ -479,6 +491,7 @@ class level_selection_Screen():
                         self.gameStateManager.set_state('nonogramWindow')
 
                     if self.Buttons[7]["button"].isColliding():
+
                         self.gameStateManager.set_state('nonogramWindow')
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
@@ -512,6 +525,7 @@ class controls_Options():
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
 
+
         # Fondo
         virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_detalle_fondo_submenu.png"),(0, 0))
 
@@ -519,6 +533,7 @@ class controls_Options():
         virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_subtitulo_controles.png"), (15, 15))
 
         virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_pantalla_controles_texto.png"),(30, 40))
+
 
         for event in events:
             if event.type == QUIT:
@@ -536,6 +551,7 @@ class audio_Options():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
 
         # Botones
         self.buttons = []
@@ -583,23 +599,86 @@ class audio_Options():
         pygame.display.update()
         mainClock.tick(60)
 
+# Ventana para crear
 class create_Screen():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
+        # Botones
+        self.draw_Button = Button_notScaled(40*scale_factor, 85*scale_factor, 84*scale_factor,98*scale_factor, "Gráfica/Recursos/Sprites/Crear/cr_boton_dibujar.png")
+        self.import_Button = Button_notScaled(135 * scale_factor, 85 * scale_factor, 84 * scale_factor,98*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_importar.png")
+
+        self.Button_Confirmar = Button_notScaled(134*scale_factor,157*scale_factor, 84*scale_factor,20*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_confirmar.png")
+        self.Button_Cancelar = Button_notScaled(38 * scale_factor, 157 * scale_factor, 84 * scale_factor,20 * scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_cancelar.png")
+
+        # Popup elegir tamaño
+        self.choose_size = False
+        self.buttons = []
+        self.buttons.append(Button_notScaled(135*scale_factor,109*scale_factor,4*scale_factor,6*scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
+        self.buttons.append(Button_notScaled(170*scale_factor, 109*scale_factor, 4 * scale_factor, 6 * scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
+        self.buttons.append(Button_notScaled(135 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
+        self.buttons.append(Button_notScaled(170 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
+
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
-        draw_text("Crear", font, (255, 255, 255), virtual_screen, ORIGINAL_WIDTH // 2, ORIGINAL_HEIGHT // 4)
+
+        # Fondo
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Crear/cr_detalle_fondo.png"),(0,0))
+
+        # Texto
+        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Crear/cr_titulo.png"), (85, 55))
 
         for event in events:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_ESCAPE:
-                self.gameStateManager.set_state('MenuWindow')
+                if self.choose_size:
+                    self.choose_size = False
+                else:
+                    self.choose_size = False
+                    self.gameStateManager.set_state('menuWindow')
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    # Presionar boton de dibujar
+                    if self.draw_Button.isColliding():
+                        self.choose_size = True
+                    if self.choose_size == True:
+                        if self.Button_Cancelar.isColliding():
+                            self.choose_size = False
+                        if self.Button_Confirmar.isColliding():
+                            self.gameStateManager.set_state('createNonogram')
+        ######## DIBUJAR ########
+
+        virtual_screen.blit(self.draw_Button.image, (self.draw_Button.getPos()[0]//scale_factor, self.draw_Button.getPos()[1]//scale_factor))
+        virtual_screen.blit(self.import_Button.image, (self.import_Button.getPos()[0]//scale_factor, self.import_Button.getPos()[1]//scale_factor))
+
+
+        if self.choose_size:
+            # Dibujar rectangulo con alpha
+            s = pygame.Surface((256*scale_factor, 240*scale_factor))
+            s.set_alpha(128)
+            s.fill((0, 0, 0))
+            virtual_screen.blit(s, (0, 0))
+
+            # Dibujar popup
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Crear/cr_popup_opciones0.png"),(25, 80))
+
+            # Botones
+            virtual_screen.blit(self.buttons[0].image, (self.buttons[0].getPos()[0] // scale_factor, self.buttons[0].getPos()[1] // scale_factor))
+            virtual_screen.blit(self.buttons[1].image, (self.buttons[1].getPos()[0] // scale_factor, self.buttons[1].getPos()[1] // scale_factor))
+            virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
+            virtual_screen.blit(self.buttons[3].image, (self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
+
+            virtual_screen.blit(self.Button_Confirmar.image, (self.Button_Confirmar.getPos()[0] // scale_factor, self.Button_Confirmar.getPos()[1] // scale_factor))
+            virtual_screen.blit(self.Button_Cancelar.image, (self.Button_Cancelar.getPos()[0] // scale_factor, self.Button_Cancelar.getPos()[1] // scale_factor))
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
+
+        ######## DIBUJAR ########
         pygame.display.update()
         mainClock.tick(60)
 
@@ -607,6 +686,7 @@ class achievements_Screen():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
 
         # Botones
         self.Button_vel1 = Button_notScaled(20*scale_factor, 50*scale_factor, 32*scale_factor,32*scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_vel1.png")
@@ -721,13 +801,13 @@ class achievements_Screen():
         elif self.Button_logros100.isColliding():
             virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_logros100_desc.png"),(70,160))
 
+
         for event in events:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN and event.key == K_ESCAPE:
                 self.gameStateManager.set_state('menuWindow')
-
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
@@ -754,10 +834,12 @@ def sub_screen(title):
         mainClock.tick(60)
 """
 
+
 class menuWindow():
     def __init__(self, display, gameStateManager):
         self.screen = display
         self.gameStateManager = gameStateManager
+
 
         # Botones
         self.Button_Jugar = Button_notScaled(109*scale_factor, 101*scale_factor, 40*scale_factor,8*scale_factor,"Gráfica/Recursos/Sprites/Menu_principal/mp_boton_jugar.png")
@@ -770,6 +852,7 @@ class menuWindow():
 
         self.click = False
         self.confirm_exit = False
+
     def run(self, events):
         # Gradiente en fondo
         for y in range(ORIGINAL_HEIGHT):
@@ -798,6 +881,7 @@ class menuWindow():
         virtual_screen.blit(self.Button_Crear.image, (self.Button_Crear.getPos()[0]//scale_factor,self.Button_Crear.getPos()[1]//scale_factor))
 
 
+
         mx, my = pygame.mouse.get_pos()
         mx = int(mx / scale_factor)
         my = int(my / scale_factor)
@@ -815,6 +899,7 @@ class menuWindow():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.click = True
+
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
                     if self.Button_Jugar.isColliding():
@@ -825,6 +910,7 @@ class menuWindow():
                         self.gameStateManager.set_state('createScreen')
                     if self.Button_Logros.isColliding():
                         self.gameStateManager.set_state('achievementsScreen')
+
 
         if self.confirm_exit:
             pygame.draw.rect(virtual_screen, (0, 0, 0), (50, 80, 156, 80))
