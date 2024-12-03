@@ -5,6 +5,8 @@ from pychievements.signals import receiver, goal_achieved
 # Medio n10X
 # Difícil n20X
 # Logros de Velocidad
+
+
 class SpeedsterI(Achievement):
     name = 'Speedster I'
     category = 'speed'
@@ -271,6 +273,7 @@ class NonogramAchievementTracker:
 
     # Print en consola los logros (para testear)
     def show_achievements(self, show_all=False):
+        Achievements = []
         all_achievements = [
             SpeedsterI, SpeedsterII, SpeedsterIII,
             MinimalistI, MinimalistII, MinimalistIII,
@@ -278,19 +281,11 @@ class NonogramAchievementTracker:
             HueShift, Picasso, Completionist
         ]
 
-        print("\n=== Logros Conseguidos ===")
         for achievement in all_achievements:
             achieved = tracker.achieved(self.player_id, achievement)
             for goal in achieved:
-                print(f"{goal['icon']} {goal['name']}: {goal['description']}")
-
-        if show_all:
-            print("\n=== Logros Pendientes ===")
-            for achievement in all_achievements:
-                unachieved = tracker.unachieved(self.player_id, achievement)
-                for goal in unachieved:
-                    print(f"{goal['icon']} {goal['name']}: {goal['description']}")
-
+                Achievements.append(goal['name'])
+        return Achievements
 
 # Muestra mensaje en la consola cuando se alcanza un nuevo logro
 @receiver(goal_achieved)

@@ -41,6 +41,7 @@ class Game:
 
         # Logros
         self.achievementsScreen = achievements_Screen(self.screen, self.gameStateManager)
+        self.achievement_tracker = NonogramAchievementTracker()
 
         # Nonograma
         self.nonogramWindow = nonogramWindow(self.screen, self.gameStateManager)
@@ -63,8 +64,6 @@ class Game:
             'createNonogram': self.createNonogram,
             "achievementsScreen": self.achievementsScreen
         }
-
-        self.achievement_tracker = NonogramAchievementTracker()
 
     def run(self):
         while True:

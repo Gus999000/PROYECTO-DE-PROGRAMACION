@@ -1,6 +1,7 @@
 import pygame, sys
 
 from Gráfica.Button import Button_notScaled, Button_notSquare
+from Lógica.Logros import NonogramAchievementTracker
 from Lógica.nonograma_info import set_variable
 
 # Setup pygame/ventana
@@ -671,6 +672,8 @@ class achievements_Screen():
         self.screen = display
         self.gameStateManager = gameStateManager
 
+        # Achievements
+        self.achievement_tracker = NonogramAchievementTracker()
 
         # Botones
         self.Button_vel1 = Button_notScaled(20*scale_factor, 50*scale_factor, 32*scale_factor,32*scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_vel1.png")
@@ -701,58 +704,98 @@ class achievements_Screen():
         self.Button_vel1.updatePos(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_vel1.image, (self.Button_vel1.getPos()[0] // scale_factor, self.Button_vel1.getPos()[1] // scale_factor))
         # Para este checkbox necesitamos una condición if, que vendrá por la parte lógica de Logros
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(44,74))
+        if "Speedster I" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(44,74))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"), (44, 74))
 
         self.Button_vel2.updatePos(20 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_vel2.image, (self.Button_vel2.getPos()[0] // scale_factor, self.Button_vel2.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 134))
+        if "Speedster II" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(44, 134))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"), (44, 134))
 
         self.Button_vel3.updatePos(20 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_vel3.image, (self.Button_vel3.getPos()[0] // scale_factor, self.Button_vel3.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 194))
 
+        if "Speedster III" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"), (44, 194))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"), (44, 194))
 
         # Dificultad
         self.Button_dif1.updatePos(80 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_dif1.image, (
         self.Button_dif1.getPos()[0] // scale_factor, self.Button_dif1.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 74))
+        if "AccessGranted" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(104, 74))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 74))
+
 
         self.Button_dif2.updatePos(80 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_dif2.image, (
         self.Button_dif2.getPos()[0] // scale_factor, self.Button_dif2.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 134))
+        if "Breacher" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(104, 134))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 134))
+
 
         self.Button_dif3.updatePos(80 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_dif3.image, (
         self.Button_dif3.getPos()[0] // scale_factor, self.Button_dif3.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 194))
+        if "Netrunner" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(104, 194))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 194))
+
 
         # Clicks
         self.Button_click1.updatePos(140 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click1.image, (self.Button_click1.getPos()[0] // scale_factor, self.Button_click1.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 74))
+        if "Minimalist I" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbo1.png"),(164, 74))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 74))
 
         self.Button_click2.updatePos(140 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click2.image, (self.Button_click2.getPos()[0] // scale_factor, self.Button_click2.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 134))
+        if "Minimalist II" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(164, 134))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 134))
 
         self.Button_click3.updatePos(140 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click3.image, (self.Button_click3.getPos()[0] // scale_factor, self.Button_click3.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 194))
+        if "Minimalist III" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(164, 194))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 194))
 
         # Miscelanea
         self.Button_creapuzzle.updatePos(200 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_creapuzzle.image, (self.Button_creapuzzle.getPos()[0] // scale_factor, self.Button_creapuzzle.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 74))
+        if "Picasso" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(224, 74))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 74))
 
         self.Button_cambiacolor.updatePos(200 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_cambiacolor.image, (self.Button_cambiacolor.getPos()[0] // scale_factor, self.Button_cambiacolor.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 134))
+        if "HUE Shift" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(224, 134))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 134))
 
         self.Button_logros100.updatePos(200 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_logros100.image, (self.Button_logros100.getPos()[0] // scale_factor, self.Button_logros100.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 194))
+
+        if "Completionist" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(224, 194))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 194))
 
         ###### LOGROS ######
 

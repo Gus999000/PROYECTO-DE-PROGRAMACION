@@ -363,7 +363,7 @@ class nonogramWindow:
                             ################### PISTAS #####################################
 
                             if is_solved(matriz_usuario):
-                                self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, self.puzzle_size)
+                                self.achievement_tracker.puzzle_completed(self.gameStateManager.get_id_nonograma(), self.timer, self.clicks, self.puzzle_size)
                                 self.solved = True
                                 self.achievement_tracker.show_achievements(show_all=True)
 
@@ -383,7 +383,7 @@ class nonogramWindow:
                                     self.clicks += 1
 
                                     if is_solved(matriz_usuario):
-                                        self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, self.puzzle_size)
+                                        self.achievement_tracker.puzzle_completed(self.gameStateManager.get_id_nonograma(), self.timer, self.clicks, self.puzzle_size)
                                         self.solved = True
                                         self.achievement_tracker.show_achievements(show_all=True)
                         if self.Button_Menu.isColliding():
@@ -657,7 +657,7 @@ class nonogramWindow:
                 else:
                     self.auto_solving = False
                     if is_solved(matriz_usuario):
-                        self.achievement_tracker.puzzle_completed(id_nonograma, self.timer, self.clicks, self.puzzle_size)
+                        self.achievement_tracker.puzzle_completed(self.gameStateManager.get_id_nonograma(), self.timer, self.clicks, self.puzzle_size)
                         self.solved = True
                         self.achievement_tracker.show_achievements(show_all=True)
 
