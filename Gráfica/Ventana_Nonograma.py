@@ -1,3 +1,4 @@
+import os.path
 import numpy as np
 import pygame
 import sys
@@ -298,9 +299,28 @@ class nonogramWindow:
 
         guardarNPZ(nombre, id, matriz_binaria)
 
+    def CargarMatriz(self, ruta_savednpz):
+        if os.path.exists(ruta_savednpz):
+            data = np.load(ruta_savednpz, allow_pickle=True)
+
+            if str(id_nonograma) in data.files:
+                matriz_guardada = cargarNPZ(ruta_savednpz, id_nonograma)
+
+                for i in range(matriz_guardada.shape[0]):
+                    for j in range(matriz_guardada.shape[1]):
+                        if matriz_guardada[i][j] == 1:
+                            if not self.obj_square[i][j].isFilled():
+                                self.obj_square[i][j].changeImage()
+                                matriz_usuario[i][j] = 1
+
     def run(self, events):
         mouse = pygame.mouse.get_pressed()
         WINDOW_SCALE = get_variable()
+
+        dir = os.path.dirname(__file__)
+        ruta_savednpz = os.path.join(dir, "..", "saved.npz")
+        self.CargarMatriz(ruta_savednpz)
+
         # Actualizar ventana al ingresar al nivel
         if self.update:
 
