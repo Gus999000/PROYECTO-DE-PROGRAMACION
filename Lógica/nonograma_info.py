@@ -5,25 +5,25 @@ import os
 Casa: n001 (5x5)
 Fuerte: n002 (5x5)
 2: n003 (6x6)
-Pikachu: n100 (10x10)
-Ignored: n101 (8x8)
-Café: n102 (10x10)
-Casco: n103 (10x10)
-Mario: n104 (10x10)
-Game Boy: n200 (15x15)
-Super Estrella: n201 (15x15)
-Mago: n202 (15x15)
-Rata: n203 (15x15)
-Bicho: n300 (17x17)
-Micro: n301 (20x20)
-Ying-Yang: n302 (18x18)
-Aperture Science: n303 (20x20)
-Bomba: n304 (20x20)
-Dino: n305 (20x20)
+Pikachu: n004 (10x10)
+Ignored: n005 (8x8)
+Café: n006 (10x10)
+Casco: n007 (10x10)
+Mario: n008 (10x10)
+Game Boy: n101 (15x15)
+Super Estrella: n102 (15x15)
+Mago: n103 (15x15)
+Rata: n104 (15x15)
+Bicho: n105 (17x17)
+Ying-Yang: n106 (18x18)
+Aperture Science: n107 (20x20)
+Bomba: n108 (20x20)
+Micro: n201 (20x20)
+Dino: n202 (20x20)
 
 """
 
-id_nonograma = 'n302'
+id_nonograma = 'n106'
 
 # Crear una ruta relativa basada en la ubicación de este archivo
 current_dir = os.path.dirname(__file__)

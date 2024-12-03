@@ -1,11 +1,9 @@
 from pychievements import Achievement, tracker, icons
 from pychievements.signals import receiver, goal_achieved
 
-# 0XX  nonogramas <= 5x5
-# 1XX  nonogramas <= 10x10
-# 2XX  nonogramas <= 15x15
-# 3XX  nonogramas <= 20x20
-
+# Fácil n00X
+# Medio n10X
+# Difícil n20X
 # Logros de Velocidad
 class SpeedsterI(Achievement):
     name = 'Speedster I'
@@ -18,7 +16,7 @@ class SpeedsterI(Achievement):
 
     def evaluate(self, difficulty, time_taken, *args, **kwargs):
         difficulty = int(difficulty.lstrip('n'))
-        if 0 <= difficulty < 200 and time_taken < 10:
+        if 0 <= difficulty < 100 and time_taken < 10:
             self._current = 1
         return self.achieved
 
@@ -33,7 +31,7 @@ class SpeedsterII(Achievement):
 
     def evaluate(self, difficulty, time_taken, *args, **kwargs):
         difficulty = int(difficulty.lstrip('n'))
-        if 200 <= difficulty < 400 and time_taken < 30:
+        if 100 <= difficulty < 200 and time_taken < 30:
             self._current = 1
         return self.achieved
 
@@ -48,7 +46,7 @@ class SpeedsterIII(Achievement):
 
     def evaluate(self, difficulty, time_taken, *args, **kwargs):
         difficulty = int(difficulty.lstrip('n'))
-        if 400 <= difficulty < 600 and time_taken < 60:
+        if 200 <= difficulty < 600 and time_taken < 60:
             self._current = 1
         return self.achieved
 
@@ -65,7 +63,7 @@ class MinimalistI(Achievement):
 
     def evaluate(self, difficulty, clicks, *args, **kwargs):
         difficulty = int(difficulty.lstrip('n'))
-        if 0 <= difficulty < 200 and clicks < 10:
+        if 0 <= difficulty < 100 and clicks < 10:
             self._current = 1
         return self.achieved
 
@@ -80,7 +78,7 @@ class MinimalistII(Achievement):
 
     def evaluate(self, difficulty, clicks, *args, **kwargs):
         difficulty = int(difficulty.lstrip('n'))
-        if 200 <= difficulty < 400 and clicks < 30:
+        if 100 <= difficulty < 200 and clicks < 30:
             self._current = 1
         return self.achieved
 
@@ -95,12 +93,12 @@ class MinimalistIII(Achievement):
 
     def evaluate(self, difficulty, clicks, *args, **kwargs):
         difficulty = int(difficulty.lstrip('n'))
-        if 400 <= difficulty < 600 and clicks < 50:
+        if 200 <= difficulty < 600 and clicks < 50:
             self._current = 1
         return self.achieved
 
 
-# Logros de Progresión (sets completados)
+# Logros de Progresión (sets completados) PENDIENTE
 class AccessGranted(Achievement):
     name = 'Access Granted'
     category = 'progression'
@@ -144,7 +142,7 @@ class Netrunner(Achievement):
         return self.achieved
 
 
-# Logros Especiales
+# Logros Especiales     PENDIENTE
 class HueShift(Achievement):
     name = 'HUE Shift'
     category = 'special'
