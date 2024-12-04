@@ -364,6 +364,7 @@ class nonogramWindow:
 
                             if is_solved(matriz_usuario):
                                 self.achievement_tracker.puzzle_completed(self.gameStateManager.get_id_nonograma(), self.timer, self.clicks, self.puzzle_size)
+                                self.achievement_tracker.complete_difficulty_set(self.gameStateManager.get_id_nonograma())
                                 self.solved = True
                                 self.achievement_tracker.show_achievements(show_all=True)
 
@@ -384,6 +385,7 @@ class nonogramWindow:
 
                                     if is_solved(matriz_usuario):
                                         self.achievement_tracker.puzzle_completed(self.gameStateManager.get_id_nonograma(), self.timer, self.clicks, self.puzzle_size)
+                                        self.achievement_tracker.complete_difficulty_set(self.gameStateManager.get_id_nonograma())
                                         self.solved = True
                                         self.achievement_tracker.show_achievements(show_all=True)
                         if self.Button_Menu.isColliding():
@@ -658,6 +660,7 @@ class nonogramWindow:
                     self.auto_solving = False
                     if is_solved(matriz_usuario):
                         self.achievement_tracker.puzzle_completed(self.gameStateManager.get_id_nonograma(), self.timer, self.clicks, self.puzzle_size)
+                        self.achievement_tracker.complete_difficulty_set(self.gameStateManager.get_id_nonograma())
                         self.solved = True
                         self.achievement_tracker.show_achievements(show_all=True)
 
