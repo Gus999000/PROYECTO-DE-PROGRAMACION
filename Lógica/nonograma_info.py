@@ -61,8 +61,8 @@ def cargar_Matriz(id):
     return matriz_solucion, metadata_nonograma
 
 
-def is_solved(self):
-    matriz_solucion = cargar_Matriz(id_nonograma)[0]
+def is_solved(self, matriz):
+    matriz_solucion = matriz
     matriz_limpia = self.copy()
     matriz_limpia[matriz_limpia != 1] = 0
     return np.array_equal(matriz_solucion, matriz_limpia)

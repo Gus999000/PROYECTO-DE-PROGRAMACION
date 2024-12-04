@@ -95,6 +95,7 @@ class GameStateManager:
     id = 0
     id_nonograma = ""
     create_nonogram_puzzle_size = 20
+    cargar_matriz = ""
     def __init__(self, currentState):
         self.currentState = currentState
     def get_state(self):
@@ -113,6 +114,10 @@ class GameStateManager:
     def get_create_nonogram_puzzle_size(self):
         return self.create_nonogram_puzzle_size
 
+    def set_cargar_matriz(self,id):
+        self.cargar_matriz = id
+    def get_cargar_matriz(self):
+        return self.cargar_matriz
 if __name__ == "__main__":
     game = Game()
 

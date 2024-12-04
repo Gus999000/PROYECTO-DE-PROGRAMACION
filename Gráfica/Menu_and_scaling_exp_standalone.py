@@ -1,5 +1,5 @@
 import pygame, sys
-
+import os
 from Gráfica.Button import Button_notScaled, Button_notSquare
 from Lógica.Logros import NonogramAchievementTracker
 from Lógica.nonograma_info import set_variable
@@ -41,7 +41,7 @@ virtual_screen = pygame.Surface((ORIGINAL_WIDTH, ORIGINAL_HEIGHT))
 title_font = pygame.font.Font('Gráfica/Recursos/Fonts/16x-Vermin Vibes 1989.ttf', 36)
 #font = pygame.font.SysFont('OCR-A Extended', 12, bold=True)
 font = pygame.font.Font('Gráfica/Recursos/Fonts/7x-zx-spectrum.ttf', 8)
-
+Font_CutebitmapismA_mediumsize =pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 7)
 
 # opciones en video
 display_modes = ["Windowed", "Fullscreen", "Windowed Fullscreen"]
@@ -278,6 +278,8 @@ class options_Menu():
         mainClock.tick(60)
 
 class level_type_Screen():
+    popup = False
+    _user_text = ""  # MAX 27 CHARACTERS
     def __init__(self, display, gameStateManager):
         self.options = ["Clásico", "Color", "Custom"]
         self.screen = display
@@ -292,6 +294,9 @@ class level_type_Screen():
         self.Button_Custom = Button_notScaled(90 * scale_factor, 100 * scale_factor, 52 * scale_factor,
                                                66 * scale_factor,
                                                "Gráfica/Recursos/Sprites/Jugar/lvl_boton_custom.png")
+
+        self.Button_Confirmar = Button_notScaled(134*scale_factor,133*scale_factor,84*scale_factor,20*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_confirmar.png")
+        self.Button_Cancelar = Button_notScaled(38*scale_factor, 133*scale_factor, 84*scale_factor, 20*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_cancelar.png")
 
 
     def run(self, events):
@@ -322,17 +327,60 @@ class level_type_Screen():
                 pygame.quit()
                 sys.exit()
 
-            if event.type == KEYDOWN and event.key == K_ESCAPE:
-                self.gameStateManager.set_state('menuWindow')
+
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    self._user_text = ""
+                    self.popup = False
+                    self.gameStateManager.set_state('menuWindow')
+                # Ingresar texto al presionar cualquier tecla
+                if self.popup:
+                    if event.key == pygame.K_BACKSPACE:
+                        self._user_text = self._user_text[0:-1]
+                    else:
+                        if len(self._user_text) <= 27:
+                            self._user_text += event.unicode
 
 
             if event.type == MOUSEBUTTONUP:
-                if self.Button_Clasico.isColliding():
-                    self.gameStateManager.set_state('difficultyScreen')
-                if self.Button_Color.isColliding():
-                    self.gameStateManager.set_state('difficultyScreen')
-                if self.Button_Custom.isColliding():
-                    self.gameStateManager.set_state('difficultyScreen')
+                if not self.popup:
+                    if self.Button_Clasico.isColliding():
+                        self.gameStateManager.set_state('difficultyScreen')
+                    if self.Button_Color.isColliding():
+                        self.gameStateManager.set_state('difficultyScreen')
+                    if self.Button_Custom.isColliding():
+                        self.popup = True
+                else:
+                    if self.Button_Confirmar.isColliding():
+                        dir = os.path.dirname(__file__)
+                        ruta_savednpz = os.path.join(dir, "..", "created.npz")
+                        if os.path.exists(ruta_savednpz):
+                            data = np.load(ruta_savednpz, allow_pickle=True)
+                            if str(self._user_text) in data.files:
+                                self.gameStateManager.set_cargar_matriz(self._user_text)
+                                self.gameStateManager.set_state("nonogramWindow")
+                    if self.Button_Cancelar.isColliding():
+                        self._user_text = ""
+                        self.popup = False
+
+        if self.popup:
+            # Dibujar rectangulo con alpha
+            s = pygame.Surface((256*scale_factor, 240*scale_factor))
+            s.set_alpha(128)
+            s.fill((0, 0, 0))
+            virtual_screen.blit(s, (0, 0))
+
+            # Dibujar cuadro
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Crear/cr_popup_guardar.png"), (25, 80))
+
+            # Dibujar botones
+            virtual_screen.blit(self.Button_Confirmar.image, (self.Button_Confirmar.getPos()[0] // scale_factor, self.Button_Confirmar.getPos()[1] // scale_factor))
+            virtual_screen.blit(self.Button_Cancelar.image, (self.Button_Cancelar.getPos()[0] // scale_factor, self.Button_Cancelar.getPos()[1] // scale_factor))
+
+            # Ingresar texto
+            text_surface = Font_CutebitmapismA_mediumsize.render(self._user_text, False, (255,255,255))
+            virtual_screen.blit(text_surface,(43,108))
+
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
@@ -603,9 +651,9 @@ class create_Screen():
 
         self.buttons = []
         self.buttons.append(Button_notScaled(135*scale_factor,109*scale_factor,4*scale_factor,6*scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
-        self.buttons.append(Button_notScaled(180*scale_factor, 109*scale_factor, 4 * scale_factor, 6 * scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
-        #self.buttons.append(Button_notScaled(135 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
-        #self.buttons.append(Button_notScaled(170 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
+        self.buttons.append(Button_notScaled(170*scale_factor, 109*scale_factor, 4 * scale_factor, 6 * scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
+        self.buttons.append(Button_notScaled(135 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
+        self.buttons.append(Button_notScaled(170 * scale_factor, 125 * scale_factor, 4 * scale_factor, 6 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
 
     def run(self, events):
         virtual_screen.fill((0, 0, 0))
@@ -636,7 +684,6 @@ class create_Screen():
                         if self.Button_Cancelar.isColliding():
                             self.choose_size = False
                         if self.Button_Confirmar.isColliding():
-                            self.choose_size = False
                             self.gameStateManager.set_state('createNonogram')
                         if self.buttons[0].isColliding():
                             if self.size > 5:
