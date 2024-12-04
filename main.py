@@ -1,5 +1,4 @@
-from random import random
-
+import random
 from Gráfica.Create_Nonograma import createNonogram
 from Gráfica.Ventana_Nonograma import nonogramWindow
 from Gráfica.Menu_and_scaling_exp_standalone import menuWindow, options_Menu, video_Options, level_type_Screen, \
