@@ -94,6 +94,7 @@ class Start:
 class GameStateManager:
     id = 0
     id_nonograma = ""
+    cargar_matriz = ""
     def __init__(self, currentState):
         self.currentState = currentState
     def get_state(self):
@@ -107,7 +108,10 @@ class GameStateManager:
         self.id_nonograma = id
     def get_id_nonograma(self):
         return self.id_nonograma
-
+    def set_cargar_matriz(self,id):
+        self.cargar_matriz = id
+    def get_cargar_matriz(self):
+        return self.cargar_matriz
 if __name__ == "__main__":
     game = Game()
 

@@ -1,5 +1,6 @@
 import numpy as np
 import pygame
+import os
 import sys
 from Lógica.nonograma_info import window_scale, get_variable, cargar_Matriz, set_id
 from Gráfica.Button import Button, Button_notSquare
@@ -24,7 +25,7 @@ WINDOW_SCALE = window_scale
 
 class nonogramWindow:
     update = True
-    
+    matriz_solucion = []
     Font_smolmatrix_smallsize = pygame.font.Font("Gráfica/Recursos/Fonts/3x5-smolmatrix.ttf", 5 * WINDOW_SCALE)
     Font_CutebitmapismA_smallsize = pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 5 * WINDOW_SCALE)
     Font_CutebitmapismA_mediumsize = pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf",                                              7 * WINDOW_SCALE)
@@ -37,6 +38,9 @@ class nonogramWindow:
         metadata = cargar_Matriz("n001")[1]
         self.puzzle_size = metadata['size'][0]
         set_id(self.gameStateManager.get_id_nonograma())
+
+        # Matriz solución
+        self.matriz_solucion = cargar_Matriz("n001")[0]
 
         # Achievements
         self.achievement_tracker = NonogramAchievementTracker()
@@ -133,10 +137,21 @@ class nonogramWindow:
 
         self.achievement_tracker = NonogramAchievementTracker()
         # Matriz usuario
-        self.matriz_usuario = np.zeros_like(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0])
-        metadata = cargar_Matriz(self.gameStateManager.get_id_nonograma())[1]
-        self.puzzle_size = metadata['size'][0]
-        set_id(self.gameStateManager.get_id_nonograma())
+        # Cargar nonograma si se está cargando
+        if self.gameStateManager.cargar_matriz != "":
+            dir = os.path.dirname(__file__)
+            ruta_savednpz = os.path.join(dir, "..", "created.npz")
+            # Matriz solución
+            self.CargarMatriz(ruta_savednpz, self.gameStateManager.get_cargar_matriz())
+            self.matriz_usuario = np.zeros_like(self.matriz_solucion)
+        else:
+            self.matriz_usuario = np.zeros_like(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0])
+            metadata = cargar_Matriz(self.gameStateManager.get_id_nonograma())[1]
+            self.puzzle_size = metadata['size'][0]
+            set_id(self.gameStateManager.get_id_nonograma())
+            # Matriz solución
+            self.matriz_solucion = cargar_Matriz(self.gameStateManager.get_id_nonograma())[0]
+
 
         # Crear surface para el fondo
         self.Surface_bg = pygame.surface.Surface((300 * WINDOW_SCALE, 300 * WINDOW_SCALE))
@@ -163,9 +178,7 @@ class nonogramWindow:
         # Ingresar tamaño del puzzle y el cuadrado
         # square_size = (160*WINDOW_SCALE)/self.puzzle_size
         square_size = 8 * WINDOW_SCALE
-        self.obj_square = [
-            [Square((i * square_size) + (56 * WINDOW_SCALE), (j * square_size) + 64 * WINDOW_SCALE, 8 * WINDOW_SCALE)
-             for i in range(self.puzzle_size)] for j in range(self.puzzle_size)]
+        self.obj_square = [[Square((i * square_size) + (56 * WINDOW_SCALE), (j * square_size) + 64 * WINDOW_SCALE, 8 * WINDOW_SCALE)for i in range(self.puzzle_size)] for j in range(self.puzzle_size)]
         # Añadir cuadrados al grupo de sprites, para así poder trabajar con ellos de forma conjunta
         self.group_squares = pygame.sprite.Group()
         for i in range(self.puzzle_size):
@@ -191,8 +204,12 @@ class nonogramWindow:
                 self.group_number_hints_left.add(Square((40 - (j * 8)) * WINDOW_SCALE, (64 + (i * 8)) * WINDOW_SCALE, square_size))
 
         ############### RELLENAR MATRIZ ###############
-        self.number_hints.set_matriz_filas(get_row_hints(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0]))
-        self.number_hints.set_matriz_columnas(get_col_hints(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0]))
+        if self.gameStateManager.cargar_matriz != "":
+            self.number_hints.set_matriz_filas(get_row_hints(self.matriz_solucion))
+            self.number_hints.set_matriz_columnas(get_col_hints(self.matriz_solucion))
+        else:
+            self.number_hints.set_matriz_filas(get_row_hints(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0]))
+            self.number_hints.set_matriz_columnas(get_col_hints(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0]))
         ############### RELLENAR MATRIZ ###############
 
         self.Button_Guardar = Button_notSquare(76 * WINDOW_SCALE, 102 * WINDOW_SCALE, 117 * WINDOW_SCALE,7 * WINDOW_SCALE,"Gráfica/Recursos/Sprites/Jugar/lvl_opcion_guardarysalir_pausa.png")
@@ -297,10 +314,23 @@ class nonogramWindow:
         if isFilling:
             self.history.push_state(self.matriz_usuario.copy())
 
+    def CargarMatriz(self, ruta_savednpz, id):
+        if os.path.exists(ruta_savednpz):
+            data = np.load(ruta_savednpz, allow_pickle=True)
+            if str(id) in data.files:
+                matriz_guardada = cargarNPZ(ruta_savednpz, id)
+                self.matriz_solucion = matriz_guardada
+                self.puzzle_size = matriz_guardada.shape[0]
+                for i in range(matriz_guardada.shape[0]):
+                    for j in range(matriz_guardada.shape[1]):
+                        if matriz_guardada[i][j] == 1:
+                            self.matriz_solucion[i][j] = 1
+
     def run(self, events):
         matriz_usuario = self.matriz_usuario
         mouse = pygame.mouse.get_pressed()
         WINDOW_SCALE = get_variable()
+
         # Actualizar ventana al ingresar al nivel
         if self.update:
 
@@ -312,6 +342,7 @@ class nonogramWindow:
                     if self.obj_square[i][j].isFilled():
                         self.obj_square[i][j].changeImage()
             self.update = False
+
 
         for event in events:
             if event.type == self.timer_event:
@@ -338,10 +369,10 @@ class nonogramWindow:
                     if not self.pause and not self.solved:
                         ################### PISTAS #####################################
                         if self.Button_Tips.isColliding():
-                            if not is_solved(matriz_usuario):
+                            if not is_solved(matriz_usuario, self.matriz_solucion):
                                 matriz_aux = matriz_usuario
                                 matriz_aux[matriz_aux != 1] = 0
-                                matriz_pistas = np.logical_xor(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0], matriz_aux)
+                                matriz_pistas = np.logical_xor(self.matriz_solucion, matriz_aux)
 
                                 # Obtener las posiciones donde hay 1's
                                 posiciones = np.where(matriz_pistas == 1)
@@ -362,7 +393,7 @@ class nonogramWindow:
                                 self.clicks += 1
                             ################### PISTAS #####################################
 
-                            if is_solved(matriz_usuario):
+                            if is_solved(matriz_usuario,self.matriz_solucion):
                                 self.achievement_tracker.puzzle_completed(self.gameStateManager.get_id_nonograma(), self.timer, self.clicks, self.puzzle_size)
                                 self.solved = True
                                 self.achievement_tracker.show_achievements(show_all=True)
@@ -382,7 +413,7 @@ class nonogramWindow:
                                     # Incrementar variable clicks
                                     self.clicks += 1
 
-                                    if is_solved(matriz_usuario):
+                                    if is_solved(matriz_usuario,self.matriz_solucion):
                                         self.achievement_tracker.puzzle_completed(self.gameStateManager.get_id_nonograma(), self.timer, self.clicks, self.puzzle_size)
                                         self.solved = True
                                         self.achievement_tracker.show_achievements(show_all=True)
@@ -636,7 +667,7 @@ class nonogramWindow:
             if current_time - self.last_solve_time >= self.solve_delay:
                 matriz_limpia = matriz_usuario
                 matriz_limpia[matriz_limpia != 1] = 0
-                matriz_pistas = np.logical_xor(cargar_Matriz(self.gameStateManager.get_id_nonograma())[0], matriz_usuario)
+                matriz_pistas = np.logical_xor(self.matriz_solucion, matriz_usuario)
                 posiciones = np.where(matriz_pistas == 1)
                 # Incrementar variable clicks
                 self.clicks += 1
@@ -649,14 +680,13 @@ class nonogramWindow:
 
                     matriz_usuario[fila_random, columna_random] = 1
                     self.obj_square[fila_random][columna_random].changeImage()
-                    matriz_usuario[fila_random][columna_random] = self.obj_square[fila_random][
-                        columna_random].isFilled()
+                    matriz_usuario[fila_random][columna_random] = self.obj_square[fila_random][columna_random].isFilled()
                     self.history.push_state(matriz_usuario.copy())
 
                     self.last_solve_time = current_time
                 else:
                     self.auto_solving = False
-                    if is_solved(matriz_usuario):
+                    if is_solved(matriz_usuario,self.matriz_solucion):
                         self.achievement_tracker.puzzle_completed(self.gameStateManager.get_id_nonograma(), self.timer, self.clicks, self.puzzle_size)
                         self.solved = True
                         self.achievement_tracker.show_achievements(show_all=True)

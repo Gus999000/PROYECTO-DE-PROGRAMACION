@@ -1,6 +1,7 @@
 import tkinter
 import tkinter.filedialog
 import pygame, sys
+import os
 
 from Gráfica.Button import Button_notScaled, Button_notSquare
 from Lógica.Logros import NonogramAchievementTracker
@@ -42,6 +43,7 @@ virtual_screen = pygame.Surface((ORIGINAL_WIDTH, ORIGINAL_HEIGHT))
 # Renderizacion de texto
 title_font = pygame.font.Font('Gráfica/Recursos/Fonts/16x-Vermin Vibes 1989.ttf', 36)
 #font = pygame.font.SysFont('OCR-A Extended', 12, bold=True)
+Font_CutebitmapismA_mediumsize =pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 7)
 font = pygame.font.Font('Gráfica/Recursos/Fonts/7x-zx-spectrum.ttf', 8)
 
 
@@ -224,12 +226,8 @@ class options_Menu():
 
         # Botones
         self.Button_controles = Button_notScaled(65*scale_factor, 30*scale_factor, 72*scale_factor,8*scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_opcion_controles.png")
-        self.Button_video = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,
-                                                 8 * scale_factor,
-                                                 "Gráfica/Recursos/Sprites/Opciones/op_opcion_video.png")
-        self.Button_audio = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,
-                                                 8 * scale_factor,
-                                                 "Gráfica/Recursos/Sprites/Opciones/op_opcion_audio.png")
+        self.Button_video = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,8 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_opcion_video.png")
+        self.Button_audio = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,8 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_opcion_audio.png")
 
     def run(self, events):
         global scale_factor
@@ -280,6 +278,8 @@ class options_Menu():
         mainClock.tick(60)
 
 class level_type_Screen():
+    popup = False
+    _user_text = "feliz"  # MAX 27 CHARACTERS
     def __init__(self, display, gameStateManager):
         self.options = ["Clásico", "Color", "Custom"]
         self.screen = display
@@ -294,6 +294,9 @@ class level_type_Screen():
         self.Button_Custom = Button_notScaled(90 * scale_factor, 100 * scale_factor, 52 * scale_factor,
                                                66 * scale_factor,
                                                "Gráfica/Recursos/Sprites/Jugar/lvl_boton_custom.png")
+
+        self.Button_Confirmar = Button_notScaled(134*scale_factor,133*scale_factor,84*scale_factor,20*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_confirmar.png")
+        self.Button_Cancelar = Button_notScaled(38*scale_factor, 133*scale_factor, 84*scale_factor, 20*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_cancelar.png")
 
 
     def run(self, events):
@@ -334,11 +337,31 @@ class level_type_Screen():
                 if self.Button_Color.isColliding():
                     self.gameStateManager.set_state('difficultyScreen')
                 if self.Button_Custom.isColliding():
-                    top = tkinter.Tk()
-                    top.withdraw()  # hide window
-                    file_name = tkinter.filedialog.askopenfilename(parent=top)
-                    top.destroy()
-                    self.gameStateManager.set_state('difficultyScreen')
+                    self.popup = True
+                if self.Button_Confirmar.isColliding():
+                    self.gameStateManager.set_cargar_matriz(self._user_text)
+                    self.gameStateManager.set_state("nonogramWindow")
+                if self.Button_Cancelar.isColliding():
+                    self.popup = False
+
+        if self.popup:
+            # Dibujar rectangulo con alpha
+            s = pygame.Surface((256*scale_factor, 240*scale_factor))
+            s.set_alpha(128)
+            s.fill((0, 0, 0))
+            virtual_screen.blit(s, (0, 0))
+
+            # Dibujar cuadro
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Crear/cr_popup_guardar.png"), (25, 80))
+
+            # Dibujar botones
+            virtual_screen.blit(self.Button_Confirmar.image, (self.Button_Confirmar.getPos()[0] // scale_factor, self.Button_Confirmar.getPos()[1] // scale_factor))
+            virtual_screen.blit(self.Button_Cancelar.image, (self.Button_Cancelar.getPos()[0] // scale_factor, self.Button_Cancelar.getPos()[1] // scale_factor))
+
+            # Ingresar texto
+            text_surface = Font_CutebitmapismA_mediumsize.render(self._user_text, False, (255,255,255))
+            virtual_screen.blit(text_surface,(43,108))
+
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
@@ -641,6 +664,7 @@ class create_Screen():
                             self.choose_size = False
                         if self.Button_Confirmar.isColliding():
                             self.gameStateManager.set_state('createNonogram')
+
         ######## DIBUJAR ########
 
         virtual_screen.blit(self.draw_Button.image, (self.draw_Button.getPos()[0]//scale_factor, self.draw_Button.getPos()[1]//scale_factor))
