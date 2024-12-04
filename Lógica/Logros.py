@@ -5,6 +5,8 @@ from pychievements.signals import receiver, goal_achieved
 # Medio n10X
 # Difícil n20X
 # Logros de Velocidad
+
+
 class SpeedsterI(Achievement):
     name = 'Speedster I'
     category = 'speed'
@@ -100,17 +102,23 @@ class MinimalistIII(Achievement):
 
 # Logros de Progresión (sets completados) PENDIENTE
 class AccessGranted(Achievement):
-    name = 'Access Granted'
+    name = 'AccessGranted'
     category = 'progression'
     keywords = ('puzzle', 'completion')
     goals = (
-        {'level': 1, 'name': 'Access Granted',
+        {'level': 1, 'name': 'AccessGranted',
          'icon': icons.star, 'description': 'Completa el set de niveles fáciles'},
     )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.set_facil = set()
 
     def evaluate(self, difficulty, *args, **kwargs):
-        if difficulty == 'easy':
-            self._current = 1
+        if 0 <= difficulty < 100:
+            if difficulty not in self.set_facil:
+                self.set_facil.add(difficulty)
+            if len(self.set_facil) == 8:
+                self._current = 1
         return self.achieved
 
 class Breacher(Achievement):
@@ -122,9 +130,16 @@ class Breacher(Achievement):
          'icon': icons.star, 'description': 'Completa el set de niveles medios'},
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.set_facil = set()
+
     def evaluate(self, difficulty, *args, **kwargs):
-        if difficulty == 'medium':
-            self._current = 1
+        if 100 <= difficulty < 200:
+            if difficulty not in self.set_facil:
+                self.set_facil.add(difficulty)
+            if len(self.set_facil) == 8:
+                self._current = 1
         return self.achieved
 
 class Netrunner(Achievement):
@@ -136,9 +151,16 @@ class Netrunner(Achievement):
          'icon': icons.star, 'description': 'Completa el set de niveles difíciles'},
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.set_facil = set()
+
     def evaluate(self, difficulty, *args, **kwargs):
-        if difficulty == 'hard':
-            self._current = 1
+        if 200 <= difficulty < 600:
+            if difficulty not in self.set_facil:
+                self.set_facil.add(difficulty)
+            if len(self.set_facil) == 8:
+                self._current = 1
         return self.achieved
 
 
@@ -241,9 +263,9 @@ class NonogramAchievementTracker:
     ####################PENDIENTE##############################################
     def complete_difficulty_set(self, difficulty):
         difficulty = int(difficulty.lstrip('n'))
-        if difficulty < 200:
+        if difficulty < 100:
             tracker.evaluate(self.player_id, AccessGranted, difficulty)
-        elif difficulty < 400:
+        elif difficulty < 200:
             tracker.evaluate(self.player_id, Breacher, difficulty)
         elif difficulty < 600:
             tracker.evaluate(self.player_id, Netrunner, difficulty)
@@ -271,6 +293,7 @@ class NonogramAchievementTracker:
 
     # Print en consola los logros (para testear)
     def show_achievements(self, show_all=False):
+        Achievements = []
         all_achievements = [
             SpeedsterI, SpeedsterII, SpeedsterIII,
             MinimalistI, MinimalistII, MinimalistIII,
@@ -278,19 +301,11 @@ class NonogramAchievementTracker:
             HueShift, Picasso, Completionist
         ]
 
-        print("\n=== Logros Conseguidos ===")
         for achievement in all_achievements:
             achieved = tracker.achieved(self.player_id, achievement)
             for goal in achieved:
-                print(f"{goal['icon']} {goal['name']}: {goal['description']}")
-
-        if show_all:
-            print("\n=== Logros Pendientes ===")
-            for achievement in all_achievements:
-                unachieved = tracker.unachieved(self.player_id, achievement)
-                for goal in unachieved:
-                    print(f"{goal['icon']} {goal['name']}: {goal['description']}")
-
+                Achievements.append(goal['name'])
+        return Achievements
 
 # Muestra mensaje en la consola cuando se alcanza un nuevo logro
 @receiver(goal_achieved)

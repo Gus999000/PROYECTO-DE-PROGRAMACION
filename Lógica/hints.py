@@ -1,4 +1,3 @@
-from Lógica.nonograma_info import matriz_solucion
 def generate_hints(lines):
     hints = []
     for line in lines:
@@ -21,9 +20,3 @@ def get_row_hints(solution):
 def get_col_hints(solution):
     transposed_solution = solution.T  # Transponer usando numpy
     return generate_hints(transposed_solution)
-
-# Ejemplos 
-solution = matriz_solucion
-
-row_hints = get_row_hints(solution)
-col_hints = get_col_hints(solution)
