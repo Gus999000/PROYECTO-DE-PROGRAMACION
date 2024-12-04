@@ -407,7 +407,7 @@ class createNonogram:
                             self._user_text += event.unicode
 
                 # Resetear dibujo
-                if not self.pause and self.guardar:
+                if not self.pause and not self.guardar:
                     if event.key == pygame.K_r:
                         # Resetear matriz
                         self.matriz_usuario[:] = np.zeros_like(self.matriz_usuario)
