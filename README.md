@@ -27,7 +27,7 @@ en una matriz cuadrada, siguiendo unos números que representan la cantidad cons
 
 
 ## Instrucciones de uso
-1. Navega al directorio raíz del proyecto `PROYECTO-DE-PROGRAMACION`
+1. Navega al directorio raíz del proyecto `PROYECTO-DE-PROGRAMACION` 
 
 2. Crea y activa un entorno virtual:
    - En **Linux**:
