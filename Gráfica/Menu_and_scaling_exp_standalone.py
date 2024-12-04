@@ -1,5 +1,7 @@
 import tkinter
 import tkinter.filedialog
+
+import numpy as np
 import pygame, sys
 import os
 
@@ -279,7 +281,7 @@ class options_Menu():
 
 class level_type_Screen():
     popup = False
-    _user_text = "feliz"  # MAX 27 CHARACTERS
+    _user_text = ""  # MAX 27 CHARACTERS
     def __init__(self, display, gameStateManager):
         self.options = ["Clásico", "Color", "Custom"]
         self.screen = display
@@ -327,22 +329,41 @@ class level_type_Screen():
                 pygame.quit()
                 sys.exit()
 
-            if event.type == KEYDOWN and event.key == K_ESCAPE:
-                self.gameStateManager.set_state('menuWindow')
+
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    self._user_text = ""
+                    self.popup = False
+                    self.gameStateManager.set_state('menuWindow')
+                # Ingresar texto al presionar cualquier tecla
+                if self.popup:
+                    if event.key == pygame.K_BACKSPACE:
+                        self._user_text = self._user_text[0:-1]
+                    else:
+                        if len(self._user_text) <= 27:
+                            self._user_text += event.unicode
 
 
             if event.type == MOUSEBUTTONUP:
-                if self.Button_Clasico.isColliding():
-                    self.gameStateManager.set_state('difficultyScreen')
-                if self.Button_Color.isColliding():
-                    self.gameStateManager.set_state('difficultyScreen')
-                if self.Button_Custom.isColliding():
-                    self.popup = True
-                if self.Button_Confirmar.isColliding():
-                    self.gameStateManager.set_cargar_matriz(self._user_text)
-                    self.gameStateManager.set_state("nonogramWindow")
-                if self.Button_Cancelar.isColliding():
-                    self.popup = False
+                if not self.popup:
+                    if self.Button_Clasico.isColliding():
+                        self.gameStateManager.set_state('difficultyScreen')
+                    if self.Button_Color.isColliding():
+                        self.gameStateManager.set_state('difficultyScreen')
+                    if self.Button_Custom.isColliding():
+                        self.popup = True
+                else:
+                    if self.Button_Confirmar.isColliding():
+                        dir = os.path.dirname(__file__)
+                        ruta_savednpz = os.path.join(dir, "..", "created.npz")
+                        if os.path.exists(ruta_savednpz):
+                            data = np.load(ruta_savednpz, allow_pickle=True)
+                            if str(self._user_text) in data.files:
+                                self.gameStateManager.set_cargar_matriz(self._user_text)
+                                self.gameStateManager.set_state("nonogramWindow")
+                    if self.Button_Cancelar.isColliding():
+                        self._user_text = ""
+                        self.popup = False
 
         if self.popup:
             # Dibujar rectangulo con alpha
