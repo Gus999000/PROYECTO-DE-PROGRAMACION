@@ -1,3 +1,4 @@
+import numpy as np
 import pygame, sys
 import os
 from Gráfica.Button import Button_notScaled, Button_notSquare
@@ -225,9 +226,7 @@ class options_Menu():
         self.Button_video = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,
                                                  8 * scale_factor,
                                                  "Gráfica/Recursos/Sprites/Opciones/op_opcion_video.png")
-        self.Button_audio = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,
-                                                 8 * scale_factor,
-                                                 "Gráfica/Recursos/Sprites/Opciones/op_opcion_audio.png")
+        #self.Button_audio = Button_notScaled(65 * scale_factor, 30 * scale_factor, 40 * scale_factor,8 * scale_factor,"Gráfica/Recursos/Sprites/Opciones/op_opcion_audio.png")
 
     def run(self, events):
         global scale_factor
@@ -240,15 +239,14 @@ class options_Menu():
         virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Opciones/op_titulo.png"), (65,53))
 
         # Botones
-        self.Button_controles.updatePos(100 * scale_factor, 90 * scale_factor, 72 * scale_factor, 8 * scale_factor)
+        self.Button_controles.updatePos(95 * scale_factor, 90 * scale_factor, 72 * scale_factor, 8 * scale_factor)
         virtual_screen.blit(self.Button_controles.image, (self.Button_controles.getPos()[0] // scale_factor, self.Button_controles.getPos()[1] // scale_factor))
 
-        self.Button_video.updatePos(115 * scale_factor, 125 * scale_factor, 72 * scale_factor, 8 * scale_factor)
+        self.Button_video.updatePos(110 * scale_factor, 125 * scale_factor, 72 * scale_factor, 8 * scale_factor)
         virtual_screen.blit(self.Button_video.image, (self.Button_video.getPos()[0] // scale_factor, self.Button_video.getPos()[1] // scale_factor))
 
-        self.Button_audio.updatePos(115 * scale_factor, 160 * scale_factor, 72 * scale_factor, 8 * scale_factor)
-        virtual_screen.blit(self.Button_audio.image, (
-        self.Button_audio.getPos()[0] // scale_factor, self.Button_audio.getPos()[1] // scale_factor))
+        #self.Button_audio.updatePos(115 * scale_factor, 160 * scale_factor, 72 * scale_factor, 8 * scale_factor)
+        #virtual_screen.blit(self.Button_audio.image, (self.Button_audio.getPos()[0] // scale_factor, self.Button_audio.getPos()[1] // scale_factor))
 
         mx, my = pygame.mouse.get_pos()
         scaled_mx = int(mx / scale_factor)
@@ -267,8 +265,8 @@ class options_Menu():
                 if event.button == 1:
                     if self.Button_controles.isColliding():
                         self.gameSateManager.set_state('controlsOptions')
-                    if self.Button_audio.isColliding():
-                        self.gameSateManager.set_state('audioOptions')
+                    #if self.Button_audio.isColliding():
+                    #    self.gameSateManager.set_state('audioOptions')
                     if self.Button_video.isColliding():
                         self.gameSateManager.set_state('videoOptions')
 
@@ -288,9 +286,7 @@ class level_type_Screen():
 
         # Botones
         self.Button_Clasico = Button_notScaled(30*scale_factor, 100*scale_factor,58*scale_factor,66*scale_factor,"Gráfica/Recursos/Sprites/Jugar/lvl_boton_clasico.png")
-        self.Button_Color = Button_notScaled(60 * scale_factor, 100 * scale_factor, 52 * scale_factor,
-                                               66 * scale_factor,
-                                               "Gráfica/Recursos/Sprites/Jugar/lvl_ejemplo_boton_color.png")
+        #self.Button_Color = Button_notScaled(60 * scale_factor, 100 * scale_factor, 52 * scale_factor,66 * scale_factor,"Gráfica/Recursos/Sprites/Jugar/lvl_ejemplo_boton_color.png")
         self.Button_Custom = Button_notScaled(90 * scale_factor, 100 * scale_factor, 52 * scale_factor,
                                                66 * scale_factor,
                                                "Gráfica/Recursos/Sprites/Jugar/lvl_boton_custom.png")
@@ -309,13 +305,13 @@ class level_type_Screen():
         virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Jugar/lvl_menu_categoria_titulo.png"),(55,55))
 
         # Botones
-        self.Button_Clasico.updatePos(30*scale_factor, 100*scale_factor,58*scale_factor,66*scale_factor)
+        self.Button_Clasico.updatePos(50*scale_factor, 100*scale_factor,58*scale_factor,66*scale_factor)
         virtual_screen.blit(self.Button_Clasico.image, (self.Button_Clasico.getPos()[0] // scale_factor, self.Button_Clasico.getPos()[1] // scale_factor))
 
-        self.Button_Color.updatePos(103 * scale_factor, 100 * scale_factor, 52 * scale_factor, 66 * scale_factor)
-        virtual_screen.blit(self.Button_Color.image, (self.Button_Color.getPos()[0] // scale_factor, self.Button_Color.getPos()[1] // scale_factor))
+        #self.Button_Color.updatePos(103 * scale_factor, 100 * scale_factor, 52 * scale_factor, 66 * scale_factor)
+        #virtual_screen.blit(self.Button_Color.image, (self.Button_Color.getPos()[0] // scale_factor, self.Button_Color.getPos()[1] // scale_factor))
 
-        self.Button_Custom.updatePos(175 * scale_factor, 100 * scale_factor, 58 * scale_factor, 66 * scale_factor)
+        self.Button_Custom.updatePos(155 * scale_factor, 100 * scale_factor, 58 * scale_factor, 66 * scale_factor)
         virtual_screen.blit(self.Button_Custom.image, (self.Button_Custom.getPos()[0] // scale_factor, self.Button_Custom.getPos()[1] // scale_factor))
 
         mx, my = pygame.mouse.get_pos()
@@ -346,8 +342,8 @@ class level_type_Screen():
                 if not self.popup:
                     if self.Button_Clasico.isColliding():
                         self.gameStateManager.set_state('difficultyScreen')
-                    if self.Button_Color.isColliding():
-                        self.gameStateManager.set_state('difficultyScreen')
+                    #if self.Button_Color.isColliding():
+                    #    self.gameStateManager.set_state('difficultyScreen')
                     if self.Button_Custom.isColliding():
                         self.popup = True
                 else:
@@ -640,7 +636,7 @@ class create_Screen():
 
         # Botones
         self.draw_Button = Button_notScaled(40*scale_factor, 85*scale_factor, 84*scale_factor,98*scale_factor, "Gráfica/Recursos/Sprites/Crear/cr_boton_dibujar.png")
-        self.import_Button = Button_notScaled(135 * scale_factor, 85 * scale_factor, 84 * scale_factor,98*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_importar.png")
+        #self.import_Button = Button_notScaled(135 * scale_factor, 85 * scale_factor, 84 * scale_factor,98*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_importar.png")
 
         self.Button_Confirmar = Button_notScaled(134*scale_factor,157*scale_factor, 84*scale_factor,20*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_confirmar.png")
         self.Button_Cancelar = Button_notScaled(38 * scale_factor, 157 * scale_factor, 84 * scale_factor,20 * scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_cancelar.png")
@@ -684,6 +680,7 @@ class create_Screen():
                         if self.Button_Cancelar.isColliding():
                             self.choose_size = False
                         if self.Button_Confirmar.isColliding():
+                            self.choose_size = False
                             self.gameStateManager.set_state('createNonogram')
                         if self.buttons[0].isColliding():
                             if self.size > 5:
@@ -696,8 +693,11 @@ class create_Screen():
 
         ######## DIBUJAR ########
 
-        virtual_screen.blit(self.draw_Button.image, (self.draw_Button.getPos()[0]//scale_factor, self.draw_Button.getPos()[1]//scale_factor))
-        virtual_screen.blit(self.import_Button.image, (self.import_Button.getPos()[0]//scale_factor, self.import_Button.getPos()[1]//scale_factor))
+
+        self.draw_Button.updatePos(85*scale_factor, 85*scale_factor, 84*scale_factor,98*scale_factor)
+        virtual_screen.blit(self.draw_Button.image, (
+        self.draw_Button.getPos()[0] // scale_factor, self.draw_Button.getPos()[1] // scale_factor))
+        #virtual_screen.blit(self.import_Button.image, (self.import_Button.getPos()[0]//scale_factor, self.import_Button.getPos()[1]//scale_factor))
 
 
         if self.choose_size:
@@ -714,12 +714,16 @@ class create_Screen():
             draw_text(f"{self.size}px", font, (255, 255, 255), virtual_screen, 160, 112)
 
             # Botones
+            self.buttons[0].updatePos(135*scale_factor,109*scale_factor,4*scale_factor,6*scale_factor)
             virtual_screen.blit(self.buttons[0].image, (self.buttons[0].getPos()[0] // scale_factor, self.buttons[0].getPos()[1] // scale_factor))
+            self.buttons[1].updatePos(185*scale_factor, 109*scale_factor, 4 * scale_factor, 6 * scale_factor)
             virtual_screen.blit(self.buttons[1].image, (self.buttons[1].getPos()[0] // scale_factor, self.buttons[1].getPos()[1] // scale_factor))
             #virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
             #virtual_screen.blit(self.buttons[3].image, (self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
 
+            self.Button_Confirmar.updatePos(134*scale_factor,125*scale_factor, 84*scale_factor,20*scale_factor)
             virtual_screen.blit(self.Button_Confirmar.image, (self.Button_Confirmar.getPos()[0] // scale_factor, self.Button_Confirmar.getPos()[1] // scale_factor))
+            self.Button_Cancelar.updatePos(38 * scale_factor, 125 * scale_factor, 84 * scale_factor,20 * scale_factor)
             virtual_screen.blit(self.Button_Cancelar.image, (self.Button_Cancelar.getPos()[0] // scale_factor, self.Button_Cancelar.getPos()[1] // scale_factor))
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
