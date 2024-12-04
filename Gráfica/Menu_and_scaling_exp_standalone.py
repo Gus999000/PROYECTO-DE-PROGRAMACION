@@ -1,6 +1,7 @@
 import pygame, sys
-
+import os
 from Gráfica.Button import Button_notScaled, Button_notSquare
+from Lógica.Logros import NonogramAchievementTracker
 from Lógica.nonograma_info import set_variable
 
 # Setup pygame/ventana
@@ -40,7 +41,7 @@ virtual_screen = pygame.Surface((ORIGINAL_WIDTH, ORIGINAL_HEIGHT))
 title_font = pygame.font.Font('Gráfica/Recursos/Fonts/16x-Vermin Vibes 1989.ttf', 36)
 #font = pygame.font.SysFont('OCR-A Extended', 12, bold=True)
 font = pygame.font.Font('Gráfica/Recursos/Fonts/7x-zx-spectrum.ttf', 8)
-
+Font_CutebitmapismA_mediumsize =pygame.font.Font("Gráfica/Recursos/Fonts/7x-D3CutebitmapismA.ttf", 7)
 
 # opciones en video
 display_modes = ["Windowed", "Fullscreen", "Windowed Fullscreen"]
@@ -277,6 +278,8 @@ class options_Menu():
         mainClock.tick(60)
 
 class level_type_Screen():
+    popup = False
+    _user_text = ""  # MAX 27 CHARACTERS
     def __init__(self, display, gameStateManager):
         self.options = ["Clásico", "Color", "Custom"]
         self.screen = display
@@ -291,6 +294,9 @@ class level_type_Screen():
         self.Button_Custom = Button_notScaled(90 * scale_factor, 100 * scale_factor, 52 * scale_factor,
                                                66 * scale_factor,
                                                "Gráfica/Recursos/Sprites/Jugar/lvl_boton_custom.png")
+
+        self.Button_Confirmar = Button_notScaled(134*scale_factor,133*scale_factor,84*scale_factor,20*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_confirmar.png")
+        self.Button_Cancelar = Button_notScaled(38*scale_factor, 133*scale_factor, 84*scale_factor, 20*scale_factor,"Gráfica/Recursos/Sprites/Crear/cr_boton_popup_cancelar.png")
 
 
     def run(self, events):
@@ -321,17 +327,60 @@ class level_type_Screen():
                 pygame.quit()
                 sys.exit()
 
-            if event.type == KEYDOWN and event.key == K_ESCAPE:
-                self.gameStateManager.set_state('menuWindow')
+
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    self._user_text = ""
+                    self.popup = False
+                    self.gameStateManager.set_state('menuWindow')
+                # Ingresar texto al presionar cualquier tecla
+                if self.popup:
+                    if event.key == pygame.K_BACKSPACE:
+                        self._user_text = self._user_text[0:-1]
+                    else:
+                        if len(self._user_text) <= 27:
+                            self._user_text += event.unicode
 
 
             if event.type == MOUSEBUTTONUP:
-                if self.Button_Clasico.isColliding():
-                    self.gameStateManager.set_state('difficultyScreen')
-                if self.Button_Color.isColliding():
-                    self.gameStateManager.set_state('difficultyScreen')
-                if self.Button_Custom.isColliding():
-                    self.gameStateManager.set_state('difficultyScreen')
+                if not self.popup:
+                    if self.Button_Clasico.isColliding():
+                        self.gameStateManager.set_state('difficultyScreen')
+                    if self.Button_Color.isColliding():
+                        self.gameStateManager.set_state('difficultyScreen')
+                    if self.Button_Custom.isColliding():
+                        self.popup = True
+                else:
+                    if self.Button_Confirmar.isColliding():
+                        dir = os.path.dirname(__file__)
+                        ruta_savednpz = os.path.join(dir, "..", "created.npz")
+                        if os.path.exists(ruta_savednpz):
+                            data = np.load(ruta_savednpz, allow_pickle=True)
+                            if str(self._user_text) in data.files:
+                                self.gameStateManager.set_cargar_matriz(self._user_text)
+                                self.gameStateManager.set_state("nonogramWindow")
+                    if self.Button_Cancelar.isColliding():
+                        self._user_text = ""
+                        self.popup = False
+
+        if self.popup:
+            # Dibujar rectangulo con alpha
+            s = pygame.Surface((256*scale_factor, 240*scale_factor))
+            s.set_alpha(128)
+            s.fill((0, 0, 0))
+            virtual_screen.blit(s, (0, 0))
+
+            # Dibujar cuadro
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Crear/cr_popup_guardar.png"), (25, 80))
+
+            # Dibujar botones
+            virtual_screen.blit(self.Button_Confirmar.image, (self.Button_Confirmar.getPos()[0] // scale_factor, self.Button_Confirmar.getPos()[1] // scale_factor))
+            virtual_screen.blit(self.Button_Cancelar.image, (self.Button_Cancelar.getPos()[0] // scale_factor, self.Button_Cancelar.getPos()[1] // scale_factor))
+
+            # Ingresar texto
+            text_surface = Font_CutebitmapismA_mediumsize.render(self._user_text, False, (255,255,255))
+            virtual_screen.blit(text_surface,(43,108))
+
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
@@ -470,30 +519,13 @@ class level_selection_Screen():
 
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
-                    if self.Buttons[0]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[1]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[2]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[3]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[4]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[5]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[6]["button"].isColliding():
-                        self.gameStateManager.set_state('nonogramWindow')
-
-                    if self.Buttons[7]["button"].isColliding():
-
-                        self.gameStateManager.set_state('nonogramWindow')
+                    for i in range(8):
+                        if self.Buttons[i]["button"].isColliding():
+                            if self.gameStateManager.id*100 + i + 1 >= 100:
+                                self.gameStateManager.set_id_nonograma("n" + str(self.gameStateManager.id * 100 + i + 1))
+                            else:
+                                self.gameStateManager.set_id_nonograma("n00" + str(self.gameStateManager.id * 100 + i + 1))
+                            self.gameStateManager.set_state('nonogramWindow')
 
         scaled_surface = pixel_perfect_scale(virtual_screen, scale_factor)
         self.screen.blit(scaled_surface, (0, 0))
@@ -615,6 +647,8 @@ class create_Screen():
 
         # Popup elegir tamaño
         self.choose_size = False
+        self.size = 20
+
         self.buttons = []
         self.buttons.append(Button_notScaled(135*scale_factor,109*scale_factor,4*scale_factor,6*scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_izq.png"))
         self.buttons.append(Button_notScaled(170*scale_factor, 109*scale_factor, 4 * scale_factor, 6 * scale_factor, "Gráfica/Recursos/Sprites/Opciones/op_boton_flecha_der.png"))
@@ -651,6 +685,15 @@ class create_Screen():
                             self.choose_size = False
                         if self.Button_Confirmar.isColliding():
                             self.gameStateManager.set_state('createNonogram')
+                        if self.buttons[0].isColliding():
+                            if self.size > 5:
+                                self.size -= 1
+                                self.gameStateManager.set_create_nonogram_puzzle_size(self.size)
+                        if self.buttons[1].isColliding():
+                            if self.size < 20:
+                                self.size += 1
+                                self.gameStateManager.set_create_nonogram_puzzle_size(self.size)
+
         ######## DIBUJAR ########
 
         virtual_screen.blit(self.draw_Button.image, (self.draw_Button.getPos()[0]//scale_factor, self.draw_Button.getPos()[1]//scale_factor))
@@ -667,11 +710,14 @@ class create_Screen():
             # Dibujar popup
             virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Crear/cr_popup_opciones0.png"),(25, 80))
 
+            # Tamaño
+            draw_text(f"{self.size}px", font, (255, 255, 255), virtual_screen, 160, 112)
+
             # Botones
             virtual_screen.blit(self.buttons[0].image, (self.buttons[0].getPos()[0] // scale_factor, self.buttons[0].getPos()[1] // scale_factor))
             virtual_screen.blit(self.buttons[1].image, (self.buttons[1].getPos()[0] // scale_factor, self.buttons[1].getPos()[1] // scale_factor))
-            virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
-            virtual_screen.blit(self.buttons[3].image, (self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
+            #virtual_screen.blit(self.buttons[2].image, (self.buttons[2].getPos()[0] // scale_factor, self.buttons[2].getPos()[1] // scale_factor))
+            #virtual_screen.blit(self.buttons[3].image, (self.buttons[3].getPos()[0] // scale_factor, self.buttons[3].getPos()[1] // scale_factor))
 
             virtual_screen.blit(self.Button_Confirmar.image, (self.Button_Confirmar.getPos()[0] // scale_factor, self.Button_Confirmar.getPos()[1] // scale_factor))
             virtual_screen.blit(self.Button_Cancelar.image, (self.Button_Cancelar.getPos()[0] // scale_factor, self.Button_Cancelar.getPos()[1] // scale_factor))
@@ -688,6 +734,8 @@ class achievements_Screen():
         self.screen = display
         self.gameStateManager = gameStateManager
 
+        # Achievements
+        self.achievement_tracker = NonogramAchievementTracker()
 
         # Botones
         self.Button_vel1 = Button_notScaled(20*scale_factor, 50*scale_factor, 32*scale_factor,32*scale_factor,"Gráfica/Recursos/Sprites/Logros/lgr_icono_vel1.png")
@@ -718,58 +766,98 @@ class achievements_Screen():
         self.Button_vel1.updatePos(20 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_vel1.image, (self.Button_vel1.getPos()[0] // scale_factor, self.Button_vel1.getPos()[1] // scale_factor))
         # Para este checkbox necesitamos una condición if, que vendrá por la parte lógica de Logros
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(44,74))
+        if "Speedster I" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(44,74))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"), (44, 74))
 
         self.Button_vel2.updatePos(20 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_vel2.image, (self.Button_vel2.getPos()[0] // scale_factor, self.Button_vel2.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 134))
+        if "Speedster II" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(44, 134))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"), (44, 134))
 
         self.Button_vel3.updatePos(20 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_vel3.image, (self.Button_vel3.getPos()[0] // scale_factor, self.Button_vel3.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(44, 194))
 
+        if "Speedster III" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"), (44, 194))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"), (44, 194))
 
         # Dificultad
         self.Button_dif1.updatePos(80 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_dif1.image, (
         self.Button_dif1.getPos()[0] // scale_factor, self.Button_dif1.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 74))
+        if "AccessGranted" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(104, 74))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 74))
+
 
         self.Button_dif2.updatePos(80 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_dif2.image, (
         self.Button_dif2.getPos()[0] // scale_factor, self.Button_dif2.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 134))
+        if "Breacher" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(104, 134))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 134))
+
 
         self.Button_dif3.updatePos(80 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_dif3.image, (
         self.Button_dif3.getPos()[0] // scale_factor, self.Button_dif3.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 194))
+        if "Netrunner" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(104, 194))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(104, 194))
+
 
         # Clicks
         self.Button_click1.updatePos(140 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click1.image, (self.Button_click1.getPos()[0] // scale_factor, self.Button_click1.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 74))
+        if "Minimalist I" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(164, 74))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 74))
 
         self.Button_click2.updatePos(140 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click2.image, (self.Button_click2.getPos()[0] // scale_factor, self.Button_click2.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 134))
+        if "Minimalist II" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(164, 134))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 134))
 
         self.Button_click3.updatePos(140 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_click3.image, (self.Button_click3.getPos()[0] // scale_factor, self.Button_click3.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 194))
+        if "Minimalist III" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(164, 194))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(164, 194))
 
         # Miscelanea
         self.Button_creapuzzle.updatePos(200 * scale_factor, 50 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_creapuzzle.image, (self.Button_creapuzzle.getPos()[0] // scale_factor, self.Button_creapuzzle.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 74))
+        if "Picasso" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(224, 74))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 74))
 
         self.Button_cambiacolor.updatePos(200 * scale_factor, 110 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_cambiacolor.image, (self.Button_cambiacolor.getPos()[0] // scale_factor, self.Button_cambiacolor.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 134))
+        if "HUE Shift" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(224, 134))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 134))
 
         self.Button_logros100.updatePos(200 * scale_factor, 170 * scale_factor, 32 * scale_factor, 32 * scale_factor)
         virtual_screen.blit(self.Button_logros100.image, (self.Button_logros100.getPos()[0] // scale_factor, self.Button_logros100.getPos()[1] // scale_factor))
-        virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 194))
+
+        if "Completionist" in self.achievement_tracker.show_achievements():
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox1.png"),(224, 194))
+        else:
+            virtual_screen.blit(pygame.image.load("Gráfica/Recursos/Sprites/Logros/lgr_icono_checkbox0.png"),(224, 194))
 
         ###### LOGROS ######
 

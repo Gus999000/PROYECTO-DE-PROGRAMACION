@@ -41,6 +41,7 @@ class Game:
 
         # Logros
         self.achievementsScreen = achievements_Screen(self.screen, self.gameStateManager)
+        self.achievement_tracker = NonogramAchievementTracker()
 
         # Nonograma
         self.nonogramWindow = nonogramWindow(self.screen, self.gameStateManager)
@@ -63,8 +64,6 @@ class Game:
             'createNonogram': self.createNonogram,
             "achievementsScreen": self.achievementsScreen
         }
-
-        self.achievement_tracker = NonogramAchievementTracker()
 
     def run(self):
         while True:
@@ -94,6 +93,9 @@ class Start:
 # Clase que cambiará los estados entre las ventanas
 class GameStateManager:
     id = 0
+    id_nonograma = ""
+    create_nonogram_puzzle_size = 20
+    cargar_matriz = ""
     def __init__(self, currentState):
         self.currentState = currentState
     def get_state(self):
@@ -103,7 +105,19 @@ class GameStateManager:
     def set_state_id(self, state, id):
         self.id = id
         self.currentState = state
+    def set_id_nonograma(self,id):
+        self.id_nonograma = id
+    def get_id_nonograma(self):
+        return self.id_nonograma
+    def set_create_nonogram_puzzle_size(self,size):
+        self.create_nonogram_puzzle_size = size
+    def get_create_nonogram_puzzle_size(self):
+        return self.create_nonogram_puzzle_size
 
+    def set_cargar_matriz(self,id):
+        self.cargar_matriz = id
+    def get_cargar_matriz(self):
+        return self.cargar_matriz
 if __name__ == "__main__":
     game = Game()
 
