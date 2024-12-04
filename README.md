@@ -1,39 +1,63 @@
-# Ejecución del proyecto
+# Proyecto de Progamación - Nonogramas
+Este proyecto trata sobre un progama usando Pygame donde se pueden resolver distintos nonogramas, los cuales son 
+puzzles lógicos que tratan de resolver una imagen escondida. Para conseguir eso el jugador debe de marcar casillas
+en una matriz cuadrada, siguiendo unos números que representan la cantidad consecutivas de estas según fila y columna.
 
-Estando en el directorio: PROYECTO-DE-PROGRAMACION
+## Características
+- Nonogramas de distintos tamaños y niveles de dificultad para resolver.
+- Sistemas de Pistas y resolución automática.
+- Función de deshacer y rehacer movimientos.
+- Opciones para guardar y cargar nonogramas.
+- Sistema de logros.
+- Estética retro inspirada en los videojuegos clásicos.
 
-En linux ejecute:
+## Screenshots
+![Menu](README/menú.png)
 
-### `python3 -m venv .venv`
+![Logros](README/Logros.png)
 
-Para crear el entorno virtual, con python3.
+![Dificultades](README/Dificultad.png)
 
-### `source .venv/bin/activate`
+![Niveles](README/Niveles.png)
 
-Para activar el entorno virtual.
+![Jugar](README/Ventana_jugar.png)
 
-### `pip install -r requirements.txt`
+![Completo](README/NivelCompleto.png)
 
-Para instalar los requerimientos.
 
-### `python3 main.py`
 
-Para ejecutar el archivo main.py, con python3.
+## Instrucciones de uso
+1. Navega al directorio raíz del proyecto `PROYECTO-DE-PROGRAMACION` 
 
-En windows (cmd) ejecute:
+2. Crea y activa un entorno virtual:
+   - En **Linux**:
+     ```bash
+     python3 -m venv .venv
+     source .venv/bin/activate
+     ```
+   - En **Windows (cmd)**:
+     ```bash
+     python3 -m venv .venv
+     .venv\Scripts\activate
+     ```
+3. Instala las dependencias:
+   ```bash
+   pip install -r requirements.txt
 
-### `python3 -m venv .venv`
+4. Ejecuta el programa:
+    ```bash
+    python3 main.py
+   
+## Autores
+- [Daniel Aburto Rivera](https://github.com/daaburto)
+- [Joaquín Sandoval Reyes](https://github.com/joaqsandoval04)
+- [Gustavo González Anabalón](https://github.com/SkullKarl)
+- [Gustavo Benitez Cespedes](https://github.com/D34dcru1s3r)
 
-Para crear el entorno virtual, con python3.
+# 
+[![Pygame](https://www.pygame.org/docs/_static/pygame_tiny.png)](https://www.pygame.org/docs/)
+[![GitHub](https://skillicons.dev/icons?i=github)](https://skillicons.dev)
+[![PyCharm](https://skillicons.dev/icons?i=pycharm)](https://skillicons.dev)
+[![Python](https://skillicons.dev/icons?i=python)](https://skillicons.dev)
 
-### `.venv\Scripts\activate`
 
-Para activar el entorno virtual.
-
-### `pip install -r requirements.txt`
-
-Para instalar los requerimientos.
-
-### `python3 main.py`
-
-Para ejecutar el archivo main.py, con python3.
