@@ -1,3 +1,4 @@
+import numpy as np
 import pygame, sys
 import os
 from Gráfica.Button import Button_notScaled, Button_notSquare
@@ -9,7 +10,7 @@ mainClock = pygame.time.Clock()
 from pygame.locals import *
 
 pygame.init()
-pygame.display.set_caption('Testeo Menus')
+pygame.display.set_caption('Assignment Gridlock')
 
 # forzar pygame a usar escalamiento tipo nearest neighbor
 if hasattr(pygame, 'GL_NEAREST'):
